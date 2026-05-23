@@ -1,0 +1,19 @@
+{
+    "name": "DoubleForward.Boss",
+    "rootNamespace": "DoubleForward.Boss",
+    "references": [
+        "DoubleForward.Core",
+        "DoubleForward.Player",
+        "DoubleForward.Level",
+        "DoubleForward.Puzzle"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

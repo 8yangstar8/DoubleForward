@@ -1,0 +1,19 @@
+{
+    "name": "DoubleForward.Cutscene",
+    "rootNamespace": "DoubleForward.Cutscene",
+    "references": [
+        "DoubleForward.Core",
+        "DoubleForward.Player",
+        "DoubleForward.Input",
+        "Unity.TextMeshPro"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
