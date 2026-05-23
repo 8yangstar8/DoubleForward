@@ -1,0 +1,16 @@
+{
+    "name": "DoubleForward.Camera",
+    "rootNamespace": "DoubleForward.Camera",
+    "references": [
+        "DoubleForward.Player"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

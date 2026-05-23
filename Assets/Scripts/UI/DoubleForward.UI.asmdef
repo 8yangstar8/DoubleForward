@@ -1,0 +1,23 @@
+{
+    "name": "DoubleForward.UI",
+    "rootNamespace": "DoubleForward.UI",
+    "references": [
+        "DoubleForward.Core",
+        "DoubleForward.Player",
+        "DoubleForward.Level",
+        "DoubleForward.Network",
+        "DoubleForward.Input",
+        "DoubleForward.Camera",
+        "Unity.TextMeshPro",
+        "Unity.Netcode.Runtime"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

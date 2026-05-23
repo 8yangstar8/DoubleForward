@@ -1,0 +1,22 @@
+{
+    "name": "DoubleForward.Editor",
+    "rootNamespace": "DoubleForward.Editor",
+    "references": [
+        "DoubleForward.Core",
+        "DoubleForward.Player",
+        "DoubleForward.Level",
+        "DoubleForward.Puzzle",
+        "DoubleForward.Camera"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

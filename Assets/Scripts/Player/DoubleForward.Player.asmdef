@@ -1,0 +1,17 @@
+{
+    "name": "DoubleForward.Player",
+    "rootNamespace": "DoubleForward.Player",
+    "references": [
+        "DoubleForward.Core",
+        "DoubleForward.Input"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

@@ -1,0 +1,21 @@
+{
+    "name": "DoubleForward.Network",
+    "rootNamespace": "DoubleForward.Network",
+    "references": [
+        "DoubleForward.Core",
+        "DoubleForward.Player",
+        "DoubleForward.Level",
+        "DoubleForward.Puzzle",
+        "Unity.Netcode.Runtime",
+        "Unity.Networking.Transport"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
