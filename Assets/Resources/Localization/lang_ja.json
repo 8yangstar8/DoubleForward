@@ -1,0 +1,98 @@
+{
+    "entries": [
+        {"key": "game_title", "value": "ダブルフォワード"},
+        {"key": "menu_start", "value": "ゲームスタート"},
+        {"key": "menu_continue", "value": "続きから"},
+        {"key": "menu_local", "value": "ローカル協力"},
+        {"key": "menu_lan", "value": "LAN"},
+        {"key": "menu_online", "value": "オンライン協力"},
+        {"key": "menu_settings", "value": "設定"},
+        {"key": "menu_quit", "value": "終了"},
+        {"key": "menu_credits", "value": "クレジット"},
+
+        {"key": "settings_title", "value": "設定"},
+        {"key": "settings_bgm", "value": "BGM"},
+        {"key": "settings_sfx", "value": "効果音"},
+        {"key": "settings_language", "value": "言語"},
+        {"key": "settings_quality", "value": "画質"},
+        {"key": "settings_quality_low", "value": "低"},
+        {"key": "settings_quality_medium", "value": "中"},
+        {"key": "settings_quality_high", "value": "高"},
+        {"key": "settings_vsync", "value": "垂直同期"},
+        {"key": "settings_vibration", "value": "バイブ"},
+        {"key": "settings_apply", "value": "適用"},
+        {"key": "settings_back", "value": "戻る"},
+
+        {"key": "pause_title", "value": "ポーズ"},
+        {"key": "pause_resume", "value": "再開"},
+        {"key": "pause_restart", "value": "やり直し"},
+        {"key": "pause_settings", "value": "設定"},
+        {"key": "pause_quit", "value": "メインメニュー"},
+
+        {"key": "hud_timer", "value": "タイム"},
+        {"key": "hud_collectibles", "value": "コレクション"},
+
+        {"key": "level_select_title", "value": "ステージ選択"},
+        {"key": "level_locked", "value": "ロック中"},
+        {"key": "level_completed", "value": "クリア済み"},
+        {"key": "level_play", "value": "プレイ"},
+        {"key": "level_best_time", "value": "ベストタイム"},
+
+        {"key": "chapter_1", "value": "第1章：森林"},
+        {"key": "chapter_2", "value": "第2章：工場"},
+        {"key": "chapter_3", "value": "第3章：深淵"},
+        {"key": "chapter_4", "value": "第4章：遺跡"},
+        {"key": "chapter_5", "value": "第5章：虚空"},
+
+        {"key": "complete_title", "value": "ステージクリア！"},
+        {"key": "complete_time", "value": "タイム"},
+        {"key": "complete_collectibles", "value": "コレクション"},
+        {"key": "complete_next", "value": "次へ"},
+        {"key": "complete_replay", "value": "リプレイ"},
+        {"key": "complete_menu", "value": "メニュー"},
+
+        {"key": "lobby_title", "value": "ロビー"},
+        {"key": "lobby_host", "value": "ルーム作成"},
+        {"key": "lobby_join", "value": "ルーム参加"},
+        {"key": "lobby_code", "value": "ルームコード"},
+        {"key": "lobby_searching", "value": "検索中..."},
+        {"key": "lobby_connecting", "value": "接続中..."},
+        {"key": "lobby_connected", "value": "接続完了"},
+        {"key": "lobby_failed", "value": "接続失敗"},
+        {"key": "lobby_start", "value": "ゲーム開始"},
+        {"key": "lobby_waiting", "value": "プレイヤーを待っています..."},
+        {"key": "lobby_room_list", "value": "利用可能なルーム"},
+
+        {"key": "tutorial_move", "value": "ジョイスティックでキャラクターを移動"},
+        {"key": "tutorial_jump", "value": "ジャンプボタンをタップ"},
+        {"key": "tutorial_double_jump", "value": "もう一度タップで二段ジャンプ"},
+        {"key": "tutorial_dash", "value": "タップでダッシュ"},
+        {"key": "tutorial_skill1", "value": "スキル1をタップ"},
+        {"key": "tutorial_skill2", "value": "スキル2をタップ"},
+        {"key": "tutorial_coop", "value": "二人でスイッチの上に立つ"},
+
+        {"key": "achievement_unlocked", "value": "実績解除！"},
+        {"key": "achievement_title", "value": "実績"},
+        {"key": "achievement_progress", "value": "進行状況"},
+
+        {"key": "loading_tip_1", "value": "LuxとNoxの協力が全ての謎を解く鍵"},
+        {"key": "loading_tip_2", "value": "光が道を照らし、影が壁を越える"},
+        {"key": "loading_tip_3", "value": "全アイテムを集めると三ツ星評価"},
+        {"key": "loading_tip_4", "value": "暗いエリアではNoxの攻撃力が20%アップ"},
+        {"key": "loading_tip_5", "value": "明るいエリアではLuxの移動速度が20%アップ"},
+
+        {"key": "dialog_skip", "value": "スキップ"},
+        {"key": "dialog_next", "value": "次へ"},
+
+        {"key": "gameover_title", "value": "ゲームオーバー"},
+        {"key": "gameover_retry", "value": "リトライ"},
+        {"key": "gameover_quit", "value": "諦める"},
+
+        {"key": "boss_incoming", "value": "ボス戦が始まる！"},
+        {"key": "boss_defeated", "value": "ボスを倒した！"},
+
+        {"key": "reconnect_title", "value": "接続が切断されました"},
+        {"key": "reconnect_message", "value": "再接続を試みています..."},
+        {"key": "reconnect_failed", "value": "再接続失敗。ロビーに戻ります。"}
+    ]
+}

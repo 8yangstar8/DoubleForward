@@ -1,0 +1,98 @@
+{
+    "entries": [
+        {"key": "game_title", "value": "Double Forward"},
+        {"key": "menu_start", "value": "Start Game"},
+        {"key": "menu_continue", "value": "Continue"},
+        {"key": "menu_local", "value": "Local Co-op"},
+        {"key": "menu_lan", "value": "LAN"},
+        {"key": "menu_online", "value": "Online Co-op"},
+        {"key": "menu_settings", "value": "Settings"},
+        {"key": "menu_quit", "value": "Quit"},
+        {"key": "menu_credits", "value": "Credits"},
+
+        {"key": "settings_title", "value": "Settings"},
+        {"key": "settings_bgm", "value": "Music"},
+        {"key": "settings_sfx", "value": "Sound Effects"},
+        {"key": "settings_language", "value": "Language"},
+        {"key": "settings_quality", "value": "Quality"},
+        {"key": "settings_quality_low", "value": "Low"},
+        {"key": "settings_quality_medium", "value": "Medium"},
+        {"key": "settings_quality_high", "value": "High"},
+        {"key": "settings_vsync", "value": "VSync"},
+        {"key": "settings_vibration", "value": "Vibration"},
+        {"key": "settings_apply", "value": "Apply"},
+        {"key": "settings_back", "value": "Back"},
+
+        {"key": "pause_title", "value": "Paused"},
+        {"key": "pause_resume", "value": "Resume"},
+        {"key": "pause_restart", "value": "Restart"},
+        {"key": "pause_settings", "value": "Settings"},
+        {"key": "pause_quit", "value": "Main Menu"},
+
+        {"key": "hud_timer", "value": "Time"},
+        {"key": "hud_collectibles", "value": "Collectibles"},
+
+        {"key": "level_select_title", "value": "Level Select"},
+        {"key": "level_locked", "value": "Locked"},
+        {"key": "level_completed", "value": "Completed"},
+        {"key": "level_play", "value": "Play"},
+        {"key": "level_best_time", "value": "Best Time"},
+
+        {"key": "chapter_1", "value": "Chapter 1: Forest"},
+        {"key": "chapter_2", "value": "Chapter 2: Factory"},
+        {"key": "chapter_3", "value": "Chapter 3: Abyss"},
+        {"key": "chapter_4", "value": "Chapter 4: Ruins"},
+        {"key": "chapter_5", "value": "Chapter 5: Void"},
+
+        {"key": "complete_title", "value": "Level Complete!"},
+        {"key": "complete_time", "value": "Time"},
+        {"key": "complete_collectibles", "value": "Collectibles"},
+        {"key": "complete_next", "value": "Next Level"},
+        {"key": "complete_replay", "value": "Replay"},
+        {"key": "complete_menu", "value": "Menu"},
+
+        {"key": "lobby_title", "value": "Lobby"},
+        {"key": "lobby_host", "value": "Create Room"},
+        {"key": "lobby_join", "value": "Join Room"},
+        {"key": "lobby_code", "value": "Room Code"},
+        {"key": "lobby_searching", "value": "Searching..."},
+        {"key": "lobby_connecting", "value": "Connecting..."},
+        {"key": "lobby_connected", "value": "Connected"},
+        {"key": "lobby_failed", "value": "Connection Failed"},
+        {"key": "lobby_start", "value": "Start Game"},
+        {"key": "lobby_waiting", "value": "Waiting for player..."},
+        {"key": "lobby_room_list", "value": "Available Rooms"},
+
+        {"key": "tutorial_move", "value": "Drag the joystick to move"},
+        {"key": "tutorial_jump", "value": "Tap the jump button"},
+        {"key": "tutorial_double_jump", "value": "Tap again to double jump"},
+        {"key": "tutorial_dash", "value": "Tap to dash through obstacles"},
+        {"key": "tutorial_skill1", "value": "Tap Skill 1 to use ability"},
+        {"key": "tutorial_skill2", "value": "Tap Skill 2 to use ability"},
+        {"key": "tutorial_coop", "value": "Both players stand on the switch"},
+
+        {"key": "achievement_unlocked", "value": "Achievement Unlocked!"},
+        {"key": "achievement_title", "value": "Achievements"},
+        {"key": "achievement_progress", "value": "Progress"},
+
+        {"key": "loading_tip_1", "value": "Lux and Nox must cooperate to solve all puzzles"},
+        {"key": "loading_tip_2", "value": "Light illuminates the path, shadow passes through barriers"},
+        {"key": "loading_tip_3", "value": "Collect all items for a three-star rating"},
+        {"key": "loading_tip_4", "value": "In dark zones, Nox gains +20% attack power"},
+        {"key": "loading_tip_5", "value": "In light zones, Lux gains +20% move speed"},
+
+        {"key": "dialog_skip", "value": "Skip"},
+        {"key": "dialog_next", "value": "Continue"},
+
+        {"key": "gameover_title", "value": "Game Over"},
+        {"key": "gameover_retry", "value": "Retry"},
+        {"key": "gameover_quit", "value": "Give Up"},
+
+        {"key": "boss_incoming", "value": "Boss battle incoming!"},
+        {"key": "boss_defeated", "value": "Boss defeated!"},
+
+        {"key": "reconnect_title", "value": "Disconnected"},
+        {"key": "reconnect_message", "value": "Attempting to reconnect..."},
+        {"key": "reconnect_failed", "value": "Reconnection failed. Returning to lobby."}
+    ]
+}

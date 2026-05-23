@@ -8,6 +8,12 @@ public class SceneLoader : MonoBehaviour
 
     public event System.Action<float> OnLoadProgress;
     public event System.Action OnLoadComplete;
+    public event System.Action<int> OnLoadStart; // chapterIndex
+    public event System.Action OnLoadFinished;   // 场景激活后
+
+    // 供UI层注入的委托
+    public System.Func<Coroutine> TransitionInFunc;
+    public System.Func<Coroutine> TransitionOutFunc;
 
     void Awake()
     {
@@ -20,13 +26,20 @@ public class SceneLoader : MonoBehaviour
         DontDestroyOnLoad(gameObject);
     }
 
-    public void LoadScene(string sceneName)
+    public void LoadScene(string sceneName, int chapterIndex = -1)
     {
-        StartCoroutine(LoadSceneAsync(sceneName));
+        StartCoroutine(LoadSceneAsync(sceneName, chapterIndex));
     }
 
-    private IEnumerator LoadSceneAsync(string sceneName)
+    private IEnumerator LoadSceneAsync(string sceneName, int chapterIndex = -1)
     {
+        // 通知加载开始（UI层可响应显示加载界面）
+        OnLoadStart?.Invoke(chapterIndex);
+
+        // 播放过渡动画（如果UI层注册了）
+        if (TransitionInFunc != null)
+            yield return TransitionInFunc();
+
         AsyncOperation operation = SceneManager.LoadSceneAsync(sceneName);
         operation.allowSceneActivation = false;
 
@@ -44,6 +57,13 @@ public class SceneLoader : MonoBehaviour
         }
 
         OnLoadComplete?.Invoke();
+
+        // 通知加载完毕（UI层可响应隐藏加载界面）
+        OnLoadFinished?.Invoke();
+
+        // 播放过渡出场动画
+        if (TransitionOutFunc != null)
+            yield return TransitionOutFunc();
 
         if (GameManager.Instance != null && GameManager.Instance.CurrentState == GameManager.GameState.Loading)
         {

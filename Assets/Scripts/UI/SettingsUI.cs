@@ -13,9 +13,16 @@ public class SettingsUI : MonoBehaviour
     [SerializeField] private TMP_Dropdown qualityDropdown;
     [SerializeField] private Toggle vsyncToggle;
 
+    [Header("Language")]
+    [SerializeField] private TMP_Dropdown languageDropdown;
+
     [Header("Controls")]
     [SerializeField] private Slider joystickSizeSlider;
     [SerializeField] private Toggle vibrationToggle;
+
+    [Header("Performance")]
+    [SerializeField] private TMP_Dropdown performanceDropdown;
+    [SerializeField] private Toggle autoPerformanceToggle;
 
     [Header("Navigation")]
     [SerializeField] private Button backButton;
@@ -30,6 +37,8 @@ public class SettingsUI : MonoBehaviour
 
     void Start()
     {
+        InitializeLanguageDropdown();
+        InitializePerformanceDropdown();
         LoadSettings();
 
         masterVolumeSlider?.onValueChanged.AddListener(OnMasterVolumeChanged);
@@ -37,7 +46,37 @@ public class SettingsUI : MonoBehaviour
         sfxVolumeSlider?.onValueChanged.AddListener(OnSFXVolumeChanged);
         qualityDropdown?.onValueChanged.AddListener(OnQualityChanged);
         vsyncToggle?.onValueChanged.AddListener(OnVSyncChanged);
+        languageDropdown?.onValueChanged.AddListener(OnLanguageChanged);
+        performanceDropdown?.onValueChanged.AddListener(OnPerformanceChanged);
+        if (autoPerformanceToggle != null)
+            autoPerformanceToggle.onValueChanged.AddListener(OnAutoPerformanceChanged);
+        vibrationToggle?.onValueChanged.AddListener(OnVibrationChanged);
         backButton?.onClick.AddListener(OnBack);
+    }
+
+    private void InitializeLanguageDropdown()
+    {
+        if (languageDropdown == null || LocalizationSystem.Instance == null) return;
+
+        languageDropdown.ClearOptions();
+        var options = new System.Collections.Generic.List<string>();
+        foreach (var lang in LocalizationSystem.Instance.GetSupportedLanguages())
+        {
+            options.Add(LocalizationSystem.GetLanguageDisplayName(lang));
+        }
+        languageDropdown.AddOptions(options);
+        languageDropdown.value = (int)LocalizationSystem.Instance.CurrentLanguage;
+    }
+
+    private void InitializePerformanceDropdown()
+    {
+        if (performanceDropdown == null) return;
+
+        performanceDropdown.ClearOptions();
+        performanceDropdown.AddOptions(new System.Collections.Generic.List<string> { "低", "中", "高" });
+
+        if (PerformanceManager.Instance != null)
+            performanceDropdown.value = (int)PerformanceManager.Instance.CurrentLevel;
     }
 
     private void LoadSettings()
@@ -84,6 +123,31 @@ public class SettingsUI : MonoBehaviour
     {
         QualitySettings.vSyncCount = enabled ? 1 : 0;
         PlayerPrefs.SetInt(KEY_VSYNC, enabled ? 1 : 0);
+    }
+
+    private void OnLanguageChanged(int index)
+    {
+        if (LocalizationSystem.Instance != null)
+            LocalizationSystem.Instance.SetLanguage((LocalizationSystem.Language)index);
+    }
+
+    private void OnPerformanceChanged(int index)
+    {
+        if (PerformanceManager.Instance != null)
+            PerformanceManager.Instance.SetPerformanceLevel((PerformanceManager.PerformanceLevel)index);
+    }
+
+    private void OnAutoPerformanceChanged(bool enabled)
+    {
+        if (PerformanceManager.Instance != null)
+            PerformanceManager.Instance.SetAutoAdjust(enabled);
+    }
+
+    private void OnVibrationChanged(bool enabled)
+    {
+        PlayerPrefs.SetInt(KEY_VIBRATION, enabled ? 1 : 0);
+        if (GamepadAdapter.Instance != null)
+            GamepadAdapter.Instance.SetVibrationEnabled(enabled);
     }
 
     private void OnBack()
