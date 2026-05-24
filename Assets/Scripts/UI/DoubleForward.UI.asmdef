@@ -10,6 +10,7 @@
         "DoubleForward.Camera",
         "DoubleForward.Cutscene",
         "DoubleForward.Boss",
+        "DoubleForward.Puzzle",
         "Unity.TextMeshPro",
         "Unity.Netcode.Runtime"
     ],

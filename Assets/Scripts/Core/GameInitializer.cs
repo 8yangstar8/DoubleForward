@@ -29,6 +29,16 @@ public class GameInitializer : MonoBehaviour
     [SerializeField] private GameObject gamepadAdapterPrefab;
     [SerializeField] private GameObject permissionManagerPrefab;
 
+    [Header("新增Manager预制体")]
+    [SerializeField] private GameObject currencyManagerPrefab;
+    [SerializeField] private GameObject dailyRewardSystemPrefab;
+    [SerializeField] private GameObject hapticFeedbackPrefab;
+    [SerializeField] private GameObject leaderboardManagerPrefab;
+    [SerializeField] private GameObject notificationSchedulerPrefab;
+    [SerializeField] private GameObject cloudSaveManagerPrefab;
+    [SerializeField] private GameObject skinManagerPrefab;
+    [SerializeField] private GameObject scoreManagerPrefab;
+
     [Header("UI预制体")]
     [SerializeField] private GameObject debugOverlayPrefab;
 
@@ -85,6 +95,9 @@ public class GameInitializer : MonoBehaviour
         SpawnIfNeeded<DifficultyManager>(difficultyPrefab);
         SpawnIfNeeded<AchievementSystem>(achievementSystemPrefab);
         SpawnIfNeeded<ComboSystem>(comboSystemPrefab);
+        SpawnIfNeeded<CurrencyManager>(currencyManagerPrefab);
+        SpawnIfNeeded<ScoreManager>(scoreManagerPrefab);
+        SpawnIfNeeded<LeaderboardManager>(leaderboardManagerPrefab);
         yield return null;
 
         // ====== 第4层：平台与性能 ======
@@ -93,6 +106,8 @@ public class GameInitializer : MonoBehaviour
         SpawnIfNeeded<AccessibilityManager>(accessibilityPrefab);
         SpawnIfNeeded<GamepadAdapter>(gamepadAdapterPrefab);
         SpawnIfNeeded<AndroidPermissionManager>(permissionManagerPrefab);
+        SpawnIfNeeded<HapticFeedback>(hapticFeedbackPrefab);
+        SpawnIfNeeded<NotificationScheduler>(notificationSchedulerPrefab);
         yield return null;
 
         // ====== 第5层：辅助服务 ======
@@ -100,6 +115,9 @@ public class GameInitializer : MonoBehaviour
         SpawnIfNeeded<SoundFeedback>(soundFeedbackPrefab);
         SpawnIfNeeded<AnalyticsTracker>(analyticsTrackerPrefab);
         SpawnIfNeeded<MobileServices>(mobileServicesPrefab);
+        SpawnIfNeeded<DailyRewardSystem>(dailyRewardSystemPrefab);
+        SpawnIfNeeded<SkinManager>(skinManagerPrefab);
+        SpawnIfNeeded<CloudSaveManager>(cloudSaveManagerPrefab);
         yield return null;
 
         // ====== 第6层：流程控制（依赖上面所有系统） ======
@@ -215,7 +233,9 @@ public class GameInitializer : MonoBehaviour
         // 检查评分提示
         if (MobileServices.Instance != null && SaveSystem.Instance != null)
         {
-            int totalLevels = SaveSystem.Instance.Data.levelsCompleted;
+            int totalLevels = 0;
+            foreach (bool completed in SaveSystem.Instance.Data.levelsCompleted)
+                if (completed) totalLevels++;
             if (MobileServices.Instance.ShouldShowRatePrompt(totalLevels))
             {
                 MobileServices.Instance.ShowRatePrompt(totalLevels);

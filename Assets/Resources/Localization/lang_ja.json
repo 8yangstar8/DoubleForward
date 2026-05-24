@@ -176,6 +176,29 @@
         {"key": "cloud_never_synced", "value": "未同期"},
         {"key": "cloud_sync", "value": "セーブ同期"},
         {"key": "cloud_upload", "value": "アップロード"},
-        {"key": "cloud_download", "value": "ダウンロード"}
+        {"key": "cloud_download", "value": "ダウンロード"},
+
+        {"key": "score_label", "value": "スコア"},
+        {"key": "score_high", "value": "ハイスコア"},
+        {"key": "score_new_high", "value": "新記録！"},
+        {"key": "score_kills", "value": "敵撃破"},
+        {"key": "score_no_death", "value": "ノーデスボーナス"},
+        {"key": "score_speed", "value": "スピードボーナス"},
+
+        {"key": "oxygen_label", "value": "酸素"},
+        {"key": "oxygen_warning", "value": "酸素不足！"},
+        {"key": "oxygen_drowning", "value": "溺れている！"},
+
+        {"key": "remap_title", "value": "操作設定"},
+        {"key": "remap_reset", "value": "デフォルトに戻す"},
+        {"key": "remap_listening", "value": "ボタンを押してください..."},
+        {"key": "remap_conflict", "value": "ボタン競合"},
+        {"key": "remap_swap", "value": "入れ替え"},
+        {"key": "remap_cancel", "value": "キャンセル"},
+
+        {"key": "tutorial_tap_to_continue", "value": "タップして続ける"},
+        {"key": "tutorial_skip_all", "value": "チュートリアルをスキップ"},
+        {"key": "tutorial_water", "value": "水中でジョイスティックを使って泳ぐ"},
+        {"key": "tutorial_combat", "value": "攻撃ボタンをタップして敵を攻撃"}
     ]
 }

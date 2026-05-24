@@ -176,6 +176,29 @@
         {"key": "cloud_never_synced", "value": "Never synced"},
         {"key": "cloud_sync", "value": "Sync Save"},
         {"key": "cloud_upload", "value": "Upload"},
-        {"key": "cloud_download", "value": "Download"}
+        {"key": "cloud_download", "value": "Download"},
+
+        {"key": "score_label", "value": "Score"},
+        {"key": "score_high", "value": "High Score"},
+        {"key": "score_new_high", "value": "New Record!"},
+        {"key": "score_kills", "value": "Enemies Defeated"},
+        {"key": "score_no_death", "value": "No Death Bonus"},
+        {"key": "score_speed", "value": "Speed Bonus"},
+
+        {"key": "oxygen_label", "value": "Oxygen"},
+        {"key": "oxygen_warning", "value": "Low Oxygen!"},
+        {"key": "oxygen_drowning", "value": "Drowning!"},
+
+        {"key": "remap_title", "value": "Controls"},
+        {"key": "remap_reset", "value": "Reset Defaults"},
+        {"key": "remap_listening", "value": "Press a button..."},
+        {"key": "remap_conflict", "value": "Button Conflict"},
+        {"key": "remap_swap", "value": "Swap"},
+        {"key": "remap_cancel", "value": "Cancel"},
+
+        {"key": "tutorial_tap_to_continue", "value": "Tap to continue"},
+        {"key": "tutorial_skip_all", "value": "Skip Tutorial"},
+        {"key": "tutorial_water", "value": "Swim with the joystick underwater"},
+        {"key": "tutorial_combat", "value": "Tap attack to strike enemies"}
     ]
 }

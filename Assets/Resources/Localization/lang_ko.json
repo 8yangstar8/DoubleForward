@@ -176,6 +176,29 @@
         {"key": "cloud_never_synced", "value": "동기화 안 됨"},
         {"key": "cloud_sync", "value": "저장 동기화"},
         {"key": "cloud_upload", "value": "업로드"},
-        {"key": "cloud_download", "value": "다운로드"}
+        {"key": "cloud_download", "value": "다운로드"},
+
+        {"key": "score_label", "value": "점수"},
+        {"key": "score_high", "value": "최고 점수"},
+        {"key": "score_new_high", "value": "신기록!"},
+        {"key": "score_kills", "value": "적 처치"},
+        {"key": "score_no_death", "value": "무사 통과 보너스"},
+        {"key": "score_speed", "value": "스피드 보너스"},
+
+        {"key": "oxygen_label", "value": "산소"},
+        {"key": "oxygen_warning", "value": "산소 부족!"},
+        {"key": "oxygen_drowning", "value": "익사 중!"},
+
+        {"key": "remap_title", "value": "조작 설정"},
+        {"key": "remap_reset", "value": "기본값 초기화"},
+        {"key": "remap_listening", "value": "버튼을 누르세요..."},
+        {"key": "remap_conflict", "value": "버튼 충돌"},
+        {"key": "remap_swap", "value": "교환"},
+        {"key": "remap_cancel", "value": "취소"},
+
+        {"key": "tutorial_tap_to_continue", "value": "탭하여 계속"},
+        {"key": "tutorial_skip_all", "value": "튜토리얼 건너뛰기"},
+        {"key": "tutorial_water", "value": "물속에서 조이스틱으로 수영"},
+        {"key": "tutorial_combat", "value": "공격 버튼을 탭하여 적 공격"}
     ]
 }

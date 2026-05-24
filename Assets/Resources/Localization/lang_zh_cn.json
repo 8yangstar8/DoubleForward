@@ -176,6 +176,29 @@
         {"key": "cloud_never_synced", "value": "从未同步"},
         {"key": "cloud_sync", "value": "同步存档"},
         {"key": "cloud_upload", "value": "上传"},
-        {"key": "cloud_download", "value": "下载"}
+        {"key": "cloud_download", "value": "下载"},
+
+        {"key": "score_label", "value": "分数"},
+        {"key": "score_high", "value": "最高分"},
+        {"key": "score_new_high", "value": "新纪录！"},
+        {"key": "score_kills", "value": "击败敌人"},
+        {"key": "score_no_death", "value": "无死亡奖励"},
+        {"key": "score_speed", "value": "速度奖励"},
+
+        {"key": "oxygen_label", "value": "氧气"},
+        {"key": "oxygen_warning", "value": "氧气不足！"},
+        {"key": "oxygen_drowning", "value": "正在溺水！"},
+
+        {"key": "remap_title", "value": "操作设置"},
+        {"key": "remap_reset", "value": "重置默认"},
+        {"key": "remap_listening", "value": "请按下按钮..."},
+        {"key": "remap_conflict", "value": "按键冲突"},
+        {"key": "remap_swap", "value": "交换"},
+        {"key": "remap_cancel", "value": "取消"},
+
+        {"key": "tutorial_tap_to_continue", "value": "点击继续"},
+        {"key": "tutorial_skip_all", "value": "跳过教程"},
+        {"key": "tutorial_water", "value": "在水中使用摇杆游泳"},
+        {"key": "tutorial_combat", "value": "点击攻击按钮打击敌人"}
     ]
 }

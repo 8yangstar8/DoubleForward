@@ -240,6 +240,19 @@ public struct PhotoFilterChangedEvent : IGameEvent
     public float saturation;
 }
 
+// 水域事件（定义在Core中供跨程序集使用）
+public struct WaterEnteredEvent : IGameEvent
+{
+    public UnityEngine.Vector3 position;
+    public int playerIndex;
+}
+
+public struct WaterExitedEvent : IGameEvent
+{
+    public UnityEngine.Vector3 position;
+    public int playerIndex;
+}
+
 /// <summary>
 /// 通用可伤害接口（放在Core中供所有程序集使用）
 /// </summary>
