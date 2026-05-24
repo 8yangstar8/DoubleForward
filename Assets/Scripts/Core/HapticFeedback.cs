@@ -138,6 +138,27 @@ public class HapticFeedback : MonoBehaviour
     }
 
     /// <summary>
+    /// 预设枚举（方便引用）
+    /// </summary>
+    public enum HapticPreset { Light, Medium, Heavy, Success, Failure, Warning }
+
+    /// <summary>
+    /// 通过预设枚举播放振动
+    /// </summary>
+    public void PlayPreset(HapticPreset preset)
+    {
+        switch (preset)
+        {
+            case HapticPreset.Light: Light(); break;
+            case HapticPreset.Medium: Medium(); break;
+            case HapticPreset.Heavy: Heavy(); break;
+            case HapticPreset.Success: Success(); break;
+            case HapticPreset.Failure: Failure(); break;
+            case HapticPreset.Warning: Warning(); break;
+        }
+    }
+
+    /// <summary>
     /// 取消振动
     /// </summary>
     public void Cancel()
