@@ -159,6 +159,23 @@
         {"key": "photo_capture", "value": "拍照"},
         {"key": "photo_filter", "value": "濾鏡"},
         {"key": "photo_share", "value": "分享"},
-        {"key": "photo_exit", "value": "退出"}
+        {"key": "photo_exit", "value": "退出"},
+
+        {"key": "char_lux_name", "value": "光靈·Lux"},
+        {"key": "char_nox_name", "value": "暗影·Nox"},
+        {"key": "char_lux_desc", "value": "光明使者。照亮前路，遠程攻擊敵人。"},
+        {"key": "char_nox_desc", "value": "暗影行者。穿越障礙，近身斬殺敵人。"},
+        {"key": "char_lux_ability1", "value": "光球：遠程投射攻擊"},
+        {"key": "char_lux_ability2", "value": "二段跳：空中再次跳躍"},
+        {"key": "char_nox_ability1", "value": "暗影衝刺：穿越障礙"},
+        {"key": "char_nox_ability2", "value": "暗影斗篷：短暫隱身"},
+
+        {"key": "leaderboard_rank", "value": "排名"},
+        {"key": "leaderboard_no_rank", "value": "未上榜"},
+
+        {"key": "cloud_never_synced", "value": "從未同步"},
+        {"key": "cloud_sync", "value": "同步存檔"},
+        {"key": "cloud_upload", "value": "上傳"},
+        {"key": "cloud_download", "value": "下載"}
     ]
 }

@@ -159,6 +159,23 @@
         {"key": "photo_capture", "value": "撮影"},
         {"key": "photo_filter", "value": "フィルター"},
         {"key": "photo_share", "value": "シェア"},
-        {"key": "photo_exit", "value": "終了"}
+        {"key": "photo_exit", "value": "終了"},
+
+        {"key": "char_lux_name", "value": "ルクス"},
+        {"key": "char_nox_name", "value": "ノクス"},
+        {"key": "char_lux_desc", "value": "光の使い手。道を照らし、遠距離から攻撃する。"},
+        {"key": "char_nox_desc", "value": "影の歩み手。障壁を通り抜け、近接攻撃を繰り出す。"},
+        {"key": "char_lux_ability1", "value": "光球：遠距離飛び道具攻撃"},
+        {"key": "char_lux_ability2", "value": "二段ジャンプ：空中で再びジャンプ"},
+        {"key": "char_nox_ability1", "value": "影ダッシュ：障害物を通過"},
+        {"key": "char_nox_ability2", "value": "影のマント：短時間透明化"},
+
+        {"key": "leaderboard_rank", "value": "ランク"},
+        {"key": "leaderboard_no_rank", "value": "ランク外"},
+
+        {"key": "cloud_never_synced", "value": "未同期"},
+        {"key": "cloud_sync", "value": "セーブ同期"},
+        {"key": "cloud_upload", "value": "アップロード"},
+        {"key": "cloud_download", "value": "ダウンロード"}
     ]
 }

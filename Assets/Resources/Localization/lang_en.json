@@ -159,6 +159,23 @@
         {"key": "photo_capture", "value": "Capture"},
         {"key": "photo_filter", "value": "Filter"},
         {"key": "photo_share", "value": "Share"},
-        {"key": "photo_exit", "value": "Exit"}
+        {"key": "photo_exit", "value": "Exit"},
+
+        {"key": "char_lux_name", "value": "Lux"},
+        {"key": "char_nox_name", "value": "Nox"},
+        {"key": "char_lux_desc", "value": "Master of light. Illuminates the path and attacks from range."},
+        {"key": "char_nox_desc", "value": "Shadow walker. Passes through barriers and strikes up close."},
+        {"key": "char_lux_ability1", "value": "Light Orb: Ranged projectile attack"},
+        {"key": "char_lux_ability2", "value": "Double Jump: Jump again mid-air"},
+        {"key": "char_nox_ability1", "value": "Shadow Dash: Phase through obstacles"},
+        {"key": "char_nox_ability2", "value": "Shadow Cloak: Brief invisibility"},
+
+        {"key": "leaderboard_rank", "value": "Rank"},
+        {"key": "leaderboard_no_rank", "value": "Not ranked"},
+
+        {"key": "cloud_never_synced", "value": "Never synced"},
+        {"key": "cloud_sync", "value": "Sync Save"},
+        {"key": "cloud_upload", "value": "Upload"},
+        {"key": "cloud_download", "value": "Download"}
     ]
 }
