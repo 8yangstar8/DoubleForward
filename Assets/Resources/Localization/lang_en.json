@@ -93,6 +93,36 @@
 
         {"key": "reconnect_title", "value": "Disconnected"},
         {"key": "reconnect_message", "value": "Attempting to reconnect..."},
-        {"key": "reconnect_failed", "value": "Reconnection failed. Returning to lobby."}
+        {"key": "reconnect_failed", "value": "Reconnection failed. Returning to lobby."},
+
+        {"key": "rate_message", "value": "Enjoying the game? Please rate us!"},
+        {"key": "rate_yes", "value": "Rate Now"},
+        {"key": "rate_later", "value": "Later"},
+        {"key": "rate_never", "value": "No Thanks"},
+        {"key": "share_achievement", "value": "I just unlocked '{0}' in Double Forward!"},
+        {"key": "share_level_complete", "value": "Completed {0} with {1} in Double Forward!"},
+        {"key": "share_game_complete", "value": "I completed Double Forward! {1}% completion."},
+        {"key": "share_button", "value": "Share"},
+        {"key": "feedback_button", "value": "Feedback"},
+
+        {"key": "chapter_1_title", "value": "Chapter 1"},
+        {"key": "chapter_1_subtitle", "value": "The Dark Forest"},
+        {"key": "chapter_2_title", "value": "Chapter 2"},
+        {"key": "chapter_2_subtitle", "value": "Mechanical Factory"},
+        {"key": "chapter_3_title", "value": "Chapter 3"},
+        {"key": "chapter_3_subtitle", "value": "Endless Abyss"},
+        {"key": "chapter_4_title", "value": "Chapter 4"},
+        {"key": "chapter_4_subtitle", "value": "Ancient Ruins"},
+        {"key": "chapter_5_title", "value": "Chapter 5"},
+        {"key": "chapter_5_subtitle", "value": "The Void"},
+
+        {"key": "story_skip", "value": "Skip"},
+        {"key": "stats_overview", "value": "Overview"},
+        {"key": "stats_leaderboard", "value": "Leaderboard"},
+        {"key": "stats_character", "value": "Character"},
+        {"key": "difficulty_easy", "value": "Easy"},
+        {"key": "difficulty_normal", "value": "Normal"},
+        {"key": "difficulty_hard", "value": "Hard"},
+        {"key": "difficulty_adaptive", "value": "Adaptive"}
     ]
 }

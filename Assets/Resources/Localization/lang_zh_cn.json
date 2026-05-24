@@ -93,6 +93,36 @@
 
         {"key": "reconnect_title", "value": "连接断开"},
         {"key": "reconnect_message", "value": "正在尝试重新连接..."},
-        {"key": "reconnect_failed", "value": "重连失败，返回大厅"}
+        {"key": "reconnect_failed", "value": "重连失败，返回大厅"},
+
+        {"key": "rate_message", "value": "喜欢这个游戏吗？给我们评个分吧！"},
+        {"key": "rate_yes", "value": "去评分"},
+        {"key": "rate_later", "value": "以后再说"},
+        {"key": "rate_never", "value": "不再提醒"},
+        {"key": "share_achievement", "value": "我在《双向前行》中解锁了「{0}」！"},
+        {"key": "share_level_complete", "value": "在《双向前行》中通过了{0}，获得{1}！"},
+        {"key": "share_game_complete", "value": "我通关了《双向前行》！完成度{1}%"},
+        {"key": "share_button", "value": "分享"},
+        {"key": "feedback_button", "value": "反馈"},
+
+        {"key": "chapter_1_title", "value": "第一章"},
+        {"key": "chapter_1_subtitle", "value": "幽暗森林"},
+        {"key": "chapter_2_title", "value": "第二章"},
+        {"key": "chapter_2_subtitle", "value": "机械工厂"},
+        {"key": "chapter_3_title", "value": "第三章"},
+        {"key": "chapter_3_subtitle", "value": "无尽深渊"},
+        {"key": "chapter_4_title", "value": "第四章"},
+        {"key": "chapter_4_subtitle", "value": "远古遗迹"},
+        {"key": "chapter_5_title", "value": "第五章"},
+        {"key": "chapter_5_subtitle", "value": "虚空之境"},
+
+        {"key": "story_skip", "value": "跳过"},
+        {"key": "stats_overview", "value": "总览"},
+        {"key": "stats_leaderboard", "value": "排行榜"},
+        {"key": "stats_character", "value": "角色"},
+        {"key": "difficulty_easy", "value": "简单"},
+        {"key": "difficulty_normal", "value": "普通"},
+        {"key": "difficulty_hard", "value": "困难"},
+        {"key": "difficulty_adaptive", "value": "自适应"}
     ]
 }

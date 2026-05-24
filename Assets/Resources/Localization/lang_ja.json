@@ -93,6 +93,36 @@
 
         {"key": "reconnect_title", "value": "接続が切断されました"},
         {"key": "reconnect_message", "value": "再接続を試みています..."},
-        {"key": "reconnect_failed", "value": "再接続失敗。ロビーに戻ります。"}
+        {"key": "reconnect_failed", "value": "再接続失敗。ロビーに戻ります。"},
+
+        {"key": "rate_message", "value": "ゲームを楽しんでいますか？ぜひ評価してください！"},
+        {"key": "rate_yes", "value": "評価する"},
+        {"key": "rate_later", "value": "後で"},
+        {"key": "rate_never", "value": "もう聞かない"},
+        {"key": "share_achievement", "value": "ダブルフォワードで「{0}」を解除しました！"},
+        {"key": "share_level_complete", "value": "ダブルフォワードで{0}を{1}でクリア！"},
+        {"key": "share_game_complete", "value": "ダブルフォワードをクリアしました！達成率{1}%"},
+        {"key": "share_button", "value": "シェア"},
+        {"key": "feedback_button", "value": "フィードバック"},
+
+        {"key": "chapter_1_title", "value": "第1章"},
+        {"key": "chapter_1_subtitle", "value": "暗い森"},
+        {"key": "chapter_2_title", "value": "第2章"},
+        {"key": "chapter_2_subtitle", "value": "機械工場"},
+        {"key": "chapter_3_title", "value": "第3章"},
+        {"key": "chapter_3_subtitle", "value": "無限の深淵"},
+        {"key": "chapter_4_title", "value": "第4章"},
+        {"key": "chapter_4_subtitle", "value": "古代遺跡"},
+        {"key": "chapter_5_title", "value": "第5章"},
+        {"key": "chapter_5_subtitle", "value": "虚空の境"},
+
+        {"key": "story_skip", "value": "スキップ"},
+        {"key": "stats_overview", "value": "概要"},
+        {"key": "stats_leaderboard", "value": "ランキング"},
+        {"key": "stats_character", "value": "キャラ"},
+        {"key": "difficulty_easy", "value": "イージー"},
+        {"key": "difficulty_normal", "value": "ノーマル"},
+        {"key": "difficulty_hard", "value": "ハード"},
+        {"key": "difficulty_adaptive", "value": "アダプティブ"}
     ]
 }
