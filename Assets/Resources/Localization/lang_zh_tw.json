@@ -123,6 +123,42 @@
         {"key": "difficulty_easy", "value": "簡單"},
         {"key": "difficulty_normal", "value": "普通"},
         {"key": "difficulty_hard", "value": "困難"},
-        {"key": "difficulty_adaptive", "value": "自適應"}
+        {"key": "difficulty_adaptive", "value": "自適應"},
+
+        {"key": "timer_best", "value": "最佳"},
+
+        {"key": "filter_none", "value": "無濾鏡"},
+        {"key": "filter_warm", "value": "暖色"},
+        {"key": "filter_cool", "value": "冷色"},
+        {"key": "filter_vintage", "value": "復古"},
+        {"key": "filter_bw", "value": "黑白"},
+        {"key": "filter_dramatic", "value": "戲劇"},
+        {"key": "filter_neon", "value": "霓虹"},
+
+        {"key": "daily_claim", "value": "領取"},
+        {"key": "daily_claimed", "value": "已領取"},
+        {"key": "daily_streak", "value": "連續簽到"},
+        {"key": "daily_day_1", "value": "第1天"},
+        {"key": "daily_day_2", "value": "第2天"},
+        {"key": "daily_day_3", "value": "第3天"},
+        {"key": "daily_day_4", "value": "第4天"},
+        {"key": "daily_day_5", "value": "第5天"},
+        {"key": "daily_day_6", "value": "第6天"},
+        {"key": "daily_day_7", "value": "第7天"},
+
+        {"key": "shop_owned", "value": "已擁有"},
+        {"key": "currency_coins", "value": "金幣"},
+        {"key": "currency_gems", "value": "寶石"},
+
+        {"key": "notif_daily_title", "value": "每日獎勵已就緒！"},
+        {"key": "notif_daily_body", "value": "你的每日獎勵正在等待領取，快來簽到吧！"},
+        {"key": "notif_return_title", "value": "想你了！"},
+        {"key": "notif_return_body", "value": "Lux和Nox需要你的幫助，回來繼續冒險吧！"},
+
+        {"key": "photo_mode", "value": "拍照模式"},
+        {"key": "photo_capture", "value": "拍照"},
+        {"key": "photo_filter", "value": "濾鏡"},
+        {"key": "photo_share", "value": "分享"},
+        {"key": "photo_exit", "value": "退出"}
     ]
 }

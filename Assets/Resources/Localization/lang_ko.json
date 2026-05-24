@@ -123,6 +123,42 @@
         {"key": "difficulty_easy", "value": "쉬움"},
         {"key": "difficulty_normal", "value": "보통"},
         {"key": "difficulty_hard", "value": "어려움"},
-        {"key": "difficulty_adaptive", "value": "적응형"}
+        {"key": "difficulty_adaptive", "value": "적응형"},
+
+        {"key": "timer_best", "value": "최고"},
+
+        {"key": "filter_none", "value": "없음"},
+        {"key": "filter_warm", "value": "따뜻한"},
+        {"key": "filter_cool", "value": "시원한"},
+        {"key": "filter_vintage", "value": "빈티지"},
+        {"key": "filter_bw", "value": "흑백"},
+        {"key": "filter_dramatic", "value": "드라마틱"},
+        {"key": "filter_neon", "value": "네온"},
+
+        {"key": "daily_claim", "value": "받기"},
+        {"key": "daily_claimed", "value": "수령 완료"},
+        {"key": "daily_streak", "value": "연속 출석"},
+        {"key": "daily_day_1", "value": "1일차"},
+        {"key": "daily_day_2", "value": "2일차"},
+        {"key": "daily_day_3", "value": "3일차"},
+        {"key": "daily_day_4", "value": "4일차"},
+        {"key": "daily_day_5", "value": "5일차"},
+        {"key": "daily_day_6", "value": "6일차"},
+        {"key": "daily_day_7", "value": "7일차"},
+
+        {"key": "shop_owned", "value": "보유 중"},
+        {"key": "currency_coins", "value": "코인"},
+        {"key": "currency_gems", "value": "보석"},
+
+        {"key": "notif_daily_title", "value": "일일 보상 준비 완료!"},
+        {"key": "notif_daily_body", "value": "일일 보상이 기다리고 있습니다. 받으러 오세요!"},
+        {"key": "notif_return_title", "value": "보고 싶어요!"},
+        {"key": "notif_return_body", "value": "럭스와 녹스가 당신의 도움을 기다리고 있습니다!"},
+
+        {"key": "photo_mode", "value": "포토 모드"},
+        {"key": "photo_capture", "value": "촬영"},
+        {"key": "photo_filter", "value": "필터"},
+        {"key": "photo_share", "value": "공유"},
+        {"key": "photo_exit", "value": "종료"}
     ]
 }

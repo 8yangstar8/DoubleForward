@@ -8,7 +8,7 @@ public class PlayerHealth : MonoBehaviour
 
     public int CurrentHealth { get; private set; }
     public bool IsAlive => CurrentHealth > 0;
-    public bool IsInvincible { get; private set; }
+    public bool IsInvincible { get; set; }
 
     public event System.Action<int> OnHealthChanged;
     public event System.Action OnDeath;

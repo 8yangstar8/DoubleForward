@@ -15,6 +15,8 @@ public class PlayerAnimator : MonoBehaviour
     private static readonly int TriggerSkill = Animator.StringToHash("Skill");
     private static readonly int TriggerDeath = Animator.StringToHash("Death");
     private static readonly int TriggerRespawn = Animator.StringToHash("Respawn");
+    private static readonly int TriggerAttack = Animator.StringToHash("Attack");
+    private static readonly int AttackCombo = Animator.StringToHash("AttackCombo");
 
     void Awake()
     {
@@ -46,4 +48,10 @@ public class PlayerAnimator : MonoBehaviour
     private void PlayDash() => animator.SetTrigger(TriggerSkill);
     public void PlayDeath() => animator.SetTrigger(TriggerDeath);
     public void PlayRespawn() => animator.SetTrigger(TriggerRespawn);
+
+    public void PlayAttack(int comboStep = 0)
+    {
+        animator.SetInteger(AttackCombo, comboStep);
+        animator.SetTrigger(TriggerAttack);
+    }
 }

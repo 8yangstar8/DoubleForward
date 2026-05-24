@@ -123,6 +123,42 @@
         {"key": "difficulty_easy", "value": "Easy"},
         {"key": "difficulty_normal", "value": "Normal"},
         {"key": "difficulty_hard", "value": "Hard"},
-        {"key": "difficulty_adaptive", "value": "Adaptive"}
+        {"key": "difficulty_adaptive", "value": "Adaptive"},
+
+        {"key": "timer_best", "value": "BEST"},
+
+        {"key": "filter_none", "value": "None"},
+        {"key": "filter_warm", "value": "Warm"},
+        {"key": "filter_cool", "value": "Cool"},
+        {"key": "filter_vintage", "value": "Vintage"},
+        {"key": "filter_bw", "value": "B&W"},
+        {"key": "filter_dramatic", "value": "Dramatic"},
+        {"key": "filter_neon", "value": "Neon"},
+
+        {"key": "daily_claim", "value": "Claim"},
+        {"key": "daily_claimed", "value": "Claimed"},
+        {"key": "daily_streak", "value": "Streak"},
+        {"key": "daily_day_1", "value": "Day 1"},
+        {"key": "daily_day_2", "value": "Day 2"},
+        {"key": "daily_day_3", "value": "Day 3"},
+        {"key": "daily_day_4", "value": "Day 4"},
+        {"key": "daily_day_5", "value": "Day 5"},
+        {"key": "daily_day_6", "value": "Day 6"},
+        {"key": "daily_day_7", "value": "Day 7"},
+
+        {"key": "shop_owned", "value": "Owned"},
+        {"key": "currency_coins", "value": "Coins"},
+        {"key": "currency_gems", "value": "Gems"},
+
+        {"key": "notif_daily_title", "value": "Daily Reward Ready!"},
+        {"key": "notif_daily_body", "value": "Your daily reward is waiting. Come claim it!"},
+        {"key": "notif_return_title", "value": "We miss you!"},
+        {"key": "notif_return_body", "value": "Lux and Nox need your help. Come back and continue the adventure!"},
+
+        {"key": "photo_mode", "value": "Photo Mode"},
+        {"key": "photo_capture", "value": "Capture"},
+        {"key": "photo_filter", "value": "Filter"},
+        {"key": "photo_share", "value": "Share"},
+        {"key": "photo_exit", "value": "Exit"}
     ]
 }

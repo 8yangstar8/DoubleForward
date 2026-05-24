@@ -123,6 +123,42 @@
         {"key": "difficulty_easy", "value": "イージー"},
         {"key": "difficulty_normal", "value": "ノーマル"},
         {"key": "difficulty_hard", "value": "ハード"},
-        {"key": "difficulty_adaptive", "value": "アダプティブ"}
+        {"key": "difficulty_adaptive", "value": "アダプティブ"},
+
+        {"key": "timer_best", "value": "ベスト"},
+
+        {"key": "filter_none", "value": "なし"},
+        {"key": "filter_warm", "value": "ウォーム"},
+        {"key": "filter_cool", "value": "クール"},
+        {"key": "filter_vintage", "value": "ビンテージ"},
+        {"key": "filter_bw", "value": "モノクロ"},
+        {"key": "filter_dramatic", "value": "ドラマチック"},
+        {"key": "filter_neon", "value": "ネオン"},
+
+        {"key": "daily_claim", "value": "受取る"},
+        {"key": "daily_claimed", "value": "受取済み"},
+        {"key": "daily_streak", "value": "連続ログイン"},
+        {"key": "daily_day_1", "value": "1日目"},
+        {"key": "daily_day_2", "value": "2日目"},
+        {"key": "daily_day_3", "value": "3日目"},
+        {"key": "daily_day_4", "value": "4日目"},
+        {"key": "daily_day_5", "value": "5日目"},
+        {"key": "daily_day_6", "value": "6日目"},
+        {"key": "daily_day_7", "value": "7日目"},
+
+        {"key": "shop_owned", "value": "所持済み"},
+        {"key": "currency_coins", "value": "コイン"},
+        {"key": "currency_gems", "value": "ジェム"},
+
+        {"key": "notif_daily_title", "value": "デイリー報酬準備完了！"},
+        {"key": "notif_daily_body", "value": "デイリー報酬を受け取ろう！"},
+        {"key": "notif_return_title", "value": "お待ちしています！"},
+        {"key": "notif_return_body", "value": "ルクスとノクスが待っています。冒険を続けよう！"},
+
+        {"key": "photo_mode", "value": "フォトモード"},
+        {"key": "photo_capture", "value": "撮影"},
+        {"key": "photo_filter", "value": "フィルター"},
+        {"key": "photo_share", "value": "シェア"},
+        {"key": "photo_exit", "value": "終了"}
     ]
 }

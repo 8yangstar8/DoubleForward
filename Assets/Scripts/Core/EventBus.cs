@@ -215,3 +215,36 @@ public struct NetworkPlayerLeftEvent : IGameEvent
 {
     public ulong clientId;
 }
+
+// 战斗事件
+public struct EnemyHitEvent : IGameEvent
+{
+    public int playerIndex;
+    public int damage;
+    public UnityEngine.Vector3 position;
+}
+
+// 商店事件
+public struct ShopPurchaseEvent : IGameEvent
+{
+    public string itemId;
+    public string category;
+}
+
+// 拍照模式事件
+public struct PhotoFilterChangedEvent : IGameEvent
+{
+    public UnityEngine.Color tintColor;
+    public float vignette;
+    public float brightness;
+    public float saturation;
+}
+
+/// <summary>
+/// 通用可伤害接口（放在Core中供所有程序集使用）
+/// </summary>
+public interface IDamageable
+{
+    void TakeDamage(int damage);
+    bool IsAlive { get; }
+}
