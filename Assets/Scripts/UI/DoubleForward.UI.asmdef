@@ -8,6 +8,8 @@
         "DoubleForward.Network",
         "DoubleForward.Input",
         "DoubleForward.Camera",
+        "DoubleForward.Cutscene",
+        "DoubleForward.Boss",
         "Unity.TextMeshPro",
         "Unity.Netcode.Runtime"
     ],

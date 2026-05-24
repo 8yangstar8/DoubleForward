@@ -2,6 +2,7 @@
     "name": "DoubleForward.Camera",
     "rootNamespace": "DoubleForward.Camera",
     "references": [
+        "DoubleForward.Core",
         "DoubleForward.Player"
     ],
     "includePlatforms": [],

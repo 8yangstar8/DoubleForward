@@ -3,7 +3,8 @@
     "rootNamespace": "DoubleForward.Player",
     "references": [
         "DoubleForward.Core",
-        "DoubleForward.Input"
+        "DoubleForward.Input",
+        "DoubleForward.Camera"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

@@ -6,7 +6,12 @@
         "DoubleForward.Player",
         "DoubleForward.Level",
         "DoubleForward.Puzzle",
-        "DoubleForward.Camera"
+        "DoubleForward.Camera",
+        "DoubleForward.Boss",
+        "DoubleForward.Input",
+        "DoubleForward.Cutscene",
+        "DoubleForward.Network",
+        "DoubleForward.UI"
     ],
     "includePlatforms": [
         "Editor"

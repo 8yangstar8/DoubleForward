@@ -5,6 +5,7 @@
         "DoubleForward.Core",
         "DoubleForward.Player",
         "DoubleForward.Input",
+        "DoubleForward.Camera",
         "Unity.TextMeshPro"
     ],
     "includePlatforms": [],

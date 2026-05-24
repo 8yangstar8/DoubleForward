@@ -1,7 +1,9 @@
 {
     "name": "DoubleForward.Core",
     "rootNamespace": "DoubleForward.Core",
-    "references": [],
+    "references": [
+        "Unity.TextMeshPro"
+    ],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,

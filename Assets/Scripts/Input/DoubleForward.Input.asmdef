@@ -2,6 +2,7 @@
     "name": "DoubleForward.Input",
     "rootNamespace": "DoubleForward.Input",
     "references": [
+        "DoubleForward.Core",
         "Unity.InputSystem"
     ],
     "includePlatforms": [],

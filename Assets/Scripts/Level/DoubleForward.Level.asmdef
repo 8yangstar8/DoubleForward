@@ -3,7 +3,11 @@
     "rootNamespace": "DoubleForward.Level",
     "references": [
         "DoubleForward.Core",
-        "DoubleForward.Player"
+        "DoubleForward.Player",
+        "DoubleForward.Input",
+        "DoubleForward.Cutscene",
+        "DoubleForward.Camera",
+        "Unity.TextMeshPro"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
