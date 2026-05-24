@@ -96,6 +96,83 @@ public class LobbyManager : MonoBehaviour
         return new string(code);
     }
 
+    // ==================== NetworkLobbyUI接口 ====================
+
+    /// <summary>
+    /// 创建房间（供NetworkLobbyUI调用）
+    /// </summary>
+    public void CreateRoom(string roomCode)
+    {
+        RoomCode = roomCode;
+        HostGame();
+
+        // 开始广播
+        if (RoomDiscovery.Instance != null)
+            RoomDiscovery.Instance.StartBroadcasting(roomCode);
+    }
+
+    /// <summary>
+    /// 加入房间（通过房间代码查找IP并连接）
+    /// </summary>
+    public void JoinRoom(string roomCode)
+    {
+        if (RoomDiscovery.Instance != null)
+        {
+            var rooms = RoomDiscovery.Instance.GetAvailableRooms();
+            var room = rooms.Find(r => r.roomCode == roomCode);
+
+            if (room != null)
+            {
+                RoomCode = roomCode;
+                JoinGame(room.ipAddress);
+            }
+            else
+            {
+                OnError?.Invoke($"Room {roomCode} not found");
+            }
+        }
+    }
+
+    /// <summary>
+    /// 开始游戏（仅主机）
+    /// </summary>
+    public void StartGame()
+    {
+        if (State != ConnectionState.Hosting) return;
+
+        if (SceneLoader.Instance != null)
+            SceneLoader.Instance.LoadScene("Chapter1_Level1");
+    }
+
+    /// <summary>
+    /// 离开房间
+    /// </summary>
+    public void LeaveRoom()
+    {
+        if (RoomDiscovery.Instance != null)
+            RoomDiscovery.Instance.StopAll();
+
+        Disconnect();
+    }
+
+    /// <summary>
+    /// 快速匹配（搜索并自动加入）
+    /// </summary>
+    public void StartQuickMatch()
+    {
+        if (RoomDiscovery.Instance != null)
+            RoomDiscovery.Instance.StartListening();
+    }
+
+    /// <summary>
+    /// 取消快速匹配
+    /// </summary>
+    public void CancelQuickMatch()
+    {
+        if (RoomDiscovery.Instance != null)
+            RoomDiscovery.Instance.StopAll();
+    }
+
     public string GetLocalIPAddress()
     {
         var host = System.Net.Dns.GetHostEntry(System.Net.Dns.GetHostName());

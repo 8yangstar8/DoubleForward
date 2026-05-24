@@ -7,7 +7,8 @@
         "DoubleForward.Level",
         "DoubleForward.Puzzle",
         "Unity.Netcode.Runtime",
-        "Unity.Networking.Transport"
+        "Unity.Networking.Transport",
+        "Unity.TextMeshPro"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

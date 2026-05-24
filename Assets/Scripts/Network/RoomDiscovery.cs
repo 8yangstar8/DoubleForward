@@ -153,6 +153,25 @@ public class RoomDiscovery : MonoBehaviour
         if (changed) OnRoomsUpdated?.Invoke(DiscoveredRooms);
     }
 
+    /// <summary>
+    /// 获取可用房间列表（供UI使用）
+    /// </summary>
+    public List<RoomInfo> GetAvailableRooms()
+    {
+        return new List<RoomInfo>(DiscoveredRooms);
+    }
+
+    /// <summary>
+    /// 房间是否存在指定Instance
+    /// </summary>
+    public static RoomDiscovery Instance { get; private set; }
+
+    void Awake()
+    {
+        if (Instance != null && Instance != this) { Destroy(gameObject); return; }
+        Instance = this;
+    }
+
     public void StopAll()
     {
         isBroadcasting = false;
