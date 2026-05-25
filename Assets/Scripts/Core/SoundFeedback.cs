@@ -147,14 +147,38 @@ public class SoundFeedback : MonoBehaviour
     }
 
     /// <summary>
-    /// 播放音效实体
+    /// 播放音效实体（支持音量和随机音高）
     /// </summary>
     private void PlayEntry(SoundEntry entry)
     {
         if (entry == null || entry.clip == null || AudioManager.Instance == null) return;
 
-        // 暂时简单播放，后续可扩展空间音频
-        AudioManager.Instance.PlaySFX(entry.clip);
+        float pitch = 1f;
+        if (entry.randomizePitch)
+            pitch = Random.Range(entry.pitchMin, entry.pitchMax);
+
+        AudioManager.Instance.PlaySFX(entry.clip, entry.volume, pitch);
+    }
+
+    /// <summary>
+    /// 在指定世界位置播放音效（支持空间衰减）
+    /// </summary>
+    public void PlayAtPosition(string soundName, Vector3 position, float spatialBlend = 0.8f)
+    {
+        if (!soundMap.TryGetValue(soundName, out var entry)) return;
+        if (entry == null || entry.clip == null) return;
+
+        // 距离检查 - 超过30米不播放
+        if (Camera.main != null)
+        {
+            float dist = Vector3.Distance(position, Camera.main.transform.position);
+            if (dist > 30f) return;
+        }
+
+        float pitch = entry.randomizePitch
+            ? Random.Range(entry.pitchMin, entry.pitchMax) : 1f;
+
+        AudioManager.Instance.PlaySFX(entry.clip, entry.volume, pitch);
     }
 
     // ============ 便捷方法 ============

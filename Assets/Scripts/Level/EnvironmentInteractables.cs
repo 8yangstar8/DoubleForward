@@ -150,108 +150,13 @@ public class Breakable : MonoBehaviour, IDamageable
 }
 
 // ============ 弹簧 ============
-/// <summary>
-/// 弹跳平台 - 踩上去会弹飞
-/// </summary>
-public class SpringPad : MonoBehaviour
-{
-    [Header("弹跳设置")]
-    [SerializeField] private float bounceForce = 15f;
-    [SerializeField] private Vector2 bounceDirection = Vector2.up;
-    [SerializeField] private bool overrideVelocity = true;          // 是否覆盖当前速度
-
-    [Header("动画")]
-    [SerializeField] private Animator animator;
-    [SerializeField] private string bounceAnimTrigger = "Bounce";
-
-    void OnTriggerEnter2D(Collider2D other)
-    {
-        var rb = other.GetComponent<Rigidbody2D>();
-        if (rb == null) return;
-
-        // 仅弹起角色
-        var player = other.GetComponent<PlayerController>();
-        if (player == null) return;
-
-        if (overrideVelocity)
-            rb.linearVelocity = Vector2.zero;
-
-        rb.AddForce(bounceDirection.normalized * bounceForce, ForceMode2D.Impulse);
-
-        // 播放动画
-        if (animator != null)
-            animator.SetTrigger(bounceAnimTrigger);
-
-        // 音效
-        if (SoundFeedback.Instance != null)
-            SoundFeedback.Instance.Play("spring_bounce");
-    }
-}
+// SpringPad 完整版定义在 LevelProps.cs（含挤压动画、粒子、音效、敌人弹射）
 
 // ============ 梯子 ============
-/// <summary>
-/// 可攀爬的梯子
-/// </summary>
-public class Ladder : MonoBehaviour
-{
-    [Header("梯子设置")]
-    [SerializeField] private float climbSpeed = 4f;
-    [SerializeField] private bool disableGravityOnClimb = true;
-
-    private void OnTriggerEnter2D(Collider2D other)
-    {
-        var player = other.GetComponent<PlayerController>();
-        if (player != null)
-            player.EnterLadder(this);
-    }
-
-    private void OnTriggerExit2D(Collider2D other)
-    {
-        var player = other.GetComponent<PlayerController>();
-        if (player != null)
-            player.ExitLadder();
-    }
-
-    public float ClimbSpeed => climbSpeed;
-    public bool DisableGravity => disableGravityOnClimb;
-}
+// Ladder 完整版定义在 Ladder.cs（含攀爬速度、顶底边界、音效、高亮）
 
 // ============ 单向平台 ============
-/// <summary>
-/// 只能从下方穿过，从上方站立的平台
-/// </summary>
-[RequireComponent(typeof(PlatformEffector2D))]
-public class OneWayPlatform : MonoBehaviour
-{
-    [SerializeField] private float dropDownTime = 0.3f;  // 按下+跳跃后平台消失时间
-
-    private PlatformEffector2D effector;
-    private Collider2D platformCollider;
-
-    void Start()
-    {
-        effector = GetComponent<PlatformEffector2D>();
-        platformCollider = GetComponent<Collider2D>();
-
-        effector.useOneWay = true;
-        effector.surfaceArc = 170f;
-    }
-
-    /// <summary>
-    /// 玩家从平台上按下跳，暂时关闭碰撞
-    /// </summary>
-    public void DropDown(Collider2D playerCollider)
-    {
-        StartCoroutine(TemporaryDisable(playerCollider));
-    }
-
-    private IEnumerator TemporaryDisable(Collider2D playerCollider)
-    {
-        Physics2D.IgnoreCollision(platformCollider, playerCollider, true);
-        yield return new WaitForSeconds(dropDownTime);
-        Physics2D.IgnoreCollision(platformCollider, playerCollider, false);
-    }
-}
+// OneWayPlatform 完整版定义在 OneWayPlatform.cs（含PlatformEffector2D、下穿视觉淡出）
 
 // ============ 拉杆/开关 ============
 /// <summary>

@@ -303,6 +303,11 @@ public struct BlockToggleEvent : IGameEvent
     public bool groupAActive;
 }
 
+public struct WorldSelectedEvent : IGameEvent
+{
+    public int chapter;
+}
+
 /// <summary>
 /// 通用可伤害接口（放在Core中供所有程序集使用）
 /// </summary>

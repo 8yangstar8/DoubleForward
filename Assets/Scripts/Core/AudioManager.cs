@@ -45,6 +45,19 @@ public class AudioManager : MonoBehaviour
         sfxSource.PlayOneShot(clip, sfxVolume * masterVolume);
     }
 
+    /// <summary>
+    /// 播放音效（自定义音量和音高）
+    /// </summary>
+    public void PlaySFX(AudioClip clip, float volume, float pitch = 1f)
+    {
+        if (clip == null) return;
+
+        float originalPitch = sfxSource.pitch;
+        sfxSource.pitch = pitch;
+        sfxSource.PlayOneShot(clip, volume * sfxVolume * masterVolume);
+        sfxSource.pitch = originalPitch;
+    }
+
     public void PlayAmbient(AudioClip clip)
     {
         ambientSource.clip = clip;

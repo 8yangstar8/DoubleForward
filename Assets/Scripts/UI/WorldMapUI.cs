@@ -309,8 +309,4 @@ public class WorldMapUI : MonoBehaviour
     }
 }
 
-// 世界选择事件
-public struct WorldSelectedEvent : IGameEvent
-{
-    public int chapter;
-}
+// WorldSelectedEvent 已迁移到 EventBus.cs（Core程序集，支持跨程序集使用）

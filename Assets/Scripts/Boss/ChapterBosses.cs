@@ -765,14 +765,42 @@ public class RuinSentinelBoss : BossBase
 
     /// <summary>
     /// 重写受伤：Phase 2+需要对应角色攻击
+    /// 光盾状态需要Nox(暗影)攻击，暗盾状态需要Lux(光明)攻击
     /// </summary>
     public override void TakeDamage(int damage)
     {
-        if (CurrentPhaseIndex >= 1)
+        if (CurrentPhaseIndex >= 1 && shieldRenderer != null && shieldRenderer.gameObject.activeSelf)
         {
-            // 光盾状态需要暗影攻击，暗盾状态需要光明攻击
-            // 这里简化为：如果盾的颜色和攻击不匹配则免伤
-            // 实际需要PlayerAbility传递攻击类型
+            // 通过检测攻击来源判断是否匹配
+            // 使用最近攻击的玩家类型（由EventBus中EnemyHitEvent传递）
+            var lux = GetLuxPlayer();
+            var nox = GetNoxPlayer();
+
+            // 简化判定：检查最近的玩家 — 距离更近的视为攻击者
+            bool attackerIsLux = false;
+            if (lux != null && nox != null)
+            {
+                float dLux = Vector2.Distance(transform.position, lux.position);
+                float dNox = Vector2.Distance(transform.position, nox.position);
+                attackerIsLux = dLux < dNox;
+            }
+            else if (lux != null)
+            {
+                attackerIsLux = true;
+            }
+
+            // 光盾 → 需要暗影攻击(Nox) | 暗盾 → 需要光明攻击(Lux)
+            bool shieldBlocks = (isLightShield && attackerIsLux) || (!isLightShield && !attackerIsLux);
+
+            if (shieldBlocks)
+            {
+                // 盾挡住了 — 反弹特效
+                if (VFXManager.Instance != null)
+                    VFXManager.Instance.Play(VFXManager.Effects.ShieldBlock, transform.position);
+                if (SoundFeedback.Instance != null)
+                    SoundFeedback.Instance.Play("shield_block");
+                return;
+            }
         }
 
         base.TakeDamage(damage);

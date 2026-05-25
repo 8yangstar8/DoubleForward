@@ -158,12 +158,9 @@ public class LevelBootstrap : MonoBehaviour
             noxPlayer = noxObj.GetComponent<PlayerController>();
         }
 
-        // 通知LevelManager
+        // 注册到LevelManager供其他系统引用
         if (LevelManager.Instance != null)
-        {
-            // LevelManager已有自己的SpawnPlayers逻辑，
-            // 这里通过反射或公共setter注入（避免重复生成）
-        }
+            LevelManager.Instance.RegisterPlayers(luxPlayer, noxPlayer);
     }
 
     /// <summary>

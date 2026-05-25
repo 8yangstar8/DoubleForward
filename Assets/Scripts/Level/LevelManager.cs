@@ -122,4 +122,13 @@ public class LevelManager : MonoBehaviour
     public float GetLevelTime() => levelTimer;
     public int GetCollectiblesGathered() => collectiblesGathered;
     public int GetTotalCollectibles() => levelData.collectibleCount;
+
+    /// <summary>
+    /// 外部注册玩家引用（供LevelBootstrap使用，避免重复生成）
+    /// </summary>
+    public void RegisterPlayers(PlayerController lux, PlayerController nox)
+    {
+        if (lux != null) LuxPlayer = lux;
+        if (nox != null) NoxPlayer = nox;
+    }
 }

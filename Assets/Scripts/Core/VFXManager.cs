@@ -257,6 +257,8 @@ public class VFXManager : MonoBehaviour
         public const string BuffApply = "buff_apply";
         public const string DebuffApply = "debuff_apply";
         public const string ShieldBreak = "shield_break";
+        public const string ShieldBlock = "shield_block";
         public const string ReviveComplete = "revive_complete";
+        public const string Explosion = "explosion";
     }
 }
