@@ -38,4 +38,10 @@ public abstract class PlayerAbilityBase : MonoBehaviour
     }
 
     protected abstract void Activate();
+
+    /// <summary>
+    /// 动画事件回调 — 在技能释放帧触发
+    /// 子类可重写以在精确的动画帧执行效果
+    /// </summary>
+    public virtual void OnCastFrameTriggered() { }
 }

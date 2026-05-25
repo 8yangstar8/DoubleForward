@@ -166,6 +166,33 @@ public class AudioManager : MonoBehaviour
     }
 
     /// <summary>
+    /// 通过键名播放环境音（从Resources/Audio/Ambient加载）
+    /// </summary>
+    public void PlayAmbient(string clipKey)
+    {
+        if (string.IsNullOrEmpty(clipKey)) return;
+
+        if (!clipCache.TryGetValue(clipKey, out AudioClip clip))
+        {
+            clip = Resources.Load<AudioClip>($"Audio/Ambient/{clipKey}");
+            if (clip != null)
+                clipCache[clipKey] = clip;
+        }
+
+        if (clip != null)
+            PlayAmbient(clip);
+    }
+
+    /// <summary>
+    /// 停止环境音
+    /// </summary>
+    public void StopAmbient()
+    {
+        if (ambientSource != null)
+            ambientSource.Stop();
+    }
+
+    /// <summary>
     /// 清理缓存
     /// </summary>
     public void ClearCache()

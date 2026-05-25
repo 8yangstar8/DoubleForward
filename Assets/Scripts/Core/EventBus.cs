@@ -276,6 +276,33 @@ public struct WaterExitedEvent : IGameEvent
     public int playerIndex;
 }
 
+// 陷阱/道具事件
+public struct TrapTriggeredEvent : IGameEvent
+{
+    public string trapType;
+    public UnityEngine.Vector3 position;
+    public int playerIndex;
+}
+
+public struct PowerUpCollectedEvent : IGameEvent
+{
+    public string powerUpType;
+    public float duration;
+    public int playerIndex;
+}
+
+public struct TeleportEvent : IGameEvent
+{
+    public UnityEngine.Vector3 fromPosition;
+    public UnityEngine.Vector3 toPosition;
+    public int playerIndex;
+}
+
+public struct BlockToggleEvent : IGameEvent
+{
+    public bool groupAActive;
+}
+
 /// <summary>
 /// 通用可伤害接口（放在Core中供所有程序集使用）
 /// </summary>

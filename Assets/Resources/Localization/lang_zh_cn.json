@@ -237,6 +237,28 @@
         {"key": "loading_tip_7", "value": "Nox在暗影区域移动更快"},
         {"key": "loading_tip_8", "value": "两人配合解决谜题更加高效"},
         {"key": "loading_tip_9", "value": "倒地后队友可以前来复活你"},
-        {"key": "loading_tip_10", "value": "收集所有物品并在时间内完成可获得三星"}
+        {"key": "loading_tip_10", "value": "收集所有物品并在时间内完成可获得三星"},
+
+        {"key": "trap_spike", "value": "尖刺陷阱"},
+        {"key": "trap_falling", "value": "坍塌平台"},
+        {"key": "trap_saw", "value": "旋转锯刃"},
+        {"key": "trap_crumble", "value": "碎裂地板"},
+        {"key": "trap_arrow", "value": "箭矢机关"},
+
+        {"key": "interact_teleport", "value": "按下传送"},
+        {"key": "interact_ladder", "value": "上下攀爬"},
+        {"key": "interact_spring", "value": "弹跳板"},
+        {"key": "interact_toggle", "value": "切换方块"},
+
+        {"key": "enemy_teleporter", "value": "暗影传送者"},
+        {"key": "enemy_exploder", "value": "暗影自爆者"},
+        {"key": "enemy_mage", "value": "暗影法师"},
+        {"key": "enemy_burrower", "value": "暗影钻地者"},
+        {"key": "enemy_mimic", "value": "暗影拟态"},
+
+        {"key": "loading_tip_11", "value": "注意地面的裂痕，碎裂平台踩上后会坍塌"},
+        {"key": "loading_tip_12", "value": "锯刃对敌人也会造成伤害，善用地形"},
+        {"key": "loading_tip_13", "value": "传送垫可以快速移动到远处的区域"},
+        {"key": "loading_tip_14", "value": "双人切换方块需要Lux和Nox配合操作"}
     ]
 }

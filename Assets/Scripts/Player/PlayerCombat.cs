@@ -409,6 +409,18 @@ public class PlayerCombat : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// 动画事件调用 — 在攻击命中帧执行伤害检测
+    /// 用于精确同步攻击动画与伤害判定
+    /// </summary>
+    public void ExecuteAttackHit()
+    {
+        hitThisSwing.Clear();
+        float damageMultiplier = comboStep > 0 ? comboDamageMultipliers[comboStep - 1] : 1f;
+        float rangeMultiplier = comboStep > 0 ? comboRangeMultipliers[comboStep - 1] : 1f;
+        PerformMeleeHitDetection(damageMultiplier, rangeMultiplier);
+    }
+
     // ==================== Gizmos ====================
 
     void OnDrawGizmosSelected()

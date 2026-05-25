@@ -237,6 +237,28 @@
         {"key": "loading_tip_7", "value": "ノクスは影のエリアでスピードアップ"},
         {"key": "loading_tip_8", "value": "協力すればパズルをもっと簡単に解ける"},
         {"key": "loading_tip_9", "value": "ダウン時はパートナーが蘇生できます"},
-        {"key": "loading_tip_10", "value": "全収集+タイムクリアで三ツ星獲得"}
+        {"key": "loading_tip_10", "value": "全収集+タイムクリアで三ツ星獲得"},
+
+        {"key": "trap_spike", "value": "スパイクトラップ"},
+        {"key": "trap_falling", "value": "落下する足場"},
+        {"key": "trap_saw", "value": "回転のこぎり"},
+        {"key": "trap_crumble", "value": "崩れる床"},
+        {"key": "trap_arrow", "value": "矢のトラップ"},
+
+        {"key": "interact_teleport", "value": "テレポート"},
+        {"key": "interact_ladder", "value": "上下に登る"},
+        {"key": "interact_spring", "value": "ジャンプ台"},
+        {"key": "interact_toggle", "value": "ブロック切替"},
+
+        {"key": "enemy_teleporter", "value": "シャドウテレポーター"},
+        {"key": "enemy_exploder", "value": "シャドウ自爆兵"},
+        {"key": "enemy_mage", "value": "シャドウメイジ"},
+        {"key": "enemy_burrower", "value": "シャドウバロウ"},
+        {"key": "enemy_mimic", "value": "シャドウミミック"},
+
+        {"key": "loading_tip_11", "value": "ひび割れに注意。崩れる床は踏むと落ちます"},
+        {"key": "loading_tip_12", "value": "のこぎりは敵にもダメージを与えます"},
+        {"key": "loading_tip_13", "value": "テレポートパッドで遠くに素早く移動"},
+        {"key": "loading_tip_14", "value": "切替ブロックはルクスとノクスの協力が必要"}
     ]
 }

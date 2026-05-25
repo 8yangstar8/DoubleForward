@@ -15,6 +15,7 @@ public class PlayerHealth : MonoBehaviour
     public event System.Action OnRespawned;
 
     public int MaxHealth => maxHealth;
+    public float HealthPercent => maxHealth > 0 ? (float)CurrentHealth / maxHealth : 0f;
 
     private float invincibleTimer;
     private Vector3 lastCheckpointPosition;

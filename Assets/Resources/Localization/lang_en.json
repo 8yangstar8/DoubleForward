@@ -237,6 +237,28 @@
         {"key": "loading_tip_7", "value": "Nox moves faster in shadow areas"},
         {"key": "loading_tip_8", "value": "Teamwork makes puzzles easier to solve"},
         {"key": "loading_tip_9", "value": "Your partner can revive you when you're downed"},
-        {"key": "loading_tip_10", "value": "Collect everything and finish in time for 3 stars"}
+        {"key": "loading_tip_10", "value": "Collect everything and finish in time for 3 stars"},
+
+        {"key": "trap_spike", "value": "Spike Trap"},
+        {"key": "trap_falling", "value": "Falling Platform"},
+        {"key": "trap_saw", "value": "Saw Blade"},
+        {"key": "trap_crumble", "value": "Crumbling Floor"},
+        {"key": "trap_arrow", "value": "Arrow Trap"},
+
+        {"key": "interact_teleport", "value": "Press to Teleport"},
+        {"key": "interact_ladder", "value": "Climb Up/Down"},
+        {"key": "interact_spring", "value": "Spring Pad"},
+        {"key": "interact_toggle", "value": "Toggle Blocks"},
+
+        {"key": "enemy_teleporter", "value": "Shadow Teleporter"},
+        {"key": "enemy_exploder", "value": "Shadow Exploder"},
+        {"key": "enemy_mage", "value": "Shadow Mage"},
+        {"key": "enemy_burrower", "value": "Shadow Burrower"},
+        {"key": "enemy_mimic", "value": "Shadow Mimic"},
+
+        {"key": "loading_tip_11", "value": "Watch for cracks - crumbling platforms collapse when stepped on"},
+        {"key": "loading_tip_12", "value": "Saw blades damage enemies too - use the terrain"},
+        {"key": "loading_tip_13", "value": "Teleport pads can quickly move you to distant areas"},
+        {"key": "loading_tip_14", "value": "Toggle blocks require Lux and Nox to work together"}
     ]
 }
