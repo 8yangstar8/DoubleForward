@@ -138,6 +138,9 @@ public class PlayerController : MonoBehaviour
         var combat = GetComponent<PlayerCombat>();
         if (combat == null) return;
 
+        // 同步检测
+        PlayerCoopSync.Instance?.RecordAction(playerIndex, PlayerCoopSync.ActionType.Attack);
+
         if (IsGrounded)
         {
             // 地面攻击：Lux远程、Nox近战
@@ -206,6 +209,9 @@ public class PlayerController : MonoBehaviour
             hasDoubleJumped = false;
             coyoteTimer = 0; // 消耗coyote time
             OnJumped?.Invoke();
+
+            // 同步检测
+            PlayerCoopSync.Instance?.RecordAction(playerIndex, PlayerCoopSync.ActionType.Jump);
         }
         else if (canDoubleJump && !hasDoubleJumped)
         {
@@ -230,6 +236,9 @@ public class PlayerController : MonoBehaviour
         float dir = IsFacingRight ? 1f : -1f;
         rb.linearVelocity = new Vector2(dir * dashSpeed, 0f);
         OnDashed?.Invoke();
+
+        // 同步检测
+        PlayerCoopSync.Instance?.RecordAction(playerIndex, PlayerCoopSync.ActionType.Dash);
     }
 
     private void TrySkill1()
