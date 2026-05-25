@@ -5,7 +5,8 @@
         "DoubleForward.Core",
         "DoubleForward.Player",
         "DoubleForward.Level",
-        "DoubleForward.Puzzle"
+        "DoubleForward.Puzzle",
+        "DoubleForward.Camera"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
