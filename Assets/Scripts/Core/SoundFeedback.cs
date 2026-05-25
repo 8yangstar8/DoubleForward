@@ -60,6 +60,11 @@ public class SoundFeedback : MonoBehaviour
     [SerializeField] private SoundEntry comboHitSound;
     [SerializeField] private SoundEntry comboBreakSound;
 
+    [Header("战斗音效")]
+    [SerializeField] private SoundEntry footstepSound;
+    [SerializeField] private SoundEntry meleeHitSound;
+    [SerializeField] private SoundEntry rangedShootSound;
+
     [Header("环境音效")]
     [SerializeField] private SoundEntry waterSplashSound;
     [SerializeField] private SoundEntry windSound;
@@ -113,6 +118,9 @@ public class SoundFeedback : MonoBehaviour
         RegisterSound("achievement", achievementSound);
         RegisterSound("combo_hit", comboHitSound);
         RegisterSound("combo_break", comboBreakSound);
+        RegisterSound("footstep", footstepSound);
+        RegisterSound("melee_hit", meleeHitSound);
+        RegisterSound("ranged_shoot", rangedShootSound);
         RegisterSound("water_splash", waterSplashSound);
         RegisterSound("wind", windSound);
         RegisterSound("thunder", thunderSound);
@@ -173,6 +181,11 @@ public class SoundFeedback : MonoBehaviour
     public void PlayCheckpoint() => Play("checkpoint");
     public void PlayPortal() => Play("portal");
 
+    // 战斗
+    public void PlayFootstep() => Play("footstep");
+    public void PlayMeleeHit() => Play("melee_hit");
+    public void PlayRangedShoot() => Play("ranged_shoot");
+
     // UI
     public void PlayUIClick() => Play("ui_click");
     public void PlayUIHover() => Play("ui_hover");
@@ -181,4 +194,8 @@ public class SoundFeedback : MonoBehaviour
     public void PlayUISuccess() => Play("ui_success");
     public void PlayLevelComplete() => Play("level_complete");
     public void PlayAchievement() => Play("achievement");
+
+    // 别名（兼容其他系统调用）
+    public void PlayClick() => PlayUIClick();
+    public void PlayConfirm() => PlayUISuccess();
 }
