@@ -207,6 +207,14 @@ public class CoopAbilitySystem : MonoBehaviour
 
         OnCoopActivated?.Invoke(ability.abilityName);
 
+        // 发布合作技能事件（成就追踪）
+        EventBus.Publish(new CoopAbilityUsedEvent
+        {
+            abilityName = ability.abilityName,
+            player1Index = 0,
+            player2Index = 1
+        });
+
         // 执行技能效果
         switch (ability.type)
         {

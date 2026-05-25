@@ -98,6 +98,11 @@ public class ComboSystem : MonoBehaviour
     }
 
     /// <summary>
+    /// 增加连击（简化别名）
+    /// </summary>
+    public void AddCombo() => AddComboHit();
+
+    /// <summary>
     /// 增加连击（击杀敌人、解开谜题、精确跳跃等）
     /// </summary>
     public void AddComboHit(string actionName = "hit", int baseScore = 100)
@@ -119,6 +124,13 @@ public class ComboSystem : MonoBehaviour
         OnComboChanged?.Invoke(currentCombo);
         OnScoreChanged?.Invoke(totalScore);
         OnActionScore?.Invoke(actionName, scoredPoints);
+
+        // 通过EventBus发布（供AchievementTracker等跨程序集系统使用）
+        EventBus.Publish(new ComboChangedEvent
+        {
+            comboCount = currentCombo,
+            multiplier = ComboMultiplier
+        });
     }
 
     /// <summary>

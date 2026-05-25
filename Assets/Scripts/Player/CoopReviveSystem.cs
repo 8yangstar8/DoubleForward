@@ -255,6 +255,13 @@ public class CoopReviveSystem : MonoBehaviour
             playerIndex = revivedIdx,
             spawnPosition = players[revivedIdx].transform.position
         });
+
+        // 合作复活成就事件
+        EventBus.Publish(new CoopReviveEvent
+        {
+            reviverIndex = reviverIdx,
+            revivedIndex = revivedIdx
+        });
     }
 
     private void CancelRevive()
