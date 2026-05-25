@@ -134,6 +134,94 @@ public class ObjectPool : MonoBehaviour
         return Get(poolName, Vector3.zero, Quaternion.identity);
     }
 
+    // ============ Prefab-based 接口（自动创建/查找池） ============
+
+    private Dictionary<int, string> prefabToPoolName = new Dictionary<int, string>();
+
+    /// <summary>
+    /// 通过Prefab获取对象（自动创建池）
+    /// </summary>
+    public GameObject Get(GameObject prefab, Vector3 position, Quaternion rotation)
+    {
+        if (prefab == null) return null;
+
+        string poolName = GetOrCreatePoolForPrefab(prefab);
+        return Get(poolName, position, rotation);
+    }
+
+    /// <summary>
+    /// 通过Prefab获取对象（默认位置）
+    /// </summary>
+    public GameObject Get(GameObject prefab)
+    {
+        return Get(prefab, Vector3.zero, Quaternion.identity);
+    }
+
+    /// <summary>
+    /// 归还对象（自动识别池）
+    /// </summary>
+    public void Return(GameObject obj)
+    {
+        if (obj == null) return;
+
+        // 尝试根据物体名称查找池
+        string objName = obj.name.Replace("(Clone)", "").Trim();
+        foreach (var kvp in configMap)
+        {
+            if (kvp.Value.prefab != null && kvp.Value.prefab.name == objName)
+            {
+                Return(kvp.Key, obj);
+                return;
+            }
+        }
+
+        // 找不到池则销毁
+        Destroy(obj);
+    }
+
+    /// <summary>
+    /// 延迟归还（自动识别池）
+    /// </summary>
+    public void ReturnDelayed(GameObject obj, float delay)
+    {
+        if (obj == null) return;
+
+        string objName = obj.name.Replace("(Clone)", "").Trim();
+        foreach (var kvp in configMap)
+        {
+            if (kvp.Value.prefab != null && kvp.Value.prefab.name == objName)
+            {
+                ReturnDelayed(kvp.Key, obj, delay);
+                return;
+            }
+        }
+
+        // 找不到池则延迟销毁
+        Destroy(obj, delay);
+    }
+
+    private string GetOrCreatePoolForPrefab(GameObject prefab)
+    {
+        int prefabId = prefab.GetInstanceID();
+
+        if (prefabToPoolName.TryGetValue(prefabId, out string existingName))
+            return existingName;
+
+        // 用prefab名称作为池名
+        string poolName = $"auto_{prefab.name}";
+
+        // 避免重名冲突
+        if (pools.ContainsKey(poolName))
+        {
+            prefabToPoolName[prefabId] = poolName;
+            return poolName;
+        }
+
+        CreatePool(poolName, prefab, 5, 30);
+        prefabToPoolName[prefabId] = poolName;
+        return poolName;
+    }
+
     /// <summary>
     /// 归还对象到池
     /// </summary>

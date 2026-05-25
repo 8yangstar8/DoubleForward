@@ -41,6 +41,7 @@ public class GameInitializer : MonoBehaviour
     [SerializeField] private GameObject settingsPersistencePrefab;
     [SerializeField] private GameObject autoSaveSystemPrefab;
     [SerializeField] private GameObject timeManagerPrefab;
+    [SerializeField] private GameObject achievementTrackerPrefab;
 
     [Header("UI预制体")]
     [SerializeField] private GameObject debugOverlayPrefab;
@@ -124,6 +125,7 @@ public class GameInitializer : MonoBehaviour
         SpawnIfNeeded<CloudSaveManager>(cloudSaveManagerPrefab);
         SpawnIfNeeded<TimeManager>(timeManagerPrefab);
         SpawnIfNeeded<AutoSaveSystem>(autoSaveSystemPrefab);
+        SpawnIfNeeded<AchievementTracker>(achievementTrackerPrefab);
         yield return null;
 
         // ====== 第6层：流程控制（依赖上面所有系统） ======

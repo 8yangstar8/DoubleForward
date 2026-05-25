@@ -20,6 +20,10 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float groundCheckRadius = 0.2f;
     [SerializeField] private LayerMask groundLayer;
 
+    [Header("Jump Feel")]
+    [SerializeField] private float coyoteTime = 0.1f;
+    [SerializeField] private float jumpBufferTime = 0.15f;
+
     [Header("Passive Buffs")]
     [SerializeField] private float passiveSpeedBuff = 0.2f;
 
@@ -36,6 +40,8 @@ public class PlayerController : MonoBehaviour
     private bool canDoubleJump;
     private bool hasDoubleJumped;
     private float dashTimer;
+    private float coyoteTimer;
+    private float jumpBufferTimer;
 
     public event System.Action OnJumped;
     public event System.Action OnLanded;
@@ -59,8 +65,23 @@ public class PlayerController : MonoBehaviour
         if (IsGrounded && !wasGrounded)
         {
             hasDoubleJumped = false;
+            coyoteTimer = coyoteTime;
             OnLanded?.Invoke();
+
+            // 成就：重置墙跳连击
+            if (AchievementTracker.Instance != null)
+                AchievementTracker.Instance.ResetWallJumpChain();
         }
+
+        // Coyote time: 离开地面后仍允许短暂跳跃
+        if (wasGrounded && !IsGrounded && rb.linearVelocity.y <= 0)
+            coyoteTimer = coyoteTime;
+        else if (!IsGrounded)
+            coyoteTimer -= Time.deltaTime;
+
+        // 跳跃缓冲计时
+        if (jumpBufferTimer > 0)
+            jumpBufferTimer -= Time.deltaTime;
 
         if (IsDashing)
         {
@@ -78,6 +99,13 @@ public class PlayerController : MonoBehaviour
 
         UpdateWallSlide();
         HandleInput();
+
+        // 跳跃缓冲：如果之前按了跳跃且现在着地了
+        if (jumpBufferTimer > 0 && IsGrounded)
+        {
+            jumpBufferTimer = 0;
+            TryJump();
+        }
     }
 
     private void HandleInput()
@@ -90,11 +118,37 @@ public class PlayerController : MonoBehaviour
         if (InputManager.Instance.GetJumpPressed(playerIndex))
             TryJump();
 
+        if (InputManager.Instance.GetAttackPressed(playerIndex))
+            TryAttack();
+
+        if (InputManager.Instance.GetDashPressed(playerIndex))
+            TryDash();
+
         if (InputManager.Instance.GetSkill1Pressed(playerIndex))
             TrySkill1();
 
         if (InputManager.Instance.GetSkill2Pressed(playerIndex))
             TrySkill2();
+    }
+
+    private void TryAttack()
+    {
+        var combat = GetComponent<PlayerCombat>();
+        if (combat == null) return;
+
+        if (IsGrounded)
+        {
+            // 地面攻击：Lux远程、Nox近战
+            if (playerType == PlayerType.Lux)
+                combat.RangedAttack();
+            else
+                combat.MeleeAttack();
+        }
+        else
+        {
+            // 空中攻击：下砸
+            combat.AirDownAttack();
+        }
     }
 
     public void SetMoveInput(Vector2 input)
@@ -142,10 +196,13 @@ public class PlayerController : MonoBehaviour
             return;
         }
 
-        if (IsGrounded)
+        bool canCoyoteJump = coyoteTimer > 0;
+
+        if (IsGrounded || canCoyoteJump)
         {
             rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);
             hasDoubleJumped = false;
+            coyoteTimer = 0; // 消耗coyote time
             OnJumped?.Invoke();
         }
         else if (canDoubleJump && !hasDoubleJumped)
@@ -153,6 +210,11 @@ public class PlayerController : MonoBehaviour
             rb.linearVelocity = new Vector2(rb.linearVelocity.x, doubleJumpForce);
             hasDoubleJumped = true;
             OnJumped?.Invoke();
+        }
+        else
+        {
+            // 不能跳：缓冲跳跃请求
+            jumpBufferTimer = jumpBufferTime;
         }
     }
 
@@ -264,6 +326,10 @@ public class PlayerController : MonoBehaviour
 
         IsWallSliding = false;
         OnWallJumped?.Invoke();
+
+        // 成就：墙跳连击追踪
+        if (AchievementTracker.Instance != null)
+            AchievementTracker.Instance.NotifyWallJump();
     }
 
     // ============ 梯子系统 ============
