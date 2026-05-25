@@ -38,6 +38,9 @@ public class GameInitializer : MonoBehaviour
     [SerializeField] private GameObject cloudSaveManagerPrefab;
     [SerializeField] private GameObject skinManagerPrefab;
     [SerializeField] private GameObject scoreManagerPrefab;
+    [SerializeField] private GameObject settingsPersistencePrefab;
+    [SerializeField] private GameObject autoSaveSystemPrefab;
+    [SerializeField] private GameObject timeManagerPrefab;
 
     [Header("UI预制体")]
     [SerializeField] private GameObject debugOverlayPrefab;
@@ -87,6 +90,7 @@ public class GameInitializer : MonoBehaviour
         // ====== 第2层：数据系统 ======
         SpawnIfNeeded<SaveSystem>(saveSystemPrefab);
         SpawnIfNeeded<LocalizationSystem>(localizationPrefab);
+        SpawnIfNeeded<SettingsPersistence>(settingsPersistencePrefab);
         SpawnIfNeeded<GameStats>(gameStatsPrefab);
         yield return null;
 
@@ -118,6 +122,8 @@ public class GameInitializer : MonoBehaviour
         SpawnIfNeeded<DailyRewardSystem>(dailyRewardSystemPrefab);
         SpawnIfNeeded<SkinManager>(skinManagerPrefab);
         SpawnIfNeeded<CloudSaveManager>(cloudSaveManagerPrefab);
+        SpawnIfNeeded<TimeManager>(timeManagerPrefab);
+        SpawnIfNeeded<AutoSaveSystem>(autoSaveSystemPrefab);
         yield return null;
 
         // ====== 第6层：流程控制（依赖上面所有系统） ======
