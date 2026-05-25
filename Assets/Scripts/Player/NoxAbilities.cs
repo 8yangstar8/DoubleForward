@@ -30,6 +30,14 @@ public class NoxAbilities : PlayerAbilityBase
 
     protected override void Activate()
     {
+        // 发布技能使用事件
+        EventBus.Publish(new AbilityUsedEvent
+        {
+            abilityName = "shadow_phase",
+            playerIndex = controller.PlayerIndex,
+            position = transform.position
+        });
+
         StartCoroutine(ShadowPhase());
     }
 
@@ -74,6 +82,18 @@ public class NoxAbilities : PlayerAbilityBase
         trigger.isTrigger = true;
 
         Destroy(zone, zoneDuration);
+
+        // VFX
+        if (VFXManager.Instance != null)
+            VFXManager.Instance.Play(VFXManager.Effects.ShadowZone, transform.position);
+
+        // 发布技能事件
+        EventBus.Publish(new AbilityUsedEvent
+        {
+            abilityName = "shadow_zone",
+            playerIndex = controller.PlayerIndex,
+            position = transform.position
+        });
     }
 
     public void ShadowPush()
@@ -91,5 +111,13 @@ public class NoxAbilities : PlayerAbilityBase
                 pushRb.AddForce(pushDir * pushForce, ForceMode2D.Impulse);
             }
         }
+
+        // 发布技能事件
+        EventBus.Publish(new AbilityUsedEvent
+        {
+            abilityName = "shadow_push",
+            playerIndex = controller.PlayerIndex,
+            position = transform.position
+        });
     }
 }

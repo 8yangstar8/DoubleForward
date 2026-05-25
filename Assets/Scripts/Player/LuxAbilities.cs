@@ -26,6 +26,14 @@ public class LuxAbilities : PlayerAbilityBase
         if (activeBeam != null)
             Destroy(activeBeam);
 
+        // 发布技能使用事件
+        EventBus.Publish(new AbilityUsedEvent
+        {
+            abilityName = "light_beam",
+            playerIndex = controller.PlayerIndex,
+            position = transform.position
+        });
+
         float dir = controller.IsFacingRight ? 1f : -1f;
         Vector3 spawnPos = firePoint != null ? firePoint.position : transform.position;
 
@@ -60,6 +68,18 @@ public class LuxAbilities : PlayerAbilityBase
         var bridge = Instantiate(lightBridgePrefab, bridgePos, Quaternion.identity);
         bridge.tag = "LightZone";
         Destroy(bridge, bridgeDuration);
+
+        // VFX
+        if (VFXManager.Instance != null)
+            VFXManager.Instance.Play(VFXManager.Effects.LightBridge, bridgePos);
+
+        // 发布技能事件
+        EventBus.Publish(new AbilityUsedEvent
+        {
+            abilityName = "light_bridge",
+            playerIndex = controller.PlayerIndex,
+            position = bridgePos
+        });
     }
 
     void OnDestroy()
