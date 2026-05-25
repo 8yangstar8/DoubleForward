@@ -216,6 +216,45 @@ public class CameraEffects : MonoBehaviour
         transform.localPosition = originalPos;
     }
 
+    // ============ 屏幕闪烁 ============
+
+    /// <summary>
+    /// 全屏闪光效果（死亡/爆炸/技能释放）
+    /// </summary>
+    public void Flash(Color color, float duration)
+    {
+        if (vignetteCoroutine != null) StopCoroutine(vignetteCoroutine);
+        vignetteCoroutine = StartCoroutine(FullScreenFlash(color, duration));
+    }
+
+    private IEnumerator FullScreenFlash(Color color, float duration)
+    {
+        if (vignette == null) yield break;
+
+        // 暂时用暗角+bloom模拟全屏闪光
+        vignette.color.value = color;
+        vignette.intensity.value = 0.6f;
+
+        if (bloom != null)
+            bloom.intensity.value = 3f;
+
+        float t = 0;
+        while (t < duration)
+        {
+            t += Time.unscaledDeltaTime;
+            float p = t / duration;
+            vignette.intensity.value = Mathf.Lerp(0.6f, defaultVignette, p);
+            if (bloom != null)
+                bloom.intensity.value = Mathf.Lerp(3f, 0.5f, p);
+            yield return null;
+        }
+
+        vignette.intensity.value = defaultVignette;
+        vignette.color.value = Color.black;
+        if (bloom != null)
+            bloom.intensity.value = 0.5f;
+    }
+
     // ============ 色差效果 ============
 
     /// <summary>
