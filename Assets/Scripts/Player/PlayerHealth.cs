@@ -107,12 +107,25 @@ public class PlayerHealth : MonoBehaviour
         if (!IsAlive) return;
         CurrentHealth = Mathf.Min(maxHealth, CurrentHealth + amount);
         OnHealthChanged?.Invoke(CurrentHealth);
+
+        EventBus.Publish(new PlayerHealEvent
+        {
+            amount = amount,
+            playerIndex = controller != null ? controller.PlayerIndex : 0
+        });
     }
 
     private void Die()
     {
         OnDeath?.Invoke();
         GetComponent<PlayerAnimator>()?.PlayDeath();
+
+        EventBus.Publish(new PlayerDeathEvent
+        {
+            playerIndex = controller != null ? controller.PlayerIndex : 0,
+            deathPosition = transform.position
+        });
+
         Invoke(nameof(Respawn), deathRespawnDelay);
     }
 

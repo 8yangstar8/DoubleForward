@@ -181,6 +181,41 @@ public class CameraEffects : MonoBehaviour
         }
     }
 
+    // ============ 屏幕震动 ============
+
+    /// <summary>
+    /// 屏幕震动 - 委托给CameraShake，没有则自行实现简易版
+    /// </summary>
+    public void Shake(float intensity, float duration)
+    {
+        if (CameraShake.Instance != null)
+        {
+            CameraShake.Instance.Shake(intensity, duration);
+        }
+        else
+        {
+            StartCoroutine(SimpleShake(intensity, duration));
+        }
+    }
+
+    private IEnumerator SimpleShake(float intensity, float duration)
+    {
+        Vector3 originalPos = transform.localPosition;
+        float elapsed = 0f;
+
+        while (elapsed < duration)
+        {
+            elapsed += Time.unscaledDeltaTime;
+            float decay = 1f - (elapsed / duration);
+            float x = Random.Range(-1f, 1f) * intensity * decay;
+            float y = Random.Range(-1f, 1f) * intensity * decay;
+            transform.localPosition = originalPos + new Vector3(x, y, 0);
+            yield return null;
+        }
+
+        transform.localPosition = originalPos;
+    }
+
     // ============ 色差效果 ============
 
     /// <summary>
