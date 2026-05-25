@@ -163,12 +163,39 @@ public class ScoreManager : MonoBehaviour
 
     // ============ 核心方法 ============
 
+    // 临时分数倍率
+    private float temporaryMultiplier = 1f;
+    private float tempMultiplierTimer;
+
+    void Update()
+    {
+        // 临时倍率倒计时
+        if (tempMultiplierTimer > 0)
+        {
+            tempMultiplierTimer -= Time.deltaTime;
+            if (tempMultiplierTimer <= 0)
+                temporaryMultiplier = 1f;
+        }
+    }
+
+    /// <summary>
+    /// 设置临时分数倍率（道具效果）
+    /// </summary>
+    public void SetTemporaryMultiplier(float multiplier, float duration)
+    {
+        temporaryMultiplier = multiplier;
+        tempMultiplierTimer = duration;
+    }
+
     /// <summary>
     /// 增加分数并发布事件
     /// </summary>
     public void AddScore(int amount, string reason = "")
     {
         if (amount <= 0) return;
+
+        // 应用临时倍率
+        amount = Mathf.RoundToInt(amount * temporaryMultiplier);
 
         CurrentScore += amount;
 
