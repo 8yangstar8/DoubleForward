@@ -122,6 +122,68 @@ public class InputManager : MonoBehaviour
             return interactButtonP2 != null && interactButtonP2.IsPressed;
     }
 
+    // ============ 攻击按钮 ============
+
+    [Header("攻击按钮")]
+    [SerializeField] private TouchButton attackButtonP1;
+    [SerializeField] private TouchButton attackButtonP2;
+
+    public bool GetAttackPressed(int playerIndex)
+    {
+        if (!inputEnabled) return false;
+
+        if (playerIndex == 0)
+            return attackButtonP1 != null && attackButtonP1.WasPressedThisFrame;
+        else
+            return attackButtonP2 != null && attackButtonP2.WasPressedThisFrame;
+    }
+
+    public bool GetAttackHeld(int playerIndex)
+    {
+        if (!inputEnabled) return false;
+
+        if (playerIndex == 0)
+            return attackButtonP1 != null && attackButtonP1.IsPressed;
+        else
+            return attackButtonP2 != null && attackButtonP2.IsPressed;
+    }
+
+    // ============ 冲刺按钮 ============
+
+    [Header("冲刺按钮")]
+    [SerializeField] private TouchButton dashButtonP1;
+    [SerializeField] private TouchButton dashButtonP2;
+
+    public bool GetDashPressed(int playerIndex)
+    {
+        if (!inputEnabled) return false;
+
+        if (playerIndex == 0)
+            return dashButtonP1 != null && dashButtonP1.WasPressedThisFrame;
+        else
+            return dashButtonP2 != null && dashButtonP2.WasPressedThisFrame;
+    }
+
+    // ============ *Down 别名（供TutorialFlowManager等使用） ============
+
+    /// <summary>跳跃键按下（GetJumpPressed别名）</summary>
+    public bool GetJumpDown(int playerIndex) => GetJumpPressed(playerIndex);
+
+    /// <summary>攻击键按下（GetAttackPressed别名）</summary>
+    public bool GetAttackDown(int playerIndex) => GetAttackPressed(playerIndex);
+
+    /// <summary>技能1按下（GetSkill1Pressed别名）</summary>
+    public bool GetSkill1Down(int playerIndex) => GetSkill1Pressed(playerIndex);
+
+    /// <summary>技能2按下（GetSkill2Pressed别名）</summary>
+    public bool GetSkill2Down(int playerIndex) => GetSkill2Pressed(playerIndex);
+
+    /// <summary>交互键按下（GetInteractPressed别名）</summary>
+    public bool GetInteractDown(int playerIndex) => GetInteractPressed(playerIndex);
+
+    /// <summary>冲刺键按下（GetDashPressed别名）</summary>
+    public bool GetDashDown(int playerIndex) => GetDashPressed(playerIndex);
+
     // ============ 全局输入控制 ============
 
     private bool inputEnabled = true;

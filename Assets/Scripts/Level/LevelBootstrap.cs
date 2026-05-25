@@ -241,7 +241,7 @@ public class LevelBootstrap : MonoBehaviour
         // 检查评分提示
         if (MobileServices.Instance != null && SaveSystem.Instance != null)
         {
-            int totalLevels = SaveSystem.Instance.Data.levelsCompleted;
+            int totalLevels = SaveSystem.Instance.Data.levelsCompletedCount;
             if (MobileServices.Instance.ShouldShowRatePrompt(totalLevels))
             {
                 // 延迟显示，不要打断奖励弹窗

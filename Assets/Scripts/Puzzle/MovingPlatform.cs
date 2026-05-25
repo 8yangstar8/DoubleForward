@@ -103,6 +103,28 @@ public class MovingPlatform : MonoBehaviour
     public void Deactivate() => IsActive = false;
     public void Toggle() => IsActive = !IsActive;
 
+    /// <summary>
+    /// 运行时设置路径（由LevelBuilder调用）
+    /// </summary>
+    public void SetPath(Vector2[] path, float moveSpeed, bool loop)
+    {
+        speed = moveSpeed;
+        isLoop = loop;
+        useLocalPositions = false;
+
+        waypoints.Clear();
+        if (path != null)
+        {
+            foreach (var p in path)
+                waypoints.Add(new Vector3(p.x, p.y, 0));
+        }
+
+        // 重新初始化世界路径
+        worldWaypoints = new List<Vector3>(waypoints);
+        currentWaypointIndex = 0;
+        IsActive = true;
+    }
+
     void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.cyan;

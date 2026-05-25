@@ -31,6 +31,29 @@ public class SaveSystem : MonoBehaviour
         public string lastSaveDateTime = "";
         public float completionPercent;
 
+        // 计算属性（不序列化）
+        /// <summary>已完成关卡总数</summary>
+        public int levelsCompletedCount
+        {
+            get
+            {
+                int count = 0;
+                foreach (bool b in levelsCompleted) if (b) count++;
+                return count;
+            }
+        }
+
+        /// <summary>总获得星数</summary>
+        public int totalStars
+        {
+            get
+            {
+                int sum = 0;
+                foreach (int s in levelStars) sum += s;
+                return sum;
+            }
+        }
+
         // 设置数据一起存
         public float bgmVolume = 0.7f;
         public float sfxVolume = 1f;

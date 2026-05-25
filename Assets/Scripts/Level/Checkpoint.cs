@@ -40,6 +40,9 @@ public class Checkpoint : MonoBehaviour
     public bool IsActivated => isActivated;
     public int CheckpointIndex { get; set; } = -1;
 
+    /// <summary>设置检查点顺序（由LevelBuilder调用）</summary>
+    public void SetOrder(int order) => CheckpointIndex = order;
+
     public event System.Action<Checkpoint> OnCheckpointActivated;
 
     // 双人检测

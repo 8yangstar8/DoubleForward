@@ -308,6 +308,26 @@ public struct WorldSelectedEvent : IGameEvent
     public int chapter;
 }
 
+// 成就事件
+public struct AchievementUnlockedEvent : IGameEvent
+{
+    public string achievementId;
+}
+
+// 合作事件
+public struct CoopReviveEvent : IGameEvent
+{
+    public int reviverIndex;
+    public int revivedIndex;
+}
+
+public struct CoopAbilityUsedEvent : IGameEvent
+{
+    public string abilityName;
+    public int player1Index;
+    public int player2Index;
+}
+
 /// <summary>
 /// 通用可伤害接口（放在Core中供所有程序集使用）
 /// </summary>
