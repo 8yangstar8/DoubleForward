@@ -255,6 +255,14 @@ public struct WaveCompletedEvent : IGameEvent
     public bool allCleared;
 }
 
+// 提示事件（跨程序集通知UI显示提示）
+public struct HintRequestEvent : IGameEvent
+{
+    public string textKey;
+    public string fallbackText;
+    public float duration;
+}
+
 // 水域事件（定义在Core中供跨程序集使用）
 public struct WaterEnteredEvent : IGameEvent
 {

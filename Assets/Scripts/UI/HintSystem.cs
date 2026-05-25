@@ -68,6 +68,24 @@ public class HintSystem : MonoBehaviour
         closeHintButton?.onClick.AddListener(HideHint);
 
         SetHintButtonGlow(false);
+
+        // 订阅跨程序集提示请求事件
+        EventBus.Subscribe<HintRequestEvent>(OnHintRequest);
+    }
+
+    void OnDestroy()
+    {
+        EventBus.Unsubscribe<HintRequestEvent>(OnHintRequest);
+        if (Instance == this) Instance = null;
+    }
+
+    private void OnHintRequest(HintRequestEvent e)
+    {
+        string text = e.textKey;
+        if (LocalizationSystem.Instance != null)
+            text = LocalizationSystem.Instance.Get(e.textKey, e.fallbackText);
+
+        ShowHint(text, e.duration > 0 ? e.duration : hintDisplayDuration);
     }
 
     void Update()

@@ -109,6 +109,19 @@ public class InputManager : MonoBehaviour
             return interactButtonP2 != null && interactButtonP2.WasPressedThisFrame;
     }
 
+    /// <summary>
+    /// 交互键是否持续按住（复活队友时长按）
+    /// </summary>
+    public bool GetInteractHeld(int playerIndex)
+    {
+        if (!inputEnabled) return false;
+
+        if (playerIndex == 0)
+            return interactButtonP1 != null && interactButtonP1.IsPressed;
+        else
+            return interactButtonP2 != null && interactButtonP2.IsPressed;
+    }
+
     // ============ 全局输入控制 ============
 
     private bool inputEnabled = true;

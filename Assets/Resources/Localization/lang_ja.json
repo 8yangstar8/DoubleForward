@@ -212,6 +212,31 @@
         {"key": "wave_4", "value": "ウェーブ4"},
         {"key": "wave_5", "value": "ウェーブ5"},
         {"key": "wave_all_clear", "value": "全ウェーブクリア！"},
-        {"key": "boss_incoming", "value": "ボス出現！"}
+        {"key": "boss_incoming", "value": "ボス出現！"},
+
+        {"key": "revive_downed", "value": "ダウン！"},
+        {"key": "revive_alive", "value": "生存"},
+        {"key": "revive_both_downed", "value": "二人ともダウン！"},
+        {"key": "revive_instruction", "value": "パートナーを蘇生しに行こう！"},
+        {"key": "hint_players_far", "value": "二人の距離が離れすぎ！"},
+        {"key": "checkpoint_reached", "value": "チェックポイント到達"},
+
+        {"key": "buff_speed_boost", "value": "加速"},
+        {"key": "buff_damage_boost", "value": "攻撃力アップ"},
+        {"key": "buff_shield", "value": "シールド"},
+        {"key": "buff_regen", "value": "回復"},
+        {"key": "buff_shadow_cloak", "value": "影の隠匿"},
+        {"key": "buff_light_aura", "value": "光のオーラ"},
+        {"key": "debuff_slow", "value": "減速"},
+        {"key": "debuff_poison", "value": "毒"},
+        {"key": "debuff_burn", "value": "火傷"},
+        {"key": "debuff_freeze", "value": "凍結"},
+        {"key": "debuff_root", "value": "束縛"},
+
+        {"key": "loading_tip_6", "value": "ルクスは明るいエリアで攻撃力がアップ"},
+        {"key": "loading_tip_7", "value": "ノクスは影のエリアでスピードアップ"},
+        {"key": "loading_tip_8", "value": "協力すればパズルをもっと簡単に解ける"},
+        {"key": "loading_tip_9", "value": "ダウン時はパートナーが蘇生できます"},
+        {"key": "loading_tip_10", "value": "全収集+タイムクリアで三ツ星獲得"}
     ]
 }

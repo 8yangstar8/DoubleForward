@@ -212,6 +212,31 @@
         {"key": "wave_4", "value": "웨이브 4"},
         {"key": "wave_5", "value": "웨이브 5"},
         {"key": "wave_all_clear", "value": "전 웨이브 클리어!"},
-        {"key": "boss_incoming", "value": "보스 출현!"}
+        {"key": "boss_incoming", "value": "보스 출현!"},
+
+        {"key": "revive_downed", "value": "쓰러짐!"},
+        {"key": "revive_alive", "value": "생존"},
+        {"key": "revive_both_downed", "value": "두 플레이어 모두 쓰러졌습니다!"},
+        {"key": "revive_instruction", "value": "파트너를 부활시키러 가세요!"},
+        {"key": "hint_players_far", "value": "두 플레이어 거리가 너무 멀어요!"},
+        {"key": "checkpoint_reached", "value": "체크포인트 도달"},
+
+        {"key": "buff_speed_boost", "value": "가속"},
+        {"key": "buff_damage_boost", "value": "공격력 증가"},
+        {"key": "buff_shield", "value": "보호막"},
+        {"key": "buff_regen", "value": "재생"},
+        {"key": "buff_shadow_cloak", "value": "그림자 은신"},
+        {"key": "buff_light_aura", "value": "빛의 오라"},
+        {"key": "debuff_slow", "value": "감속"},
+        {"key": "debuff_poison", "value": "중독"},
+        {"key": "debuff_burn", "value": "화상"},
+        {"key": "debuff_freeze", "value": "빙결"},
+        {"key": "debuff_root", "value": "속박"},
+
+        {"key": "loading_tip_6", "value": "럭스는 빛의 영역에서 공격력 보너스"},
+        {"key": "loading_tip_7", "value": "녹스는 그림자 영역에서 더 빠르게 이동"},
+        {"key": "loading_tip_8", "value": "협력하면 퍼즐을 더 쉽게 풀 수 있어요"},
+        {"key": "loading_tip_9", "value": "쓰러지면 파트너가 부활시킬 수 있어요"},
+        {"key": "loading_tip_10", "value": "모두 수집하고 시간 안에 완료하면 별 3개"}
     ]
 }

@@ -6,7 +6,7 @@ using System.Collections;
 /// 所有敌人类型继承此类并扩展特定行为
 /// </summary>
 [RequireComponent(typeof(Rigidbody2D))]
-public abstract class EnemyBase : MonoBehaviour
+public abstract class EnemyBase : MonoBehaviour, IDamageable
 {
     public enum EnemyState
     {
@@ -45,6 +45,10 @@ public abstract class EnemyBase : MonoBehaviour
     [SerializeField] protected GameObject[] dropItems;
     [SerializeField] [Range(0f, 1f)] protected float dropChance = 0.3f;
 
+    [Header("得分")]
+    [SerializeField] protected int scoreValue = 100;
+    [SerializeField] protected string enemyTypeName = "";
+
     // 运行时状态
     protected EnemyState currentState = EnemyState.Idle;
     protected float currentHealth;
@@ -64,6 +68,10 @@ public abstract class EnemyBase : MonoBehaviour
     public float HealthPercent => currentHealth / maxHealth;
     public EnemyState State => currentState;
     public bool IsDead => currentState == EnemyState.Dead;
+
+    // IDamageable implementation
+    bool IDamageable.IsAlive => !IsDead;
+    void IDamageable.TakeDamage(int damage) => TakeDamage(damage);
 
     public event System.Action<float> OnDamaged;      // 受到的伤害
     public event System.Action OnDeath;
@@ -255,6 +263,14 @@ public abstract class EnemyBase : MonoBehaviour
         if (SoundFeedback.Instance != null)
             SoundFeedback.Instance.PlayHurt();
 
+        // 发布受击事件（用于FloatingDamageText等UI）
+        EventBus.Publish(new EnemyHitEvent
+        {
+            playerIndex = -1,
+            damage = Mathf.CeilToInt(amount),
+            position = transform.position
+        });
+
         if (currentHealth <= 0)
         {
             Die();
@@ -280,6 +296,23 @@ public abstract class EnemyBase : MonoBehaviour
         // 屏幕震动
         if (VFXManager.Instance != null)
             VFXManager.Instance.ShakeLight();
+
+        // 发布击败事件
+        string typeName = !string.IsNullOrEmpty(enemyTypeName) ? enemyTypeName : GetType().Name;
+        EventBus.Publish(new EnemyDefeatedEvent
+        {
+            enemyType = typeName,
+            position = transform.position,
+            scoreValue = scoreValue
+        });
+
+        // 加分
+        if (ScoreManager.Instance != null)
+            ScoreManager.Instance.AddScore(scoreValue, "enemy_defeat");
+
+        // 触觉反馈
+        if (HapticFeedback.Instance != null)
+            HapticFeedback.Instance.Medium();
 
         rb.linearVelocity = Vector2.zero;
         rb.simulated = false;

@@ -32,6 +32,11 @@ public class DarknessSystem : MonoBehaviour
 
     // 动态光源列表
     private List<LightSource> lightSources = new List<LightSource>();
+
+    /// <summary>
+    /// 只读光源列表（供DarknessFogRenderer等外部系统渲染使用）
+    /// </summary>
+    public IReadOnlyList<LightSource> ActiveLightSources => lightSources;
     private PlayerController luxPlayer;
     private PlayerController noxPlayer;
 

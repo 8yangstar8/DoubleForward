@@ -253,5 +253,10 @@ public class VFXManager : MonoBehaviour
         public const string DustRun = "dust_run";
         public const string DashTrail = "dash_trail";
         public const string HealEffect = "heal";
+        public const string HealBurst = "heal_burst";
+        public const string BuffApply = "buff_apply";
+        public const string DebuffApply = "debuff_apply";
+        public const string ShieldBreak = "shield_break";
+        public const string ReviveComplete = "revive_complete";
     }
 }

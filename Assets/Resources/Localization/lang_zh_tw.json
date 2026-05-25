@@ -212,6 +212,31 @@
         {"key": "wave_4", "value": "第四波"},
         {"key": "wave_5", "value": "第五波"},
         {"key": "wave_all_clear", "value": "全部波次已清除！"},
-        {"key": "boss_incoming", "value": "Boss來襲！"}
+        {"key": "boss_incoming", "value": "Boss來襲！"},
+
+        {"key": "revive_downed", "value": "倒地！"},
+        {"key": "revive_alive", "value": "存活"},
+        {"key": "revive_both_downed", "value": "兩位玩家都倒下了！"},
+        {"key": "revive_instruction", "value": "快去復活你的搭檔！"},
+        {"key": "hint_players_far", "value": "兩位玩家距離太遠了！"},
+        {"key": "checkpoint_reached", "value": "檢查點已啟動"},
+
+        {"key": "buff_speed_boost", "value": "加速"},
+        {"key": "buff_damage_boost", "value": "攻擊增強"},
+        {"key": "buff_shield", "value": "護盾"},
+        {"key": "buff_regen", "value": "持續回復"},
+        {"key": "buff_shadow_cloak", "value": "暗影匿蹤"},
+        {"key": "buff_light_aura", "value": "光明光環"},
+        {"key": "debuff_slow", "value": "減速"},
+        {"key": "debuff_poison", "value": "中毒"},
+        {"key": "debuff_burn", "value": "灼燒"},
+        {"key": "debuff_freeze", "value": "冰凍"},
+        {"key": "debuff_root", "value": "定身"},
+
+        {"key": "loading_tip_6", "value": "Lux在光明區域獲得攻擊加成"},
+        {"key": "loading_tip_7", "value": "Nox在暗影區域移動更快"},
+        {"key": "loading_tip_8", "value": "兩人配合解決謎題更加高效"},
+        {"key": "loading_tip_9", "value": "倒地後隊友可以前來復活你"},
+        {"key": "loading_tip_10", "value": "收集所有物品並在時間內完成可獲得三星"}
     ]
 }

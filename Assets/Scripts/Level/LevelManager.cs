@@ -13,6 +13,11 @@ public class LevelManager : MonoBehaviour
     public PlayerController NoxPlayer { get; private set; }
     public bool IsLevelComplete { get; private set; }
 
+    // 属性别名（供PauseMenuUI等引用）
+    public float ElapsedTime => levelTimer;
+    public int CollectedCount => collectiblesGathered;
+    public int TotalCollectibles => levelData != null ? levelData.collectibleCount : 0;
+
     private float levelTimer;
     private int collectiblesGathered;
 
@@ -54,7 +59,13 @@ public class LevelManager : MonoBehaviour
             var luxObj = Instantiate(luxPrefab, levelData.luxSpawnPoint, Quaternion.identity);
             LuxPlayer = luxObj.GetComponent<PlayerController>();
             var luxHealth = luxObj.GetComponent<PlayerHealth>();
-            if (luxHealth != null) luxHealth.SetCheckpoint(levelData.luxSpawnPoint);
+            if (luxHealth != null)
+            {
+                luxHealth.SetCheckpoint(levelData.luxSpawnPoint);
+                // 注册到RespawnSystem
+                if (RespawnSystem.Instance != null)
+                    RespawnSystem.Instance.RegisterPlayer(0, luxHealth, LuxPlayer, levelData.luxSpawnPoint);
+            }
         }
 
         if (noxPrefab != null)
@@ -62,8 +73,21 @@ public class LevelManager : MonoBehaviour
             var noxObj = Instantiate(noxPrefab, levelData.noxSpawnPoint, Quaternion.identity);
             NoxPlayer = noxObj.GetComponent<PlayerController>();
             var noxHealth = noxObj.GetComponent<PlayerHealth>();
-            if (noxHealth != null) noxHealth.SetCheckpoint(levelData.noxSpawnPoint);
+            if (noxHealth != null)
+            {
+                noxHealth.SetCheckpoint(levelData.noxSpawnPoint);
+                // 注册到RespawnSystem
+                if (RespawnSystem.Instance != null)
+                    RespawnSystem.Instance.RegisterPlayer(1, noxHealth, NoxPlayer, levelData.noxSpawnPoint);
+            }
         }
+
+        // 发布关卡开始事件
+        EventBus.Publish(new LevelStartEvent
+        {
+            chapter = levelData != null ? levelData.chapter : 1,
+            level = levelData != null ? levelData.levelIndex : 1
+        });
     }
 
     void Update()

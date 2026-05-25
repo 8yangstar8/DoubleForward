@@ -212,6 +212,31 @@
         {"key": "wave_4", "value": "Wave 4"},
         {"key": "wave_5", "value": "Wave 5"},
         {"key": "wave_all_clear", "value": "All Waves Cleared!"},
-        {"key": "boss_incoming", "value": "Boss Incoming!"}
+        {"key": "boss_incoming", "value": "Boss Incoming!"},
+
+        {"key": "revive_downed", "value": "Downed!"},
+        {"key": "revive_alive", "value": "Active"},
+        {"key": "revive_both_downed", "value": "Both players down!"},
+        {"key": "revive_instruction", "value": "Go revive your partner!"},
+        {"key": "hint_players_far", "value": "Players are too far apart!"},
+        {"key": "checkpoint_reached", "value": "Checkpoint activated"},
+
+        {"key": "buff_speed_boost", "value": "Speed Boost"},
+        {"key": "buff_damage_boost", "value": "Damage Boost"},
+        {"key": "buff_shield", "value": "Shield"},
+        {"key": "buff_regen", "value": "Regeneration"},
+        {"key": "buff_shadow_cloak", "value": "Shadow Cloak"},
+        {"key": "buff_light_aura", "value": "Light Aura"},
+        {"key": "debuff_slow", "value": "Slowed"},
+        {"key": "debuff_poison", "value": "Poisoned"},
+        {"key": "debuff_burn", "value": "Burning"},
+        {"key": "debuff_freeze", "value": "Frozen"},
+        {"key": "debuff_root", "value": "Rooted"},
+
+        {"key": "loading_tip_6", "value": "Lux gains attack bonus in light areas"},
+        {"key": "loading_tip_7", "value": "Nox moves faster in shadow areas"},
+        {"key": "loading_tip_8", "value": "Teamwork makes puzzles easier to solve"},
+        {"key": "loading_tip_9", "value": "Your partner can revive you when you're downed"},
+        {"key": "loading_tip_10", "value": "Collect everything and finish in time for 3 stars"}
     ]
 }

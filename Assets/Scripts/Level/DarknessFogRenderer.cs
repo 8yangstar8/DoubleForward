@@ -180,17 +180,8 @@ public class DarknessFogRenderer : MonoBehaviour
 
         activeLightHoles = 0;
 
-        // 从DarknessSystem获取所有活跃光源
-        // 由于DarknessSystem.lightSources是private，我们通过公开的查询接口采样
-        // 更好的方案: 让DarknessSystem暴露光源列表（这里用反射兼容）
-        var field = typeof(DarknessSystem).GetField("lightSources",
-            System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-
-        if (field == null) return;
-
-        var sources = field.GetValue(DarknessSystem.Instance) as
-            System.Collections.Generic.List<DarknessSystem.LightSource>;
-
+        // 从DarknessSystem获取所有活跃光源（通过公开的只读列表）
+        var sources = DarknessSystem.Instance.ActiveLightSources;
         if (sources == null) return;
 
         foreach (var source in sources)
