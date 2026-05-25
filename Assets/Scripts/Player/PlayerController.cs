@@ -59,6 +59,8 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
+        if (isFrozen) return;
+
         bool wasGrounded = IsGrounded;
         IsGrounded = Physics2D.OverlapCircle(groundCheck.position, groundCheckRadius, groundLayer);
 
@@ -367,6 +369,28 @@ public class PlayerController : MonoBehaviour
         );
     }
 
+    // ============ 状态控制 ============
+
+    private bool isFrozen;
+    public bool IsFrozen => isFrozen;
+
+    /// <summary>
+    /// 冻结/解冻玩家（减益效果使用）
+    /// </summary>
+    public void SetFrozen(bool frozen)
+    {
+        isFrozen = frozen;
+        if (frozen)
+        {
+            rb.linearVelocity = Vector2.zero;
+            rb.constraints = RigidbodyConstraints2D.FreezeAll;
+        }
+        else
+        {
+            rb.constraints = RigidbodyConstraints2D.FreezeRotation;
+        }
+    }
+
     // ============ 重生 ============
 
     public void Respawn(Vector3 position)
@@ -375,6 +399,8 @@ public class PlayerController : MonoBehaviour
         rb.linearVelocity = Vector2.zero;
         IsDashing = false;
         hasDoubleJumped = false;
+        isFrozen = false;
+        rb.constraints = RigidbodyConstraints2D.FreezeRotation;
         if (IsOnLadder) ExitLadder();
     }
 
