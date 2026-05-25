@@ -154,4 +154,16 @@ public class PlayerHealth : MonoBehaviour
         IsInvincible = false;
         OnHealthChanged?.Invoke(CurrentHealth);
     }
+
+    /// <summary>
+    /// 设置无敌状态（合作技能、护盾等使用）
+    /// </summary>
+    public void SetInvincible(bool invincible)
+    {
+        IsInvincible = invincible;
+        if (invincible)
+            invincibleTimer = float.MaxValue; // 持续到手动取消
+        else
+            invincibleTimer = 0f;
+    }
 }

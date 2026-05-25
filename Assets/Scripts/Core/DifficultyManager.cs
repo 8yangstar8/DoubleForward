@@ -184,6 +184,15 @@ public class DifficultyManager : MonoBehaviour
     }
 
     /// <summary>
+    /// 获取玩家伤害倍率（用于PlayerCombat）
+    /// 低难度玩家伤害略高，高难度略低
+    /// </summary>
+    public float GetPlayerDamageMultiplier()
+    {
+        return Mathf.Lerp(1.4f, 0.8f, (currentModifier - minModifier) / (maxModifier - minModifier));
+    }
+
+    /// <summary>
     /// 获取难度描述文本
     /// </summary>
     public string GetDifficultyText()

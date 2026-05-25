@@ -103,6 +103,11 @@ public class ComboSystem : MonoBehaviour
     public void AddCombo() => AddComboHit();
 
     /// <summary>
+    /// 命中时增加连击（PlayerCombat/Projectile调用）
+    /// </summary>
+    public void OnHit() => AddComboHit("hit", 100);
+
+    /// <summary>
     /// 增加连击（击杀敌人、解开谜题、精确跳跃等）
     /// </summary>
     public void AddComboHit(string actionName = "hit", int baseScore = 100)

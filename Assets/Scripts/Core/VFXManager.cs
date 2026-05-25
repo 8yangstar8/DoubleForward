@@ -121,6 +121,14 @@ public class VFXManager : MonoBehaviour
     }
 
     /// <summary>
+    /// 播放特效别名（兼容PlayEffect调用）
+    /// </summary>
+    public GameObject PlayEffect(string effectName, Vector3 position)
+    {
+        return Play(effectName, position);
+    }
+
+    /// <summary>
     /// 在指定位置播放特效（跟随目标）
     /// </summary>
     public GameObject PlayAttached(string effectName, Transform parent, Vector3 localOffset = default)
