@@ -69,6 +69,13 @@ public class PlayerController : MonoBehaviour
                 IsDashing = false;
         }
 
+        // 梯子移动
+        if (IsOnLadder)
+        {
+            HandleLadderMovement();
+            return;
+        }
+
         HandleInput();
     }
 
@@ -170,12 +177,50 @@ public class PlayerController : MonoBehaviour
         return false;
     }
 
+    // ============ 梯子系统 ============
+
+    private Ladder currentLadder;
+    public bool IsOnLadder { get; private set; }
+
+    public void EnterLadder(Ladder ladder)
+    {
+        currentLadder = ladder;
+        IsOnLadder = true;
+        rb.gravityScale = ladder.DisableGravity ? 0 : rb.gravityScale;
+        rb.linearVelocity = Vector2.zero;
+    }
+
+    public void ExitLadder()
+    {
+        if (currentLadder != null && currentLadder.DisableGravity)
+            rb.gravityScale = 2.5f;
+
+        currentLadder = null;
+        IsOnLadder = false;
+    }
+
+    private void HandleLadderMovement()
+    {
+        if (!IsOnLadder || currentLadder == null) return;
+
+        if (InputManager.Instance == null) return;
+        Vector2 input = InputManager.Instance.GetMoveInput(playerIndex);
+
+        rb.linearVelocity = new Vector2(
+            input.x * moveSpeed * 0.5f,
+            input.y * currentLadder.ClimbSpeed
+        );
+    }
+
+    // ============ 重生 ============
+
     public void Respawn(Vector3 position)
     {
         transform.position = position;
         rb.linearVelocity = Vector2.zero;
         IsDashing = false;
         hasDoubleJumped = false;
+        if (IsOnLadder) ExitLadder();
     }
 
     void OnDrawGizmosSelected()

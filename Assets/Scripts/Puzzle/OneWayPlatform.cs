@@ -6,7 +6,7 @@ using UnityEngine;
 /// </summary>
 [RequireComponent(typeof(BoxCollider2D))]
 [RequireComponent(typeof(PlatformEffector2D))]
-public class OneWayPlatform : MonoBehaviour
+public class AdvancedOneWayPlatform : MonoBehaviour
 {
     [Header("设置")]
     [SerializeField] private float dropThroughDuration = 0.3f;

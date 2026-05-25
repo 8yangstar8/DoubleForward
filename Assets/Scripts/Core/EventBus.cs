@@ -240,6 +240,21 @@ public struct PhotoFilterChangedEvent : IGameEvent
     public float saturation;
 }
 
+// 波次战斗事件
+public struct WaveStartedEvent : IGameEvent
+{
+    public int waveIndex;
+    public int totalWaves;
+    public string waveName;
+}
+
+public struct WaveCompletedEvent : IGameEvent
+{
+    public int waveIndex;
+    public int totalWaves;
+    public bool allCleared;
+}
+
 // 水域事件（定义在Core中供跨程序集使用）
 public struct WaterEnteredEvent : IGameEvent
 {
@@ -260,4 +275,21 @@ public interface IDamageable
 {
     void TakeDamage(int damage);
     bool IsAlive { get; }
+}
+
+/// <summary>
+/// 可交互物体接口（放在Core中供所有程序集使用）
+/// PlayerInteraction通过此接口检测和执行交互
+/// 使用GameObject参数避免Core→Player循环依赖
+/// </summary>
+public interface IInteractable
+{
+    /// <summary>是否可以交互</summary>
+    bool CanInteract(UnityEngine.GameObject player);
+
+    /// <summary>执行交互</summary>
+    void OnInteract(UnityEngine.GameObject player);
+
+    /// <summary>获取交互提示文本key</summary>
+    string GetInteractPrompt();
 }

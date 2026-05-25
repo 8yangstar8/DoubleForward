@@ -199,6 +199,19 @@
         {"key": "tutorial_tap_to_continue", "value": "タップして続ける"},
         {"key": "tutorial_skip_all", "value": "チュートリアルをスキップ"},
         {"key": "tutorial_water", "value": "水中でジョイスティックを使って泳ぐ"},
-        {"key": "tutorial_combat", "value": "攻撃ボタンをタップして敵を攻撃"}
+        {"key": "tutorial_combat", "value": "攻撃ボタンをタップして敵を攻撃"},
+
+        {"key": "interact_lever_on", "value": "レバーを引く"},
+        {"key": "interact_lever_off", "value": "レバーを引く"},
+        {"key": "interact_read", "value": "読む"},
+        {"key": "interact_open_chest", "value": "宝箱を開ける"},
+        {"key": "damage_blocked", "value": "ブロック"},
+        {"key": "wave_1", "value": "ウェーブ1"},
+        {"key": "wave_2", "value": "ウェーブ2"},
+        {"key": "wave_3", "value": "ウェーブ3"},
+        {"key": "wave_4", "value": "ウェーブ4"},
+        {"key": "wave_5", "value": "ウェーブ5"},
+        {"key": "wave_all_clear", "value": "全ウェーブクリア！"},
+        {"key": "boss_incoming", "value": "ボス出現！"}
     ]
 }

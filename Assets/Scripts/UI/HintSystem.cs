@@ -150,6 +150,20 @@ public class HintSystem : MonoBehaviour
     /// <summary>
     /// 显示提示文本
     /// </summary>
+    public void ShowHint(string text, float duration)
+    {
+        ShowHint(text);
+        // 覆盖自动隐藏延迟
+        if (hideCoroutine != null) StopCoroutine(hideCoroutine);
+        hideCoroutine = StartCoroutine(HideAfterDelay(duration));
+    }
+
+    private System.Collections.IEnumerator HideAfterDelay(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        HideHint();
+    }
+
     public void ShowHint(string text)
     {
         if (hintPanel == null || hintText == null) return;

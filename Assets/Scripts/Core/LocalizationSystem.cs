@@ -138,6 +138,11 @@ public class LocalizationSystem : MonoBehaviour
     }
 
     /// <summary>
+    /// Get的别名 - 便于语义化调用
+    /// </summary>
+    public string GetText(string key) => Get(key);
+
+    /// <summary>
     /// 带参数的格式化本地化文本
     /// </summary>
     public string GetFormat(string key, params object[] args)

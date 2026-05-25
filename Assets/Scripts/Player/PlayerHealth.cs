@@ -14,6 +14,8 @@ public class PlayerHealth : MonoBehaviour
     public event System.Action OnDeath;
     public event System.Action OnRespawned;
 
+    public int MaxHealth => maxHealth;
+
     private float invincibleTimer;
     private Vector3 lastCheckpointPosition;
     private PlayerController controller;
@@ -40,6 +42,54 @@ public class PlayerHealth : MonoBehaviour
 
         CurrentHealth = Mathf.Max(0, CurrentHealth - damage);
         OnHealthChanged?.Invoke(CurrentHealth);
+
+        // 发布事件
+        EventBus.Publish(new PlayerDamagedEvent
+        {
+            damage = damage,
+            remainingHealth = CurrentHealth,
+            playerIndex = controller != null ? controller.PlayerIndex : 0,
+            hitDirection = Vector2.zero
+        });
+
+        if (CurrentHealth <= 0)
+        {
+            Die();
+        }
+        else
+        {
+            IsInvincible = true;
+            invincibleTimer = invincibleDuration;
+        }
+    }
+
+    /// <summary>
+    /// 带击退方向的伤害重载（敌人攻击使用）
+    /// </summary>
+    public void TakeDamage(float damage, Vector2 knockback)
+    {
+        if (!IsAlive || IsInvincible) return;
+
+        int intDamage = Mathf.CeilToInt(damage);
+        CurrentHealth = Mathf.Max(0, CurrentHealth - intDamage);
+        OnHealthChanged?.Invoke(CurrentHealth);
+
+        // 施加击退
+        if (knockback != Vector2.zero)
+        {
+            var rb = GetComponent<Rigidbody2D>();
+            if (rb != null)
+                rb.AddForce(knockback.normalized * 5f, ForceMode2D.Impulse);
+        }
+
+        // 发布事件
+        EventBus.Publish(new PlayerDamagedEvent
+        {
+            damage = intDamage,
+            remainingHealth = CurrentHealth,
+            playerIndex = controller != null ? controller.PlayerIndex : 0,
+            hitDirection = knockback
+        });
 
         if (CurrentHealth <= 0)
         {

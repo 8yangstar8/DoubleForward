@@ -42,6 +42,8 @@ public class InputManager : MonoBehaviour
 
     public Vector2 GetMoveInput(int playerIndex)
     {
+        if (!inputEnabled) return Vector2.zero;
+
         if (playerIndex == 0)
             return joystickP1 != null ? joystickP1.Direction : Vector2.zero;
         else
@@ -50,6 +52,8 @@ public class InputManager : MonoBehaviour
 
     public bool GetJumpPressed(int playerIndex)
     {
+        if (!inputEnabled) return false;
+
         if (playerIndex == 0)
             return jumpButtonP1 != null && jumpButtonP1.WasPressedThisFrame;
         else
@@ -58,6 +62,8 @@ public class InputManager : MonoBehaviour
 
     public bool GetSkill1Pressed(int playerIndex)
     {
+        if (!inputEnabled) return false;
+
         if (playerIndex == 0)
             return skill1ButtonP1 != null && skill1ButtonP1.WasPressedThisFrame;
         else
@@ -66,6 +72,8 @@ public class InputManager : MonoBehaviour
 
     public bool GetSkill2Pressed(int playerIndex)
     {
+        if (!inputEnabled) return false;
+
         if (playerIndex == 0)
             return skill2ButtonP1 != null && skill2ButtonP1.WasPressedThisFrame;
         else
@@ -74,9 +82,44 @@ public class InputManager : MonoBehaviour
 
     public bool GetSkill1Held(int playerIndex)
     {
+        if (!inputEnabled) return false;
+
         if (playerIndex == 0)
             return skill1ButtonP1 != null && skill1ButtonP1.IsPressed;
         else
             return skill1ButtonP2 != null && skill1ButtonP2.IsPressed;
     }
+
+    // ============ 交互按键 ============
+
+    [Header("交互按钮")]
+    [SerializeField] private TouchButton interactButtonP1;
+    [SerializeField] private TouchButton interactButtonP2;
+
+    /// <summary>
+    /// 交互键是否按下（拉杆、NPC对话、宝箱等）
+    /// </summary>
+    public bool GetInteractPressed(int playerIndex)
+    {
+        if (!inputEnabled) return false;
+
+        if (playerIndex == 0)
+            return interactButtonP1 != null && interactButtonP1.WasPressedThisFrame;
+        else
+            return interactButtonP2 != null && interactButtonP2.WasPressedThisFrame;
+    }
+
+    // ============ 全局输入控制 ============
+
+    private bool inputEnabled = true;
+
+    /// <summary>
+    /// 全局启用/禁用输入（过场动画、电影模式时禁用）
+    /// </summary>
+    public void SetInputEnabled(bool enabled)
+    {
+        inputEnabled = enabled;
+    }
+
+    public bool IsInputEnabled => inputEnabled;
 }

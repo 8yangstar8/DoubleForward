@@ -2,6 +2,8 @@ using UnityEngine;
 
 public class CameraController : MonoBehaviour
 {
+    public static CameraController Instance { get; private set; }
+
     [Header("Target")]
     [SerializeField] private Transform target;
     [SerializeField] private Vector3 offset = new Vector3(0, 1, -10);
@@ -16,8 +18,21 @@ public class CameraController : MonoBehaviour
     [SerializeField] private Vector2 minBounds;
     [SerializeField] private Vector2 maxBounds;
 
+    [Header("Zoom")]
+    [SerializeField] private float defaultOrthoSize = 5f;
+
     private Vector3 currentLookAhead;
     private PlayerController targetPlayer;
+    private Transform originalTarget;
+    private bool isFocusing;
+    private float focusDuration;
+    private float focusTimer;
+
+    void Awake()
+    {
+        if (Instance != null && Instance != this) { Destroy(gameObject); return; }
+        Instance = this;
+    }
 
     public void SetTarget(Transform newTarget)
     {
@@ -27,6 +42,14 @@ public class CameraController : MonoBehaviour
 
     void LateUpdate()
     {
+        // 聚焦模式计时
+        if (isFocusing)
+        {
+            focusTimer -= Time.unscaledDeltaTime;
+            if (focusTimer <= 0f)
+                ReturnToPlayers();
+        }
+
         if (target == null) return;
 
         Vector3 lookAheadTarget = Vector3.zero;
@@ -59,5 +82,37 @@ public class CameraController : MonoBehaviour
     {
         if (target == null) return;
         transform.position = target.position + offset;
+    }
+
+    /// <summary>
+    /// 聚焦到指定目标（Boss登场演出等）
+    /// </summary>
+    public void FocusOnTarget(Transform focusTarget, float duration)
+    {
+        originalTarget = target;
+        target = focusTarget;
+        targetPlayer = null;
+        isFocusing = true;
+        focusTimer = duration;
+        focusDuration = duration;
+    }
+
+    /// <summary>
+    /// 回到玩家跟随模式
+    /// </summary>
+    public void ReturnToPlayers()
+    {
+        isFocusing = false;
+        if (originalTarget != null)
+        {
+            target = originalTarget;
+            targetPlayer = target.GetComponent<PlayerController>();
+            originalTarget = null;
+        }
+    }
+
+    void OnDestroy()
+    {
+        if (Instance == this) Instance = null;
     }
 }

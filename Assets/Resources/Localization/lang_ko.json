@@ -199,6 +199,19 @@
         {"key": "tutorial_tap_to_continue", "value": "탭하여 계속"},
         {"key": "tutorial_skip_all", "value": "튜토리얼 건너뛰기"},
         {"key": "tutorial_water", "value": "물속에서 조이스틱으로 수영"},
-        {"key": "tutorial_combat", "value": "공격 버튼을 탭하여 적 공격"}
+        {"key": "tutorial_combat", "value": "공격 버튼을 탭하여 적 공격"},
+
+        {"key": "interact_lever_on", "value": "레버 당기기"},
+        {"key": "interact_lever_off", "value": "레버 당기기"},
+        {"key": "interact_read", "value": "읽기"},
+        {"key": "interact_open_chest", "value": "상자 열기"},
+        {"key": "damage_blocked", "value": "방어"},
+        {"key": "wave_1", "value": "웨이브 1"},
+        {"key": "wave_2", "value": "웨이브 2"},
+        {"key": "wave_3", "value": "웨이브 3"},
+        {"key": "wave_4", "value": "웨이브 4"},
+        {"key": "wave_5", "value": "웨이브 5"},
+        {"key": "wave_all_clear", "value": "전 웨이브 클리어!"},
+        {"key": "boss_incoming", "value": "보스 출현!"}
     ]
 }

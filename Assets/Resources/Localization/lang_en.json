@@ -199,6 +199,19 @@
         {"key": "tutorial_tap_to_continue", "value": "Tap to continue"},
         {"key": "tutorial_skip_all", "value": "Skip Tutorial"},
         {"key": "tutorial_water", "value": "Swim with the joystick underwater"},
-        {"key": "tutorial_combat", "value": "Tap attack to strike enemies"}
+        {"key": "tutorial_combat", "value": "Tap attack to strike enemies"},
+
+        {"key": "interact_lever_on", "value": "Pull lever"},
+        {"key": "interact_lever_off", "value": "Pull lever"},
+        {"key": "interact_read", "value": "Read"},
+        {"key": "interact_open_chest", "value": "Open chest"},
+        {"key": "damage_blocked", "value": "Blocked"},
+        {"key": "wave_1", "value": "Wave 1"},
+        {"key": "wave_2", "value": "Wave 2"},
+        {"key": "wave_3", "value": "Wave 3"},
+        {"key": "wave_4", "value": "Wave 4"},
+        {"key": "wave_5", "value": "Wave 5"},
+        {"key": "wave_all_clear", "value": "All Waves Cleared!"},
+        {"key": "boss_incoming", "value": "Boss Incoming!"}
     ]
 }

@@ -10,8 +10,9 @@ using System.Collections;
 /// <summary>
 /// 可破坏的墙壁/箱子/障碍物
 /// </summary>
-public class Breakable : MonoBehaviour
+public class Breakable : MonoBehaviour, IDamageable
 {
+    public bool IsAlive => currentHP > 0;
     [Header("破坏设置")]
     [SerializeField] private int hitPoints = 3;
     [SerializeField] private bool requireSpecificCharacter = false;
@@ -117,6 +118,24 @@ public class Breakable : MonoBehaviour
             yield return null;
         }
         transform.position = originalPosition;
+    }
+
+    /// <summary>
+    /// IDamageable接口实现 — 通用伤害入口（PlayerCombat使用）
+    /// </summary>
+    public void TakeDamage(int damage)
+    {
+        TakeHit(damage);
+    }
+
+    /// <summary>
+    /// 带攻击类型的伤害（Projectile使用）
+    /// </summary>
+    public void TakeDamage(int damage, string attackType)
+    {
+        bool isShadow = attackType == "shadow";
+        bool isLight = attackType == "light";
+        TakeHit(damage, isShadow, isLight);
     }
 
     void OnCollisionEnter2D(Collision2D collision)

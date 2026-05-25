@@ -199,6 +199,19 @@
         {"key": "tutorial_tap_to_continue", "value": "点击继续"},
         {"key": "tutorial_skip_all", "value": "跳过教程"},
         {"key": "tutorial_water", "value": "在水中使用摇杆游泳"},
-        {"key": "tutorial_combat", "value": "点击攻击按钮打击敌人"}
+        {"key": "tutorial_combat", "value": "点击攻击按钮打击敌人"},
+
+        {"key": "interact_lever_on", "value": "拉动拉杆"},
+        {"key": "interact_lever_off", "value": "拉动拉杆"},
+        {"key": "interact_read", "value": "阅读"},
+        {"key": "interact_open_chest", "value": "打开宝箱"},
+        {"key": "damage_blocked", "value": "格挡"},
+        {"key": "wave_1", "value": "第一波"},
+        {"key": "wave_2", "value": "第二波"},
+        {"key": "wave_3", "value": "第三波"},
+        {"key": "wave_4", "value": "第四波"},
+        {"key": "wave_5", "value": "第五波"},
+        {"key": "wave_all_clear", "value": "全部波次已清除！"},
+        {"key": "boss_incoming", "value": "Boss来袭！"}
     ]
 }
