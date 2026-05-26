@@ -109,6 +109,37 @@ public class LevelBootstrap : MonoBehaviour
         if (AnalyticsTracker.Instance != null)
             AnalyticsTracker.Instance.TrackLevelStart(chapter, level);
 
+        // ====== 6.5. 新系统集成 ======
+
+        // 发布关卡开始事件（供PlayerBondSystem等订阅）
+        EventBus.Publish(new LevelStartEvent { chapter = chapter, level = level });
+
+        // NG+难度应用
+        if (NewGamePlusManager.Instance != null && NewGamePlusManager.Instance.IsNewGamePlus)
+        {
+            Debug.Log($"[LevelBoot] NG+{NewGamePlusManager.Instance.CurrentNGLevel} active");
+        }
+
+        // 关卡修改器应用
+        if (LevelModifierSystem.Instance != null)
+        {
+            var activeModifiers = LevelModifierSystem.Instance.GetActiveModifiers();
+            if (activeModifiers.Count > 0)
+                Debug.Log($"[LevelBoot] {activeModifiers.Count} level modifiers active");
+        }
+
+        // 故事解锁
+        if (StoryRecapSystem.Instance != null)
+        {
+            if (isFirstLevelInChapter)
+                StoryRecapSystem.Instance.UnlockStory($"ch{chapter}_intro");
+        }
+
+        // Boss战前羁绊对话
+        if (isBossLevel && PlayerBondSystem.Instance != null)
+            PlayerBondSystem.Instance.TryTriggerBondDialogue(
+                PlayerBondSystem.BondDialogue.BondDialogueTrigger.BossEncounter);
+
         // ====== 7. 通知流程管理器 ======
         if (GameFlowManager.Instance != null)
             GameFlowManager.Instance.OnLevelReady();
@@ -237,6 +268,21 @@ public class LevelBootstrap : MonoBehaviour
         // 难度调整
         if (DifficultyManager.Instance != null)
             DifficultyManager.Instance.RecordLevelComplete();
+
+        // 故事解锁（Boss击败、章节结局）
+        if (StoryRecapSystem.Instance != null)
+        {
+            if (isBossLevel)
+            {
+                StoryRecapSystem.Instance.UnlockStory($"ch{chapter}_boss_intro");
+                StoryRecapSystem.Instance.UnlockStory($"ch{chapter}_boss_defeat");
+            }
+            // 章节最后一关
+            if (level == 4 || isBossLevel)
+            {
+                StoryRecapSystem.Instance.UnlockStory($"ch{chapter}_outro");
+            }
+        }
 
         // 检查评分提示
         if (MobileServices.Instance != null && SaveSystem.Instance != null)

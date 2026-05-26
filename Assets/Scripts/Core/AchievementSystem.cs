@@ -84,6 +84,42 @@ public class AchievementSystem : MonoBehaviour
         AddDefault("monthly_login", "铁杆玩家", "连续登录30天", "social", 1);
         AddDefault("share_first", "分享快乐", "首次分享游戏截图", "social", 1);
         AddDefault("photo_mode_10", "摄影师", "使用拍照模式10次", "social", 10);
+
+        // ====== 合作类 ======
+        AddDefault("sync_streak_5", "默契配合", "达成5次连续同步", "challenge", 1);
+        AddDefault("sync_streak_10", "心意相通", "达成10次连续同步", "challenge", 1);
+        AddDefault("combo_master_10", "连携大师", "触发10次连携技", "challenge", 1);
+
+        // ====== Boss连战类 ======
+        AddDefault("boss_rush_complete", "Boss猎人", "完成Boss连战模式", "challenge", 1);
+        AddDefault("boss_rush_no_death", "不死传说", "Boss连战零死亡通关", "challenge", 1);
+        AddDefault("boss_rush_no_hit", "无伤传奇", "Boss连战全程无伤", "challenge", 1);
+        AddDefault("boss_rush_s_rank", "S级猎人", "Boss连战获得S级评分", "challenge", 1);
+
+        // ====== 新游戏+类 ======
+        AddDefault("ng_plus_1", "二周目", "开始NG+1", "story", 1);
+        AddDefault("ng_plus_2", "三周目", "开始NG+2", "story", 1);
+        AddDefault("ng_plus_3", "究极挑战", "开始NG+3", "story", 1);
+        AddDefault("ng_plus_max", "轮回终结者", "达到最高NG+等级", "challenge", 1);
+
+        // ====== 羁绊类 ======
+        AddDefault("bond_level_1", "初次相识", "羁绊达到等级1", "story", 1);
+        AddDefault("bond_level_2", "可靠伙伴", "羁绊达到等级2", "story", 1);
+        AddDefault("bond_level_3", "莫逆之交", "羁绊达到等级3", "story", 1);
+        AddDefault("bond_level_4", "灵魂契约", "羁绊达到等级4", "story", 1);
+        AddDefault("bond_level_5", "灵魂共鸣", "羁绊达到等级5", "story", 1);
+        AddDefault("bond_max", "命运交织", "羁绊达到最高等级", "challenge", 1);
+
+        // ====== 成长类 ======
+        AddDefault("level_10", "小有成就", "角色等级达到10级", "challenge", 1);
+        AddDefault("level_20", "实力不凡", "角色等级达到20级", "challenge", 1);
+        AddDefault("max_level", "满级大佬", "角色达到最高等级", "challenge", 1);
+
+        // ====== 收集类 ======
+        AddDefault("relic_hunter", "遗物猎人", "收集10个遗物", "secret", 1);
+        AddDefault("relic_master", "遗物大师", "收集所有遗物", "secret", 1);
+        AddDefault("secret_master", "秘境探索者", "发现所有关卡隐藏区域", "secret", 1);
+        AddDefault("level_all_secrets", "一览无遗", "在一个关卡中发现全部隐藏", "secret", 1);
     }
 
     private void AddDefault(string id, string title, string desc, string category, float target)
