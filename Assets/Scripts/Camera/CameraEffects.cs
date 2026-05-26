@@ -258,6 +258,15 @@ public class CameraEffects : MonoBehaviour
     // ============ 色差效果 ============
 
     /// <summary>
+    /// 设置暗角强度（关卡环境使用）
+    /// </summary>
+    public void SetVignette(float intensity)
+    {
+        if (vignette != null)
+            vignette.intensity.value = Mathf.Clamp01(intensity);
+    }
+
+    /// <summary>
     /// 冲刺/传送色差
     /// </summary>
     public void ChromaticPulse(float intensity = 0.5f, float duration = 0.2f)

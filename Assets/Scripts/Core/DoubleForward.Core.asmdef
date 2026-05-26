@@ -2,7 +2,8 @@
     "name": "DoubleForward.Core",
     "rootNamespace": "DoubleForward.Core",
     "references": [
-        "Unity.TextMeshPro"
+        "Unity.TextMeshPro",
+        "Unity.RenderPipelines.Universal.Runtime"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

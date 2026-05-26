@@ -43,6 +43,13 @@ public class GameInitializer : MonoBehaviour
     [SerializeField] private GameObject timeManagerPrefab;
     [SerializeField] private GameObject achievementTrackerPrefab;
 
+    [Header("游戏玩法预制体")]
+    [SerializeField] private GameObject musicLayerSystemPrefab;
+    [SerializeField] private GameObject gameplayTipSystemPrefab;
+    [SerializeField] private GameObject challengeModePrefab;
+    [SerializeField] private GameObject playerCoopSyncPrefab;
+    [SerializeField] private GameObject worldProgressionPrefab;
+
     [Header("UI预制体")]
     [SerializeField] private GameObject debugOverlayPrefab;
 
@@ -126,6 +133,14 @@ public class GameInitializer : MonoBehaviour
         SpawnIfNeeded<TimeManager>(timeManagerPrefab);
         SpawnIfNeeded<AutoSaveSystem>(autoSaveSystemPrefab);
         SpawnIfNeeded<AchievementTracker>(achievementTrackerPrefab);
+        yield return null;
+
+        // ====== 第5.5层：游戏玩法系统（依赖核心+辅助） ======
+        SpawnIfNeeded<MusicLayerSystem>(musicLayerSystemPrefab);
+        SpawnIfNeeded<GameplayTipSystem>(gameplayTipSystemPrefab);
+        SpawnIfNeeded<ChallengeMode>(challengeModePrefab);
+        SpawnIfNeeded<PlayerCoopSync>(playerCoopSyncPrefab);
+        SpawnIfNeeded<WorldProgressionManager>(worldProgressionPrefab);
         yield return null;
 
         // ====== 第6层：流程控制（依赖上面所有系统） ======

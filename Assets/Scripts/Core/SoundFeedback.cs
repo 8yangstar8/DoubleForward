@@ -222,4 +222,15 @@ public class SoundFeedback : MonoBehaviour
     // 别名（兼容其他系统调用）
     public void PlayClick() => PlayUIClick();
     public void PlayConfirm() => PlayUISuccess();
+
+    /// <summary>
+    /// 播放指定AudioClip（一次性，不走命名系统）
+    /// </summary>
+    public void PlayOneShot(AudioClip clip, float volume = 1f)
+    {
+        if (clip == null) return;
+        var source = GetComponent<AudioSource>();
+        if (source != null)
+            source.PlayOneShot(clip, volume);
+    }
 }
