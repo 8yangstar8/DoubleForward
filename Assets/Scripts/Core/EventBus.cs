@@ -328,6 +328,26 @@ public struct CoopAbilityUsedEvent : IGameEvent
     public int player2Index;
 }
 
+// 连携技事件
+public struct ShieldActivatedEvent : IGameEvent
+{
+    public float duration;
+    public UnityEngine.Vector3 position;
+}
+
+public struct HealAllPlayersEvent : IGameEvent
+{
+    public int healAmount;
+    public string source;
+}
+
+// 遗物事件
+public struct RelicCollectedEvent : IGameEvent
+{
+    public string relicId;
+    public int totalCollected;
+}
+
 /// <summary>
 /// 通用可伤害接口（放在Core中供所有程序集使用）
 /// </summary>

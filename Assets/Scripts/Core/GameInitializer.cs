@@ -49,6 +49,14 @@ public class GameInitializer : MonoBehaviour
     [SerializeField] private GameObject challengeModePrefab;
     [SerializeField] private GameObject playerCoopSyncPrefab;
     [SerializeField] private GameObject worldProgressionPrefab;
+    [SerializeField] private GameObject enemyDirectorPrefab;
+    [SerializeField] private GameObject screenEffectsControllerPrefab;
+    [SerializeField] private GameObject environmentEffectManagerPrefab;
+    [SerializeField] private GameObject secretAreaSystemPrefab;
+    [SerializeField] private GameObject gameEndingManagerPrefab;
+    [SerializeField] private GameObject relicSystemPrefab;
+    [SerializeField] private GameObject abilityComboSystemPrefab;
+    [SerializeField] private GameObject levelModifierSystemPrefab;
 
     [Header("UI预制体")]
     [SerializeField] private GameObject debugOverlayPrefab;
@@ -141,6 +149,14 @@ public class GameInitializer : MonoBehaviour
         SpawnIfNeeded<ChallengeMode>(challengeModePrefab);
         SpawnIfNeeded<PlayerCoopSync>(playerCoopSyncPrefab);
         SpawnIfNeeded<WorldProgressionManager>(worldProgressionPrefab);
+        SpawnIfNeeded<EnemyDirector>(enemyDirectorPrefab);
+        SpawnIfNeeded<ScreenEffectsController>(screenEffectsControllerPrefab);
+        SpawnIfNeeded<EnvironmentEffectManager>(environmentEffectManagerPrefab);
+        SpawnIfNeeded<SecretAreaSystem>(secretAreaSystemPrefab);
+        SpawnIfNeeded<GameEndingManager>(gameEndingManagerPrefab);
+        SpawnIfNeeded<RelicSystem>(relicSystemPrefab);
+        SpawnIfNeeded<AbilityComboSystem>(abilityComboSystemPrefab);
+        SpawnIfNeeded<LevelModifierSystem>(levelModifierSystemPrefab);
         yield return null;
 
         // ====== 第6层：流程控制（依赖上面所有系统） ======

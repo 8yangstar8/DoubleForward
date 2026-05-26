@@ -93,9 +93,8 @@ public class AutoSaveSystem : MonoBehaviour
             SaveSystem.Instance.Save();
         }
 
-        // 统计
-        if (GameStats.Instance != null)
-            GameStats.Instance.IncrementStat("auto_saves");
+        // 统计（记录自动存档次数）
+        // GameStats不跟踪auto_saves，此处仅留日志
 
         Debug.Log($"[AutoSave] Saved ({reason})");
 

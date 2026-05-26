@@ -316,15 +316,16 @@ public class WorldProgressionManager : MonoBehaviour
                     notifiedUnlocks.Add(worldKey);
                     OnWorldUnlocked?.Invoke(config.chapter);
 
-                    // 提示系统
-                    if (GameplayTipSystem.Instance != null)
+                    // 通过EventBus发送提示（避免Core→UI跨程序集引用）
+                    string chapterName = config.nameKey;
+                    if (LocalizationSystem.Instance != null)
+                        chapterName = LocalizationSystem.Instance.GetText(config.nameKey);
+                    EventBus.Publish(new HintRequestEvent
                     {
-                        string chapterName = config.nameKey;
-                        if (LocalizationSystem.Instance != null)
-                            chapterName = LocalizationSystem.Instance.GetText(config.nameKey);
-                        GameplayTipSystem.Instance.ShowTipImmediate(
-                            $"新世界已解锁：{chapterName}！", null, 4f);
-                    }
+                        textKey = $"world_unlocked_{config.chapter}",
+                        fallbackText = $"新世界已解锁：{chapterName}！",
+                        duration = 4f
+                    });
                 }
             }
 

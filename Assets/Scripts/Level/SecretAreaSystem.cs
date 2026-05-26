@@ -68,7 +68,7 @@ public class SecretAreaSystem : MonoBehaviour
 
         // 奖励
         if (CurrencyManager.Instance != null)
-            CurrencyManager.Instance.AddCurrency(50);
+            CurrencyManager.Instance.AddCoins(50, "secret_found");
 
         if (ComboSystem.Instance != null)
             ComboSystem.Instance.PerfectAction("secret_found", 300);

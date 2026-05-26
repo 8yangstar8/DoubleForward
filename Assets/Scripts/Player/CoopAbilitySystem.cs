@@ -34,6 +34,7 @@ public class CoopAbilitySystem : MonoBehaviour
     private PlayerController noxPlayer;
 
     public float CoopMeterPercent => currentMeter / coopMeterMax;
+    public float CurrentMeter => currentMeter;
     public bool IsCoopReady => currentMeter >= coopMeterMax;
     public bool IsCoopActive => isCoopActive;
 
@@ -153,6 +154,15 @@ public class CoopAbilitySystem : MonoBehaviour
     public void AddMeterForHit()
     {
         AddMeter(meterGainPerHit);
+    }
+
+    /// <summary>
+    /// 消耗合作能量（连携技、特殊技能使用）
+    /// </summary>
+    public void SpendMeter(float amount)
+    {
+        currentMeter = Mathf.Max(0, currentMeter - amount);
+        OnMeterChanged?.Invoke(CoopMeterPercent);
     }
 
     /// <summary>

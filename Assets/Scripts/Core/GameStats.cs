@@ -57,6 +57,11 @@ public class GameStats : MonoBehaviour
 
     public StatsData Stats => stats;
     public int BestCombo => stats.highestCombo;
+    public int TotalDeaths => stats.totalDeaths;
+    public int TotalEnemiesDefeated => stats.totalEnemiesDefeated;
+    public int TotalCollectiblesFound => stats.totalCollectiblesFound;
+    public int TotalLevelsCompleted => stats.totalLevelsCompleted;
+    public float TotalPlayTime => stats.totalPlayTime + (Time.time - sessionStartTime);
 
     public event System.Action<string, int> OnStatChanged; // statName, newValue
 
