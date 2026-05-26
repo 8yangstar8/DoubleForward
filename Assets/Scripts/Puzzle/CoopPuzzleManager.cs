@@ -195,10 +195,13 @@ public class CoopPuzzleManager : MonoBehaviour
                 state.hintGiven = true;
                 OnPuzzleHintNeeded?.Invoke(state.puzzleId);
 
-                // 通知提示系统
-                if (GameplayTipSystem.Instance != null)
-                    GameplayTipSystem.Instance.TriggerCheck(
-                        GameplayTipSystem.TipTrigger.NearCoopMechanism);
+                // 通过EventBus通知提示系统（避免跨程序集依赖）
+                EventBus.Publish(new HintRequestEvent
+                {
+                    textKey = "tip_coop_mechanism",
+                    fallbackText = "这个机关需要两人同时操作！",
+                    duration = 5f
+                });
             }
         }
     }

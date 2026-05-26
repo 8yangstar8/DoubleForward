@@ -85,6 +85,7 @@ public class GameplayTipSystem : MonoBehaviour
         EventBus.Subscribe<PlayerDamagedEvent>(OnPlayerDamaged);
         EventBus.Subscribe<EnemyDefeatedEvent>(OnEnemyDefeated);
         EventBus.Subscribe<PuzzleSolvedEvent>(OnPuzzleSolved);
+        EventBus.Subscribe<HintRequestEvent>(OnHintRequest);
 
         if (tipPanel != null) tipPanel.SetActive(false);
         dismissButton?.onClick.AddListener(DismissCurrentTip);
@@ -100,6 +101,7 @@ public class GameplayTipSystem : MonoBehaviour
         EventBus.Unsubscribe<PlayerDamagedEvent>(OnPlayerDamaged);
         EventBus.Unsubscribe<EnemyDefeatedEvent>(OnEnemyDefeated);
         EventBus.Unsubscribe<PuzzleSolvedEvent>(OnPuzzleSolved);
+        EventBus.Unsubscribe<HintRequestEvent>(OnHintRequest);
         if (Instance == this) Instance = null;
     }
 
@@ -196,6 +198,11 @@ public class GameplayTipSystem : MonoBehaviour
     private void OnPuzzleSolved(PuzzleSolvedEvent e)
     {
         consecutiveDeaths = 0;
+    }
+
+    private void OnHintRequest(HintRequestEvent e)
+    {
+        ShowTipImmediate(e.fallbackText, null, e.duration > 0 ? e.duration : displayDuration);
     }
 
     // ==================== 卡关检测 ====================

@@ -56,6 +56,7 @@ public class GameStats : MonoBehaviour
     private const string STATS_SAVE_KEY = "game_stats";
 
     public StatsData Stats => stats;
+    public int BestCombo => stats.highestCombo;
 
     public event System.Action<string, int> OnStatChanged; // statName, newValue
 

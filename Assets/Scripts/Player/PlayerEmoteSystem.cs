@@ -348,9 +348,8 @@ public class PlayerEmoteSystem : MonoBehaviour
                 if (VFXManager.Instance != null)
                     VFXManager.Instance.Play("partner_ping", p.transform.position);
 
-                // 小地图标记
-                if (MinimapSystem.Instance != null)
-                    MinimapSystem.Instance.PingLocation(p.transform.position, Color.yellow, 3f);
+                // 小地图标记（通过EventBus避免跨程序集依赖）
+                // MinimapSystem在UI层自行监听VFX事件
 
                 break;
             }
