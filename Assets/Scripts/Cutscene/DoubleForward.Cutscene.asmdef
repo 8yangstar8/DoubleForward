@@ -6,6 +6,7 @@
         "DoubleForward.Player",
         "DoubleForward.Input",
         "DoubleForward.Camera",
+        "DoubleForward.Level",
         "Unity.TextMeshPro"
     ],
     "includePlatforms": [],
