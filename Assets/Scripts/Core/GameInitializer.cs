@@ -57,6 +57,8 @@ public class GameInitializer : MonoBehaviour
     [SerializeField] private GameObject relicSystemPrefab;
     [SerializeField] private GameObject abilityComboSystemPrefab;
     [SerializeField] private GameObject levelModifierSystemPrefab;
+    [SerializeField] private GameObject playerProgressionSystemPrefab;
+    [SerializeField] private GameObject bossRushModePrefab;
 
     [Header("UI预制体")]
     [SerializeField] private GameObject debugOverlayPrefab;
@@ -157,6 +159,8 @@ public class GameInitializer : MonoBehaviour
         SpawnIfNeeded<RelicSystem>(relicSystemPrefab);
         SpawnIfNeeded<AbilityComboSystem>(abilityComboSystemPrefab);
         SpawnIfNeeded<LevelModifierSystem>(levelModifierSystemPrefab);
+        SpawnIfNeeded<PlayerProgressionSystem>(playerProgressionSystemPrefab);
+        SpawnIfNeeded<BossRushMode>(bossRushModePrefab);
         yield return null;
 
         // ====== 第6层：流程控制（依赖上面所有系统） ======

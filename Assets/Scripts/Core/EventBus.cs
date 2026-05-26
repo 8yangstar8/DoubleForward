@@ -149,6 +149,7 @@ public struct EnemyDefeatedEvent : IGameEvent
     public string enemyType;
     public UnityEngine.Vector3 position;
     public int scoreValue;
+    public bool isBoss;
 }
 
 public struct BossPhaseChangedEvent : IGameEvent
