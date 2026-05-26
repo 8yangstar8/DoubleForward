@@ -21,6 +21,7 @@ public class GameEndingManager : MonoBehaviour
     [SerializeField] private float perfectEndingCompletion = 95f;  // 完美结局需要的完成度%
     [SerializeField] private int perfectEndingStars = 55;          // 完美结局需要的星数
     [SerializeField] private int perfectEndingSecrets = 15;        // 完美结局需要的隐藏数
+    [SerializeField] private int perfectEndingBondLevel = 4;     // 完美结局需要的羁绊等级
 
     [Header("制作人员")]
     [SerializeField] private float creditsDelay = 3f;
@@ -76,10 +77,12 @@ public class GameEndingManager : MonoBehaviour
         float completion = WorldProgressionManager.Instance?.GetOverallCompletion() ?? 0;
         int totalStars = WorldProgressionManager.Instance?.GetTotalStarsEarned() ?? 0;
         int secrets = SecretAreaSystem.Instance?.GetTotalDiscovered() ?? 0;
+        int bondLevel = PlayerBondSystem.Instance?.CurrentBondLevel ?? 0;
 
         if (completion >= perfectEndingCompletion &&
             totalStars >= perfectEndingStars &&
-            secrets >= perfectEndingSecrets)
+            secrets >= perfectEndingSecrets &&
+            bondLevel >= perfectEndingBondLevel)
         {
             return EndingType.Perfect;
         }

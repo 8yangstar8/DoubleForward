@@ -96,6 +96,16 @@ public class CoopAbilitySystem : MonoBehaviour
 
         UpdateConnectionBeam();
         DecayMeter();
+
+        // 通知PlayerBondSystem当前近距离状态（Player→Core合法）
+        if (PlayerBondSystem.Instance != null)
+        {
+            float dist = Vector2.Distance(
+                luxPlayer.transform.position,
+                noxPlayer.transform.position
+            );
+            PlayerBondSystem.Instance.NotifyProximityState(dist <= proximityRange);
+        }
     }
 
     /// <summary>
