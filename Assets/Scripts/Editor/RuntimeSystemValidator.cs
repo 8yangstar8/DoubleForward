@@ -92,17 +92,26 @@ public static class RuntimeSystemValidator
     {
         var errors = new List<string>();
 
-        EditorUtility.DisplayProgressBar("Validating...", "Checking scenes...", 0.1f);
+        EditorUtility.DisplayProgressBar("Validating...", "Checking scenes...", 0.08f);
         ValidateScenes(errors);
 
-        EditorUtility.DisplayProgressBar("Validating...", "Checking prefabs...", 0.3f);
+        EditorUtility.DisplayProgressBar("Validating...", "Checking prefabs...", 0.2f);
         ValidatePrefabs(errors);
 
-        EditorUtility.DisplayProgressBar("Validating...", "Checking ScriptableObjects...", 0.5f);
+        EditorUtility.DisplayProgressBar("Validating...", "Checking ScriptableObjects...", 0.35f);
         ValidateScriptableObjects(errors);
 
-        EditorUtility.DisplayProgressBar("Validating...", "Checking layers...", 0.7f);
+        EditorUtility.DisplayProgressBar("Validating...", "Checking layers...", 0.5f);
         ValidateLayers(errors);
+
+        EditorUtility.DisplayProgressBar("Validating...", "Checking audio...", 0.6f);
+        ValidateAudio(errors);
+
+        EditorUtility.DisplayProgressBar("Validating...", "Checking Resources...", 0.7f);
+        ValidateResources(errors);
+
+        EditorUtility.DisplayProgressBar("Validating...", "Checking localization...", 0.8f);
+        ValidateLocalization(errors);
 
         EditorUtility.DisplayProgressBar("Validating...", "Checking Build Settings...", 0.9f);
         ValidateBuildSettings(errors);
@@ -205,6 +214,63 @@ public static class RuntimeSystemValidator
         // 检查Boot是否为index 0
         if (scenes.Length > 0 && !scenes[0].path.Contains("Boot.unity"))
             errors.Add("Boot场景应该是Build Settings中的第一个场景");
+    }
+
+    private static void ValidateAudio(List<string> errors)
+    {
+        // 检查关键音频目录存在
+        string[] audioDirs = {
+            "Assets/Resources/Audio/SFX",
+            "Assets/Resources/Audio/BGM",
+            "Assets/Resources/Audio/Ambient",
+        };
+        foreach (var dir in audioDirs)
+        {
+            if (!System.IO.Directory.Exists(dir))
+                errors.Add($"缺少音频目录: {dir}");
+        }
+
+        // 检查关键SFX
+        string[] criticalSFX = { "ui_click", "player_jump", "player_hurt", "coin_collect" };
+        foreach (var sfx in criticalSFX)
+        {
+            if (!System.IO.File.Exists($"Assets/Resources/Audio/SFX/{sfx}.wav"))
+                errors.Add($"缺少关键音效: {sfx}（执行 Generate Placeholder Audio）");
+        }
+
+        // 检查至少有1个BGM
+        string bgmDir = "Assets/Resources/Audio/BGM";
+        if (System.IO.Directory.Exists(bgmDir))
+        {
+            int bgmCount = System.IO.Directory.GetFiles(bgmDir, "*.wav").Length;
+            if (bgmCount == 0)
+                errors.Add("没有任何BGM音频文件");
+        }
+    }
+
+    private static void ValidateResources(List<string> errors)
+    {
+        // 默认粒子材质
+        if (!System.IO.File.Exists("Assets/Resources/Materials/DefaultParticle.mat"))
+            errors.Add("缺少DefaultParticle材质（执行 Setup Resources Assets）");
+
+        // 本地化文件
+        if (!System.IO.File.Exists("Assets/Resources/Localization/lang_zh_cn.json"))
+            errors.Add("缺少中文本地化文件");
+        if (!System.IO.File.Exists("Assets/Resources/Localization/lang_en.json"))
+            errors.Add("缺少英文本地化文件");
+    }
+
+    private static void ValidateLocalization(List<string> errors)
+    {
+        string zhPath = "Assets/Resources/Localization/lang_zh_cn.json";
+        if (!System.IO.File.Exists(zhPath)) return;
+
+        string json = System.IO.File.ReadAllText(zhPath);
+        int keyCount = System.Text.RegularExpressions.Regex.Matches(json, @"""key""").Count;
+
+        if (keyCount < 200)
+            errors.Add($"本地化条目不足: 找到{keyCount}个key，建议至少200+（执行 Expand Localization Data）");
     }
 
     // ==================== 辅助 ====================
