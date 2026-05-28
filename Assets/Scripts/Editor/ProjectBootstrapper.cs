@@ -5,14 +5,14 @@ using System.IO;
 
 /// <summary>
 /// 项目总引导向导 - 一键创建完整可运行项目
-/// 整合所有工厂：Layer配置→占位精灵→动画→预制体→数据→场景→音频→Resources→本地化
+/// 整合所有工厂（11步）：URP→Layer→精灵→动画→预制体→数据→场景→音频→Resources→本地化→触控UI
 /// 菜单：DoubleForward / Project Setup Wizard
 /// </summary>
 public class ProjectBootstrapper : EditorWindow
 {
     private Vector2 scroll;
     private bool step0Done, step1Done, step2Done, step3Done, step4Done, step5Done;
-    private bool step6Done, step7Done, step8Done;
+    private bool step6Done, step7Done, step8Done, step9Done, step10Done;
     private string statusMessage = "";
     private MessageType statusType = MessageType.None;
 
@@ -35,84 +35,100 @@ public class ProjectBootstrapper : EditorWindow
         EditorGUILayout.Space(5);
 
         EditorGUILayout.HelpBox(
-            "此向导将自动创建项目运行所需的全部资产（共9步）：\n" +
-            "Layer配置 → 占位精灵 → 动画 → 预制体 → 数据 → 场景 → 音频 → Resources → 本地化\n\n" +
+            "此向导将自动创建项目运行所需的全部资产（共11步）：\n" +
+            "URP → Layer → 精灵 → 动画 → 预制体 → 数据 → 场景 → 音频 → Resources → 本地化 → 触控UI\n\n" +
             "按顺序执行每个步骤，或点击底部\"一键全部构建\"。\n" +
             "绿色 = 已完成，可安全重复执行（已有文件不会覆盖）。",
             MessageType.Info);
 
         EditorGUILayout.Space(15);
 
-        // ====== Step 0: Layer/Tag配置 ======
-        DrawStep(0, "配置Layer/Tag/碰撞矩阵", "15个自定义Layer + 13个Sorting Layer + 20个Tag + Physics2D碰撞规则",
+        // ====== Step 0: URP渲染管线 ======
+        DrawStep(0, "配置URP渲染管线", "Renderer2D + Pipeline Asset + Volume Profile(Bloom/Vignette) + 全局光照",
             step0Done, null,
             () => {
-                ProjectLayerSetup.SetupAll();
+                URPSetupFactory.SetupAll();
                 step0Done = true;
             });
 
-        // ====== Step 1: 占位精灵 ======
-        DrawStep(1, "生成占位精灵", "创建角色、敌人、Boss、谜题、UI等全部占位精灵图（PNG）",
-            step1Done, "Assets/Art/Placeholders/Characters/Lux.png",
+        // ====== Step 1: Layer/Tag配置 ======
+        DrawStep(1, "配置Layer/Tag/碰撞矩阵", "15个自定义Layer + 13个Sorting Layer + 20个Tag + Physics2D碰撞规则",
+            step1Done, null,
             () => {
-                PlaceholderSpriteGenerator.GenerateAll();
+                ProjectLayerSetup.SetupAll();
                 step1Done = true;
             });
 
-        // ====== Step 2: 动画控制器 ======
-        DrawStep(2, "创建动画控制器", "为Lux/Nox、4种敌人、5个Boss创建Animator Controller + 动画片段",
-            step2Done, "Assets/Animations/Controllers/LuxController.controller",
+        // ====== Step 2: 占位精灵 ======
+        DrawStep(2, "生成占位精灵", "创建角色、敌人、Boss、谜题、UI等全部占位精灵图（PNG）",
+            step2Done, "Assets/Art/Placeholders/Characters/Lux.png",
             () => {
-                AnimatorFactory.CreateAll();
+                PlaceholderSpriteGenerator.GenerateAll();
                 step2Done = true;
             });
 
-        // ====== Step 3: 预制体 ======
-        DrawStep(3, "创建全部预制体", "玩家(2) + 敌人(5) + Boss(8) + 谜题(9) + 环境(8) + 管理器(45+) + VFX(7) + UI(7)",
-            step3Done, "Assets/Prefabs/Player/Lux.prefab",
+        // ====== Step 3: 动画控制器 ======
+        DrawStep(3, "创建动画控制器", "为Lux/Nox、4种敌人、5个Boss创建Animator Controller + 动画片段",
+            step3Done, "Assets/Animations/Controllers/LuxController.controller",
             () => {
-                PrefabFactory.CreateAll();
+                AnimatorFactory.CreateAll();
                 step3Done = true;
             });
 
-        // ====== Step 4: ScriptableObject ======
-        DrawStep(4, "创建数据资产", "LevelData(20) + LevelConfig(20) + AbilityData(8) + ChapterStory(5) + Catalog(1)",
-            step4Done, "Assets/ScriptableObjects/LevelData",
+        // ====== Step 4: 预制体 ======
+        DrawStep(4, "创建全部预制体", "玩家(2) + 敌人(5) + Boss(8) + 谜题(9) + 环境(8) + 管理器(45+) + VFX(7) + UI(7)",
+            step4Done, "Assets/Prefabs/Player/Lux.prefab",
             () => {
-                ScriptableObjectFactory.CreateAll();
+                PrefabFactory.CreateAll();
                 step4Done = true;
             });
 
-        // ====== Step 5: 场景 ======
-        DrawStep(5, "创建全部场景", "Boot + 主菜单 + 加载 + 20关卡(含Boss) + Boss连战 + 制作名单 = 25个场景",
-            step5Done, "Assets/Scenes/Boot.unity",
+        // ====== Step 5: ScriptableObject ======
+        DrawStep(5, "创建数据资产", "LevelData(20) + LevelConfig(20) + AbilityData(8) + ChapterStory(5) + Catalog(1)",
+            step5Done, "Assets/ScriptableObjects/LevelData",
             () => {
-                SceneFactory.CreateAll();
+                ScriptableObjectFactory.CreateAll();
                 step5Done = true;
             });
 
-        // ====== Step 6: 占位音频 ======
-        DrawStep(6, "生成占位音频", "SFX(60+) + BGM(17) + Ambient(10) = 静默WAV占位音频文件",
-            step6Done, "Assets/Resources/Audio/SFX/ui_click.wav",
+        // ====== Step 6: 场景 ======
+        DrawStep(6, "创建全部场景", "Boot + 主菜单 + 加载 + 20关卡(含Boss) + Boss连战 + 制作名单 = 25个场景",
+            step6Done, "Assets/Scenes/Boot.unity",
             () => {
-                AudioPlaceholderFactory.GenerateAll();
+                SceneFactory.CreateAll();
                 step6Done = true;
             });
 
-        // ====== Step 7: Resources资源 ======
-        DrawStep(7, "配置Resources资源", "默认粒子材质 + 精灵材质 + Physics2D材质(7种) + 目录结构",
-            step7Done, "Assets/Resources/Materials/DefaultParticle.mat",
+        // ====== Step 7: 占位音频 ======
+        DrawStep(7, "生成占位音频", "SFX(60+) + BGM(17) + Ambient(10) = 静默WAV占位音频文件",
+            step7Done, "Assets/Resources/Audio/SFX/ui_click.wav",
             () => {
-                ResourcesSetupFactory.SetupAll();
+                AudioPlaceholderFactory.GenerateAll();
                 step7Done = true;
             });
 
-        // ====== Step 8: 本地化数据 ======
-        DrawStep(8, "扩展本地化数据", "补充代码中引用的缺失本地化key（关卡名、成就、UI等）",
-            step8Done, null,
+        // ====== Step 8: Resources资源 ======
+        DrawStep(8, "配置Resources资源", "默认粒子材质 + 精灵材质 + Physics2D材质(7种) + 目录结构",
+            step8Done, "Assets/Resources/Materials/DefaultParticle.mat",
+            () => {
+                ResourcesSetupFactory.SetupAll();
+                step8Done = true;
+            });
+
+        // ====== Step 9: 本地化数据 ======
+        DrawStep(9, "扩展本地化数据", "补充代码中引用的缺失本地化key（关卡名、成就、UI等 +100条）",
+            step9Done, null,
             () => {
                 LocalizationExpander.ExpandAll();
-                step8Done = true;
+                step9Done = true;
+            });
+
+        // ====== Step 10: 触控UI ======
+        DrawStep(10, "创建触控UI", "双人虚拟摇杆 + 12个触控按钮(Jump/ATK/Dash/S1/S2/ACT×2人) → 关联InputManager",
+            step10Done, null,
+            () => {
+                InputControlsFactory.CreateAll();
+                step10Done = true;
             });
 
         EditorGUILayout.Space(20);
@@ -190,67 +206,81 @@ public class ProjectBootstrapper : EditorWindow
 
         try
         {
-            // Step 0: Layer/Tag/碰撞矩阵
+            // Step 0: URP渲染管线
             if (!step0Done)
             {
-                ProjectLayerSetup.SetupAll();
+                URPSetupFactory.SetupAll();
                 step0Done = true;
             }
 
-            // Step 1: 占位精灵
+            // Step 1: Layer/Tag/碰撞矩阵
             if (!step1Done)
             {
-                PlaceholderSpriteGenerator.GenerateAll();
+                ProjectLayerSetup.SetupAll();
                 step1Done = true;
             }
 
-            // Step 2: 动画控制器
+            // Step 2: 占位精灵
             if (!step2Done)
             {
-                AnimatorFactory.CreateAll();
+                PlaceholderSpriteGenerator.GenerateAll();
                 step2Done = true;
             }
 
-            // Step 3: 预制体
+            // Step 3: 动画控制器
             if (!step3Done)
             {
-                PrefabFactory.CreateAll();
+                AnimatorFactory.CreateAll();
                 step3Done = true;
             }
 
-            // Step 4: ScriptableObject
+            // Step 4: 预制体
             if (!step4Done)
             {
-                ScriptableObjectFactory.CreateAll();
+                PrefabFactory.CreateAll();
                 step4Done = true;
             }
 
-            // Step 5: 场景
+            // Step 5: ScriptableObject
             if (!step5Done)
             {
-                SceneFactory.CreateAll();
+                ScriptableObjectFactory.CreateAll();
                 step5Done = true;
             }
 
-            // Step 6: 占位音频
+            // Step 6: 场景
             if (!step6Done)
             {
-                AudioPlaceholderFactory.GenerateAll();
+                SceneFactory.CreateAll();
                 step6Done = true;
             }
 
-            // Step 7: Resources资源
+            // Step 7: 占位音频
             if (!step7Done)
             {
-                ResourcesSetupFactory.SetupAll();
+                AudioPlaceholderFactory.GenerateAll();
                 step7Done = true;
             }
 
-            // Step 8: 本地化数据
+            // Step 8: Resources资源
             if (!step8Done)
             {
-                LocalizationExpander.ExpandAll();
+                ResourcesSetupFactory.SetupAll();
                 step8Done = true;
+            }
+
+            // Step 9: 本地化数据
+            if (!step9Done)
+            {
+                LocalizationExpander.ExpandAll();
+                step9Done = true;
+            }
+
+            // Step 10: 触控UI
+            if (!step10Done)
+            {
+                InputControlsFactory.CreateAll();
+                step10Done = true;
             }
 
             // 自动关联GameInitializer
@@ -262,19 +292,20 @@ public class ProjectBootstrapper : EditorWindow
             var elapsed = (System.DateTime.Now - startTime).TotalSeconds;
             statusMessage = $"✅ 全部构建完成！耗时 {elapsed:F1} 秒\n\n" +
                 "下一步：\n" +
-                "1. 打开 Boot 场景\n" +
-                "2. 按 Play 测试\n" +
-                "3. 菜单 DoubleForward > Validate Project 验证完整性";
+                "1. 打开 Boot 场景 → 按 Play 测试\n" +
+                "2. 菜单 DoubleForward > Validate Project 验证完整性";
             statusType = MessageType.Info;
 
             EditorUtility.DisplayDialog("构建完成",
-                $"所有资产已创建完毕！\n\n" +
+                $"所有资产已创建完毕（11步全部完成）！\n\n" +
+                $"• URP 2D渲染管线 已配置\n" +
                 $"• Layer/Tag/碰撞矩阵 已配置\n" +
                 $"• 占位精灵 + 动画控制器\n" +
                 $"• {CountFiles("Assets/Prefabs", "*.prefab")} 个预制体\n" +
                 $"• {CountFiles("Assets/ScriptableObjects", "*.asset")} 个数据资产\n" +
                 $"• {CountFiles("Assets/Scenes", "*.unity")} 个场景\n" +
-                $"• 占位音频 + Resources资源 + 本地化扩展\n\n" +
+                $"• 占位音频 + Resources资源 + 本地化扩展\n" +
+                $"• 触控UI + InputManager已关联\n\n" +
                 "打开 Assets/Scenes/Boot.unity 按Play开始测试！",
                 "OK");
         }
@@ -471,23 +502,25 @@ public class ProjectBootstrapper : EditorWindow
 
     private void CheckStatus()
     {
-        // Layer检查（通过检查Ground layer是否已设置）
-        step0Done = LayerMask.NameToLayer("Ground") != -1;
-        step1Done = File.Exists("Assets/Art/Placeholders/Characters/Lux.png");
-        step2Done = File.Exists("Assets/Animations/Controllers/LuxController.controller");
-        step3Done = File.Exists("Assets/Prefabs/Player/Lux.prefab");
-        step4Done = Directory.Exists("Assets/ScriptableObjects/LevelData") &&
+        step0Done = URPSetupFactory.HasURPSetup();
+        step1Done = LayerMask.NameToLayer("Ground") != -1;
+        step2Done = File.Exists("Assets/Art/Placeholders/Characters/Lux.png");
+        step3Done = File.Exists("Assets/Animations/Controllers/LuxController.controller");
+        step4Done = File.Exists("Assets/Prefabs/Player/Lux.prefab");
+        step5Done = Directory.Exists("Assets/ScriptableObjects/LevelData") &&
                     Directory.GetFiles("Assets/ScriptableObjects/LevelData", "*.asset").Length >= 20;
-        step5Done = File.Exists("Assets/Scenes/Boot.unity") &&
+        step6Done = File.Exists("Assets/Scenes/Boot.unity") &&
                     File.Exists("Assets/Scenes/MainMenu.unity");
-        step6Done = AudioPlaceholderFactory.HasPlaceholderAudio();
-        step7Done = ResourcesSetupFactory.HasResourcesSetup();
-        step8Done = LocalizationExpander.GetCurrentKeyCount() > 280; // 原始约263 + 扩展
+        step7Done = AudioPlaceholderFactory.HasPlaceholderAudio();
+        step8Done = ResourcesSetupFactory.HasResourcesSetup();
+        step9Done = LocalizationExpander.GetCurrentKeyCount() > 280;
+        step10Done = InputControlsFactory.HasTouchControls();
         Repaint();
     }
 
     private bool AllDone() => step0Done && step1Done && step2Done && step3Done && step4Done
-                           && step5Done && step6Done && step7Done && step8Done;
+                           && step5Done && step6Done && step7Done && step8Done
+                           && step9Done && step10Done;
 
     private void OpenScene(string path)
     {
