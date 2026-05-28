@@ -105,6 +105,12 @@ public class GameFlowManager : MonoBehaviour
 
         if (ComboSystem.Instance != null)
             ComboSystem.Instance.StopTracking();
+
+        // 加载主菜单场景
+        if (SceneLoader.Instance != null)
+            SceneLoader.Instance.LoadScene(mainMenuScene);
+        else
+            UnityEngine.SceneManagement.SceneManager.LoadScene(mainMenuScene);
     }
 
     /// <summary>
@@ -147,6 +153,8 @@ public class GameFlowManager : MonoBehaviour
         if (mode == InputManager.PlayMode.Network)
         {
             SetState(FlowState.Lobby);
+            if (SceneLoader.Instance != null)
+                SceneLoader.Instance.LoadScene(lobbyScene);
         }
         else
         {
@@ -301,6 +309,8 @@ public class GameFlowManager : MonoBehaviour
         {
             // 游戏通关
             SetState(FlowState.Credits);
+            if (SceneLoader.Instance != null)
+                SceneLoader.Instance.LoadScene("Credits");
             return;
         }
 
