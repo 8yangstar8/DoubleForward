@@ -690,6 +690,19 @@ public static class PrefabFactory
         CreateManagerPrefab("PlayerBondSystem", typeof(PlayerBondSystem));
         CreateManagerPrefab("StoryRecapSystem", typeof(StoryRecapSystem));
 
+        // 场景/过渡
+        CreateManagerPrefab("SceneLoader", typeof(SceneLoader));
+        CreateManagerPrefab("SceneTransition", typeof(SceneTransition));
+        CreateManagerPrefab("ScreenTransitionUI", typeof(ScreenTransitionUI));
+        CreateManagerPrefab("LoadingScreenUI", typeof(LoadingScreenUI));
+
+        // 扩展系统
+        CreateManagerPrefab("AudioMixerSetup", typeof(AudioMixerSetup));
+        CreateManagerPrefab("WorldThemeManager", typeof(WorldThemeManager));
+        CreateManagerPrefab("SkillUpgradeSystem", typeof(SkillUpgradeSystem));
+        CreateManagerPrefab("InputRemapper", typeof(InputRemapper));
+        CreateManagerPrefab("InputRemapSystem", typeof(InputRemapSystem));
+
         // 第6层：流程控制
         CreateManagerPrefab("GameFlowManager", typeof(GameFlowManager));
 

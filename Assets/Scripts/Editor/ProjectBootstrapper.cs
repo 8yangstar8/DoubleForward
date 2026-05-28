@@ -441,6 +441,17 @@ public class ProjectBootstrapper : EditorWindow
             { "NewGamePlusManager", "newGamePlusManagerPrefab" },
             { "PlayerBondSystem", "playerBondSystemPrefab" },
             { "StoryRecapSystem", "storyRecapSystemPrefab" },
+            // 场景/过渡
+            { "SceneLoader", "sceneLoaderPrefab" },
+            { "SceneTransition", "sceneTransitionPrefab" },
+            { "ScreenTransitionUI", "screenTransitionUIPrefab" },
+            { "LoadingScreenUI", "loadingScreenUIPrefab" },
+            // 扩展系统
+            { "AudioMixerSetup", "audioMixerSetupPrefab" },
+            { "WorldThemeManager", "worldThemeManagerPrefab" },
+            { "SkillUpgradeSystem", "skillUpgradeSystemPrefab" },
+            { "InputRemapper", "inputRemapperPrefab" },
+            { "InputRemapSystem", "inputRemapSystemPrefab" },
             // 第6层
             { "GameFlowManager", "gameFlowPrefab" },
             // 调试

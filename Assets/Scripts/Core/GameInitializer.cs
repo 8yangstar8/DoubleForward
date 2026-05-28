@@ -63,6 +63,19 @@ public class GameInitializer : MonoBehaviour
     [SerializeField] private GameObject playerBondSystemPrefab;
     [SerializeField] private GameObject storyRecapSystemPrefab;
 
+    [Header("场景/过渡预制体")]
+    [SerializeField] private GameObject sceneLoaderPrefab;
+    [SerializeField] private GameObject sceneTransitionPrefab;
+    [SerializeField] private GameObject screenTransitionUIPrefab;
+    [SerializeField] private GameObject loadingScreenUIPrefab;
+
+    [Header("扩展系统预制体")]
+    [SerializeField] private GameObject audioMixerSetupPrefab;
+    [SerializeField] private GameObject worldThemeManagerPrefab;
+    [SerializeField] private GameObject skillUpgradeSystemPrefab;
+    [SerializeField] private GameObject inputRemapperPrefab;
+    [SerializeField] private GameObject inputRemapSystemPrefab;
+
     [Header("UI预制体")]
     [SerializeField] private GameObject debugOverlayPrefab;
 
@@ -106,6 +119,7 @@ public class GameInitializer : MonoBehaviour
         SpawnIfNeeded<ObjectPool>(objectPoolPrefab);
         SpawnIfNeeded<AudioManager>(audioManagerPrefab);
         SpawnIfNeeded<InputManager>(inputManagerPrefab);
+        SpawnIfNeeded<SceneLoader>(sceneLoaderPrefab);
         yield return null; // 等一帧让Awake执行
 
         // ====== 第2层：数据系统 ======
@@ -113,6 +127,7 @@ public class GameInitializer : MonoBehaviour
         SpawnIfNeeded<LocalizationSystem>(localizationPrefab);
         SpawnIfNeeded<SettingsPersistence>(settingsPersistencePrefab);
         SpawnIfNeeded<GameStats>(gameStatsPrefab);
+        SpawnIfNeeded<AudioMixerSetup>(audioMixerSetupPrefab);
         yield return null;
 
         // ====== 第3层：游戏逻辑系统 ======
@@ -146,6 +161,12 @@ public class GameInitializer : MonoBehaviour
         SpawnIfNeeded<TimeManager>(timeManagerPrefab);
         SpawnIfNeeded<AutoSaveSystem>(autoSaveSystemPrefab);
         SpawnIfNeeded<AchievementTracker>(achievementTrackerPrefab);
+        SpawnIfNeeded<SceneTransition>(sceneTransitionPrefab);
+        SpawnIfNeeded<ScreenTransitionUI>(screenTransitionUIPrefab);
+        SpawnIfNeeded<LoadingScreenUI>(loadingScreenUIPrefab);
+        SpawnIfNeeded<InputRemapper>(inputRemapperPrefab);
+        SpawnIfNeeded<InputRemapSystem>(inputRemapSystemPrefab);
+        SpawnIfNeeded<SkillUpgradeSystem>(skillUpgradeSystemPrefab);
         yield return null;
 
         // ====== 第5.5层：游戏玩法系统（依赖核心+辅助） ======
@@ -167,6 +188,7 @@ public class GameInitializer : MonoBehaviour
         SpawnIfNeeded<NewGamePlusManager>(newGamePlusManagerPrefab);
         SpawnIfNeeded<PlayerBondSystem>(playerBondSystemPrefab);
         SpawnIfNeeded<StoryRecapSystem>(storyRecapSystemPrefab);
+        SpawnIfNeeded<WorldThemeManager>(worldThemeManagerPrefab);
         yield return null;
 
         // ====== 第6层：流程控制（依赖上面所有系统） ======
