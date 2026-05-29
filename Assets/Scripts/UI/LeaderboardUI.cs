@@ -44,7 +44,7 @@ public class LeaderboardUI : MonoBehaviour
     private int currentLevel = 1;
     private LeaderboardManager.BoardType currentSortType = LeaderboardManager.BoardType.HighScore;
     private List<GameObject> spawnedEntries = new List<GameObject>();
-    private static readonly int[] levelsPerChapter = { 3, 4, 4, 5, 4 };
+    private static readonly int[] levelsPerChapter = { 4, 4, 4, 4, 4 };
 
     void Awake()
     {

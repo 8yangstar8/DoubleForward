@@ -406,7 +406,7 @@ public class TutorialOverlayUI : MonoBehaviour
         darkMask.color = maskColor;
     }
 
-    private void HideTutorial()
+    public void HideTutorial()
     {
         isShowing = false;
 

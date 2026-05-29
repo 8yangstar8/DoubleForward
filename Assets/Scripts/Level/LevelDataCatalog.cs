@@ -126,7 +126,7 @@ public class LevelDataCatalog : ScriptableObject
         {
             chapter.levels.Add(new LevelEntry
             {
-                sceneName = $"Ch{index}_Lv{i + 1}",
+                sceneName = $"Level_{index}_{i + 1}",
                 isBossLevel = bossFlags[i],
                 levelNameKey = $"level_{index}_{i + 1}_name",
                 coinReward = 100 + (index - 1) * 50 + i * 25,

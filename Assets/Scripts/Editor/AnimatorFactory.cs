@@ -29,6 +29,11 @@ public static class AnimatorFactory
         CreateBossAnimator("AbyssalSerpent", 3);
         CreateBossAnimator("VoidEntity", 4);
 
+        // PrefabFactory使用的别名（确保prefab能找到对应的Controller）
+        CreateBossAnimator("GearTyrant", 3);
+        CreateBossAnimator("AbyssSerpent", 3);
+        CreateBossAnimator("RuinSentinel", 3);
+
         AssetDatabase.SaveAssets();
         AssetDatabase.Refresh();
         Debug.Log("[AnimatorFactory] All Animator Controllers created.");

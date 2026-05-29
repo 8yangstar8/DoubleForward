@@ -228,7 +228,7 @@ public class LeaderboardManager : MonoBehaviour
         // 遍历所有关卡
         for (int ch = 1; ch <= 5; ch++)
         {
-            int[] levelsPerChapter = { 3, 4, 4, 5, 4 };
+            int[] levelsPerChapter = { 4, 4, 4, 4, 4 };
             if (ch - 1 >= levelsPerChapter.Length) continue;
 
             for (int lv = 1; lv <= levelsPerChapter[ch - 1]; lv++)

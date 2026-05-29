@@ -108,7 +108,7 @@ public class WorldMapNode : MonoBehaviour, IPointerClickHandler
         if (prevChapter >= 1)
         {
             // 检查前一章最后一关
-            int[] levelsPerChapter = { 3, 4, 4, 5, 4 };
+            int[] levelsPerChapter = { 4, 4, 4, 4, 4 };
             if (prevChapter - 1 < levelsPerChapter.Length)
             {
                 int lastLevel = levelsPerChapter[prevChapter - 1];

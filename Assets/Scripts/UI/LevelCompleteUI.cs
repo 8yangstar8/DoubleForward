@@ -118,7 +118,7 @@ public class LevelCompleteUI : MonoBehaviour
         int nextLevel = lm.CurrentLevel.levelIndex + 1;
         int nextChapter = lm.CurrentLevel.chapter;
 
-        int[] levelsPerChapter = { 3, 4, 4, 5, 4 };
+        int[] levelsPerChapter = { 4, 4, 4, 4, 4 };
         int maxInChapter = nextChapter <= levelsPerChapter.Length ? levelsPerChapter[nextChapter - 1] : 4;
 
         if (nextLevel > maxInChapter)

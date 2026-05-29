@@ -153,7 +153,7 @@ public class LevelSelectUI : MonoBehaviour
         if (progressTracker == null) return false;
 
         // 前一章最后一关通过才解锁
-        int[] lastLevels = { 3, 4, 4, 5, 4 };
+        int[] lastLevels = { 4, 4, 4, 4, 4 };
         int prevChapter = chapter - 1;
         int prevLastLevel = prevChapter <= lastLevels.Length ? lastLevels[prevChapter - 1] : 1;
         return SaveSystem.Instance?.IsLevelCompleted(prevChapter, prevLastLevel) ?? false;

@@ -315,7 +315,7 @@ public class WorldSelectUI : MonoBehaviour
     {
         if (SaveSystem.Instance == null) return 0;
 
-        int[] levelsPerChapter = { 3, 4, 4, 5, 4 };
+        int[] levelsPerChapter = { 4, 4, 4, 4, 4 };
         int startLevel = 0;
         for (int i = 0; i < worldIndex; i++)
             startLevel += levelsPerChapter[i];
@@ -333,7 +333,7 @@ public class WorldSelectUI : MonoBehaviour
 
     private int GetWorldMaxStars(int worldIndex)
     {
-        int[] levelsPerChapter = { 3, 4, 4, 5, 4 };
+        int[] levelsPerChapter = { 4, 4, 4, 4, 4 };
         if (worldIndex < levelsPerChapter.Length)
             return levelsPerChapter[worldIndex] * 3;
         return 0;

@@ -180,7 +180,7 @@ public class SkillUpgradeSystem : MonoBehaviour
         if (SaveSystem.Instance == null) return 0;
 
         var data = SaveSystem.Instance.Data;
-        int[] levelsPerChapter = { 3, 4, 4, 5, 4 };
+        int[] levelsPerChapter = { 4, 4, 4, 4, 4 };
         int completedChapters = 0;
         int startIdx = 0;
 

@@ -266,7 +266,7 @@ public class WorldMapUI : MonoBehaviour
         if (chapter == 1) return true;
 
         // 前一章的最后一关需要通关
-        int[] levelsPerChapter = { 3, 4, 4, 5, 4 };
+        int[] levelsPerChapter = { 4, 4, 4, 4, 4 };
         int prevChapter = chapter - 1;
         if (prevChapter < 1 || prevChapter > levelsPerChapter.Length) return false;
 
