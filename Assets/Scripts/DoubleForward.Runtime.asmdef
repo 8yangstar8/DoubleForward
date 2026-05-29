@@ -5,8 +5,7 @@
         "Unity.TextMeshPro",
         "Unity.RenderPipelines.Universal.Runtime",
         "Unity.InputSystem",
-        "Unity.Netcode.Runtime",
-        "Unity.Networking.Transport"
+        "Unity.Netcode.Runtime"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
