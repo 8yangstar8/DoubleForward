@@ -297,4 +297,92 @@ public static class RuntimeSystemValidator
         if (prefab.GetComponent<T>() == null)
             errors.Add($"{prefab.name} 缺少 {typeof(T).Name} 组件");
     }
+
+    /// <summary>
+    /// CLI入口 - 供 -executeMethod 调用
+    /// </summary>
+    public static void ValidateFromCommandLine()
+    {
+        Debug.Log("[Validator] Running full validation from command line...");
+        var errors = RunFullValidation();
+
+        // 额外：检查所有prefab是否有missing scripts
+        ValidateAllPrefabScripts(errors);
+
+        // 额外：加载Boot场景检查GameInitializer所有引用
+        ValidateBootSceneDeep(errors);
+
+        if (errors.Count == 0)
+        {
+            Debug.Log("[Validator] ALL CHECKS PASSED - Project is ready!");
+        }
+        else
+        {
+            foreach (var err in errors)
+                Debug.LogWarning($"[Validator] ISSUE: {err}");
+            Debug.LogError($"[Validator] {errors.Count} issue(s) found");
+        }
+    }
+
+    private static void ValidateAllPrefabScripts(List<string> errors)
+    {
+        var prefabGuids = AssetDatabase.FindAssets("t:Prefab", new[] { "Assets/Prefabs" });
+        int missingCount = 0;
+
+        foreach (var guid in prefabGuids)
+        {
+            string path = AssetDatabase.GUIDToAssetPath(guid);
+            var prefab = AssetDatabase.LoadAssetAtPath<GameObject>(path);
+            if (prefab == null) continue;
+
+            var components = prefab.GetComponentsInChildren<Component>(true);
+            foreach (var comp in components)
+            {
+                if (comp == null)
+                {
+                    missingCount++;
+                    errors.Add($"Missing script on prefab: {path}");
+                    break;
+                }
+            }
+        }
+
+        Debug.Log($"[Validator] Checked {prefabGuids.Length} prefabs, {missingCount} with missing scripts");
+    }
+
+    private static void ValidateBootSceneDeep(List<string> errors)
+    {
+        string bootPath = "Assets/Scenes/Boot.unity";
+        if (!System.IO.File.Exists(bootPath)) return;
+
+        var scene = UnityEditor.SceneManagement.EditorSceneManager.OpenScene(bootPath);
+        var initializer = Object.FindAnyObjectByType<GameInitializer>();
+
+        if (initializer == null)
+        {
+            errors.Add("Boot scene missing GameInitializer");
+            return;
+        }
+
+        var so = new SerializedObject(initializer);
+        var iterator = so.GetIterator();
+        int nullRefs = 0;
+        int totalRefs = 0;
+
+        while (iterator.NextVisible(true))
+        {
+            if (iterator.propertyType == SerializedPropertyType.ObjectReference &&
+                iterator.name.EndsWith("Prefab"))
+            {
+                totalRefs++;
+                if (iterator.objectReferenceValue == null)
+                {
+                    nullRefs++;
+                    errors.Add($"GameInitializer null ref: {iterator.name}");
+                }
+            }
+        }
+
+        Debug.Log($"[Validator] GameInitializer: {totalRefs - nullRefs}/{totalRefs} prefab refs connected");
+    }
 }

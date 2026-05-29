@@ -243,66 +243,66 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 465ab77c039ab4e4a9d1435b86beaff2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gameManagerPrefab: {fileID: 0}
-  audioManagerPrefab: {fileID: 0}
-  inputManagerPrefab: {fileID: 0}
-  saveSystemPrefab: {fileID: 0}
-  gameFlowPrefab: {fileID: 0}
-  localizationPrefab: {fileID: 0}
-  performancePrefab: {fileID: 0}
-  difficultyPrefab: {fileID: 0}
-  accessibilityPrefab: {fileID: 0}
-  analyticsTrackerPrefab: {fileID: 0}
-  mobileServicesPrefab: {fileID: 0}
-  vfxManagerPrefab: {fileID: 0}
-  objectPoolPrefab: {fileID: 0}
-  achievementSystemPrefab: {fileID: 0}
-  gameStatsPrefab: {fileID: 0}
-  comboSystemPrefab: {fileID: 0}
-  soundFeedbackPrefab: {fileID: 0}
-  screenAdapterPrefab: {fileID: 0}
-  gamepadAdapterPrefab: {fileID: 0}
-  permissionManagerPrefab: {fileID: 0}
-  currencyManagerPrefab: {fileID: 0}
-  dailyRewardSystemPrefab: {fileID: 0}
-  hapticFeedbackPrefab: {fileID: 0}
-  leaderboardManagerPrefab: {fileID: 0}
-  notificationSchedulerPrefab: {fileID: 0}
-  cloudSaveManagerPrefab: {fileID: 0}
-  skinManagerPrefab: {fileID: 0}
-  scoreManagerPrefab: {fileID: 0}
-  settingsPersistencePrefab: {fileID: 0}
-  autoSaveSystemPrefab: {fileID: 0}
-  timeManagerPrefab: {fileID: 0}
-  achievementTrackerPrefab: {fileID: 0}
-  musicLayerSystemPrefab: {fileID: 0}
-  gameplayTipSystemPrefab: {fileID: 0}
-  challengeModePrefab: {fileID: 0}
-  playerCoopSyncPrefab: {fileID: 0}
-  worldProgressionPrefab: {fileID: 0}
-  enemyDirectorPrefab: {fileID: 0}
-  screenEffectsControllerPrefab: {fileID: 0}
-  environmentEffectManagerPrefab: {fileID: 0}
-  secretAreaSystemPrefab: {fileID: 0}
-  gameEndingManagerPrefab: {fileID: 0}
-  relicSystemPrefab: {fileID: 0}
-  abilityComboSystemPrefab: {fileID: 0}
-  levelModifierSystemPrefab: {fileID: 0}
-  playerProgressionSystemPrefab: {fileID: 0}
-  bossRushModePrefab: {fileID: 0}
-  newGamePlusManagerPrefab: {fileID: 0}
-  playerBondSystemPrefab: {fileID: 0}
-  storyRecapSystemPrefab: {fileID: 0}
-  sceneLoaderPrefab: {fileID: 0}
-  sceneTransitionPrefab: {fileID: 0}
-  screenTransitionUIPrefab: {fileID: 0}
-  loadingScreenUIPrefab: {fileID: 0}
-  audioMixerSetupPrefab: {fileID: 0}
-  worldThemeManagerPrefab: {fileID: 0}
-  skillUpgradeSystemPrefab: {fileID: 0}
-  inputRemapperPrefab: {fileID: 0}
-  inputRemapSystemPrefab: {fileID: 0}
-  debugOverlayPrefab: {fileID: 0}
+  gameManagerPrefab: {fileID: 5581514107467689975, guid: d2c7c1703909c7c43a5be33ec88ba8c9, type: 3}
+  audioManagerPrefab: {fileID: 2198344428925908611, guid: 9aa50ccf117e72c44856369db7d61ff0, type: 3}
+  inputManagerPrefab: {fileID: 4917205849851756217, guid: 0dd12d606ffb08848a78fdd21e89aeb0, type: 3}
+  saveSystemPrefab: {fileID: 4246992503817750084, guid: d9e717c20224cd940899f6d4013de075, type: 3}
+  gameFlowPrefab: {fileID: 7168931222101505319, guid: 862b2f7e9f5050f4bad802277217591b, type: 3}
+  localizationPrefab: {fileID: 7543461919125400389, guid: 9ef837f3e5c1adf43855c9a1ece2c9e9, type: 3}
+  performancePrefab: {fileID: 4838631326064389936, guid: 5ee70b7381e643245aa05351a4e4bb77, type: 3}
+  difficultyPrefab: {fileID: 8080596490377195381, guid: e33b8d4daab3a6a4a84807539275be24, type: 3}
+  accessibilityPrefab: {fileID: 6361581168421883066, guid: 0f8607ecdb0b4a5479612afd95fac45c, type: 3}
+  analyticsTrackerPrefab: {fileID: 8052298390769944812, guid: 1b234289a2f9edb4b8ca415cb91cf43b, type: 3}
+  mobileServicesPrefab: {fileID: 384874536310469334, guid: 886b03c67dc3c264c934a6a88d2d21b7, type: 3}
+  vfxManagerPrefab: {fileID: 3753530720084148613, guid: e7c48a602364b7645b7befd4879f5145, type: 3}
+  objectPoolPrefab: {fileID: 731250164464318, guid: 929e6558be523944cb3133f3ef1571a7, type: 3}
+  achievementSystemPrefab: {fileID: 5691247686041259145, guid: 9941d96d9a207884e8e61155c28edba8, type: 3}
+  gameStatsPrefab: {fileID: 8930659334487829645, guid: 1a24a950589bad84498c33ff6c5c965a, type: 3}
+  comboSystemPrefab: {fileID: 6679623726132781503, guid: 49fc34705dd31cf4fb75108244eb6748, type: 3}
+  soundFeedbackPrefab: {fileID: 5133811104535009613, guid: 07c3219a31615d64a88507419d3cd256, type: 3}
+  screenAdapterPrefab: {fileID: 3348873145333848541, guid: dee095342c39127449584f81d8a6e59a, type: 3}
+  gamepadAdapterPrefab: {fileID: 655939703984201657, guid: 27486a4fe6b84f0418098a761f403f89, type: 3}
+  permissionManagerPrefab: {fileID: 5911794280980040070, guid: 7be81bb2f1b2b2149afe76ac01920790, type: 3}
+  currencyManagerPrefab: {fileID: 8532966039483610186, guid: 33a47c1e8026b6a4ea37457edd639cf9, type: 3}
+  dailyRewardSystemPrefab: {fileID: 5151416598084360735, guid: 4689fea93afb1b342bee145d3fa28c62, type: 3}
+  hapticFeedbackPrefab: {fileID: 2561896072495595782, guid: f57887bbcaffbb24d99333b746fd46b5, type: 3}
+  leaderboardManagerPrefab: {fileID: 4936534979100328287, guid: a2a7d6f266bb6c74ca9fa25e2226926b, type: 3}
+  notificationSchedulerPrefab: {fileID: 7862706928089622867, guid: 0f153d54443dfff4681c4e9d35093d43, type: 3}
+  cloudSaveManagerPrefab: {fileID: 1108998153211861470, guid: 40b69b6b28275464595d5699caae9b22, type: 3}
+  skinManagerPrefab: {fileID: 3027036805725535354, guid: 0536fda857deb814d9bae3cc276c0477, type: 3}
+  scoreManagerPrefab: {fileID: 5590017815952154335, guid: 1cda408318ff9024a8cc228319bc39b3, type: 3}
+  settingsPersistencePrefab: {fileID: 2994937208389055906, guid: d9a5bf9789b69ac438cbb5e2426e137e, type: 3}
+  autoSaveSystemPrefab: {fileID: 8327229536921976800, guid: bc3c0735b2528ed43adaa15b19996993, type: 3}
+  timeManagerPrefab: {fileID: 8741927444596017539, guid: 6f9df2f4de7e4f9459ffcde30ca309c7, type: 3}
+  achievementTrackerPrefab: {fileID: 1380335758437315679, guid: 3a4818bad841f98499c2bfb0b658f6ab, type: 3}
+  musicLayerSystemPrefab: {fileID: 1064242108344881045, guid: 387414d1869f11f4980ee04707e6684a, type: 3}
+  gameplayTipSystemPrefab: {fileID: 190283062895982614, guid: ad3e2630228d8594282b9f31f8e6d827, type: 3}
+  challengeModePrefab: {fileID: 6368803137189185647, guid: c4821d4b337af2844a0c86a6c5a7ad74, type: 3}
+  playerCoopSyncPrefab: {fileID: 949718635638804874, guid: 1db5c0dce761cdb4eab0efd6d9f94d2c, type: 3}
+  worldProgressionPrefab: {fileID: 5100245403484558601, guid: 61c5115ca2620364d81e0d0ce30224fa, type: 3}
+  enemyDirectorPrefab: {fileID: 8340556581606669087, guid: 81bca063afd4e964f9afce379227a6d0, type: 3}
+  screenEffectsControllerPrefab: {fileID: 1845854146263106257, guid: c712a3e6ba0f22f4d874c857539b4b71, type: 3}
+  environmentEffectManagerPrefab: {fileID: 4128934017984803632, guid: 11d7b91c1df6e4749bfb4ff0b82e9849, type: 3}
+  secretAreaSystemPrefab: {fileID: 247337285493810901, guid: 55781ed8f2fcbc544bb7a05f19c406b9, type: 3}
+  gameEndingManagerPrefab: {fileID: 8260650302491265982, guid: 49316f3fdc30a3a40ae20d5c4dfbbb68, type: 3}
+  relicSystemPrefab: {fileID: 7283148705631149591, guid: 065367eb0e48af843b59ac45560bc289, type: 3}
+  abilityComboSystemPrefab: {fileID: 572493653847696979, guid: 4e08c22ae22b62e44abc823043ca1da1, type: 3}
+  levelModifierSystemPrefab: {fileID: 8904560975997620960, guid: 67a531c160338714fbb96ef9b16900f8, type: 3}
+  playerProgressionSystemPrefab: {fileID: 5137472066728813033, guid: 3b178b784f41c1f4cb601a91f68ce8bc, type: 3}
+  bossRushModePrefab: {fileID: 4466037538662298668, guid: f6a2537955b43444e98266ff41a5a2c2, type: 3}
+  newGamePlusManagerPrefab: {fileID: 2638061591826063078, guid: c4639df918a7b90499fca02c369023fe, type: 3}
+  playerBondSystemPrefab: {fileID: 7711857055579106116, guid: 1792e2985299a3f48b9f6ac506b88002, type: 3}
+  storyRecapSystemPrefab: {fileID: 1053921237920402501, guid: 7c6f05c066ef75b47b0291931852f5ae, type: 3}
+  sceneLoaderPrefab: {fileID: 5155990484603556959, guid: 26b2dc60baeb0304ab3c4f6737a5b87c, type: 3}
+  sceneTransitionPrefab: {fileID: 4681775322549870522, guid: 0b39994ec0f6f7e4ebaf2c8a91b28c46, type: 3}
+  screenTransitionUIPrefab: {fileID: 1613427980152091639, guid: 3122881d96ab7fe4690b728ea0c7a145, type: 3}
+  loadingScreenUIPrefab: {fileID: 2696432537982033696, guid: de8a61f5f4701bf4d911165e4a4bb06a, type: 3}
+  audioMixerSetupPrefab: {fileID: 166241502173073701, guid: be681f7c9e8cca8478638ce186ef9324, type: 3}
+  worldThemeManagerPrefab: {fileID: 780040006959448448, guid: 4838784285fa9424491159a3bba04a4c, type: 3}
+  skillUpgradeSystemPrefab: {fileID: 5697826718250738913, guid: 37de724c1d833964a84e2d0d924a5d22, type: 3}
+  inputRemapperPrefab: {fileID: 7933870508263645391, guid: 0bb80cbee63b32c4aba345e53dd19933, type: 3}
+  inputRemapSystemPrefab: {fileID: 2431637678105506959, guid: d9fba23b0750df64583b1a81378322ee, type: 3}
+  debugOverlayPrefab: {fileID: 2423871195763537396, guid: 660a6c9a81371ab4cba39e6347acf7a1, type: 3}
   autoStart: 1
   targetFrameRate: 60
 --- !u!4 &1121303810

@@ -6750,9 +6750,9 @@ MonoBehaviour:
   healthIconsP2: []
   skill1CooldownP2: {fileID: 0}
   playerNameP2: {fileID: 0}
-  levelNameText: {fileID: 0}
-  timerText: {fileID: 0}
-  collectibleText: {fileID: 0}
+  levelNameText: {fileID: 533721073}
+  timerText: {fileID: 2022901570}
+  collectibleText: {fileID: 231985978}
 --- !u!114 &1976582502
 MonoBehaviour:
   m_ObjectHideFlags: 0

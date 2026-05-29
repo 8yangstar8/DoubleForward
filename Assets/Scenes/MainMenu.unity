@@ -1799,6 +1799,7 @@ GameObject:
   - component: {fileID: 1068015555}
   - component: {fileID: 1068015554}
   - component: {fileID: 1068015553}
+  - component: {fileID: 1068015558}
   m_Layer: 0
   m_Name: MainCanvas
   m_TagString: Untagged
@@ -1818,24 +1819,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9bc319a5b66c42a41ac7d7a8025a407d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  continueButton: {fileID: 0}
-  newGameButton: {fileID: 0}
-  localPlayButton: {fileID: 0}
+  continueButton: {fileID: 288858543}
+  newGameButton: {fileID: 646160126}
+  localPlayButton: {fileID: 1998394250}
   lanPlayButton: {fileID: 0}
-  onlinePlayButton: {fileID: 0}
-  settingsButton: {fileID: 0}
-  newGamePlusButton: {fileID: 0}
-  bossRushButton: {fileID: 0}
-  storyRecapButton: {fileID: 0}
+  onlinePlayButton: {fileID: 2019068933}
+  settingsButton: {fileID: 964231193}
+  newGamePlusButton: {fileID: 1932490415}
+  bossRushButton: {fileID: 1161369213}
+  storyRecapButton: {fileID: 1371947621}
   challengeModeButton: {fileID: 0}
-  mainPanel: {fileID: 0}
+  mainPanel: {fileID: 840586329}
   modeSelectPanel: {fileID: 0}
   newGamePlusPanel: {fileID: 0}
-  versionText: {fileID: 0}
+  versionText: {fileID: 139741338}
   saveInfoText: {fileID: 0}
   ngPlusLabelText: {fileID: 0}
-  postGameGroup: {fileID: 0}
-  mainCanvasGroup: {fileID: 0}
+  postGameGroup: {fileID: 1801733062}
+  mainCanvasGroup: {fileID: 1068015558}
   fadeInDuration: 0.5
 --- !u!114 &1068015554
 MonoBehaviour:
@@ -1923,6 +1924,18 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
+--- !u!225 &1068015558
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1068015552}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &1121303808
 GameObject:
   m_ObjectHideFlags: 0
