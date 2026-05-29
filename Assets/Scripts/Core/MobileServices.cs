@@ -239,6 +239,14 @@ public class MobileServices : MonoBehaviour
     }
 
     /// <summary>
+    /// 分享指定截图文件
+    /// </summary>
+    public void ShareScreenshot(string imagePath)
+    {
+        ShareWithScreenshot($"Check out my moment in Double Forward! #DoubleForward");
+    }
+
+    /// <summary>
     /// 通用分享（截图+文字）
     /// </summary>
     public void ShareWithScreenshot(string text)

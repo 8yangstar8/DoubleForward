@@ -123,7 +123,7 @@ public class LevelBootstrap : MonoBehaviour
         // 关卡修改器应用
         if (LevelModifierSystem.Instance != null)
         {
-            var activeModifiers = LevelModifierSystem.Instance.GetActiveModifiers();
+            var activeModifiers = LevelModifierSystem.Instance.ActiveModifiers;
             if (activeModifiers.Count > 0)
                 Debug.Log($"[LevelBoot] {activeModifiers.Count} level modifiers active");
         }
