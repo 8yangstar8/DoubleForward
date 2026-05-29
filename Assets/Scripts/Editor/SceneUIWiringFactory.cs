@@ -22,6 +22,9 @@ public static class SceneUIWiringFactory
         EditorUtility.DisplayProgressBar("Wiring", "Enemy prefabs...", 0.08f);
         totalWired += WireEnemyPrefabs();
 
+        EditorUtility.DisplayProgressBar("Wiring", "Manager prefabs...", 0.09f);
+        totalWired += WireManagerPrefabs();
+
         EditorUtility.DisplayProgressBar("Wiring", "MainMenu...", 0.1f);
         totalWired += WireMainMenuScene();
 
@@ -206,6 +209,48 @@ public static class SceneUIWiringFactory
         }
 
         Debug.Log($"[UIWiring] Enemy prefabs: wired {wired} references");
+        return wired;
+    }
+
+    // ==================== Manager Prefabs ====================
+
+    private static int WireManagerPrefabs()
+    {
+        int wired = 0;
+        string dir = "Assets/Prefabs/Managers";
+        if (!Directory.Exists(dir)) return 0;
+
+        // AudioManager: wire 3 AudioSource fields
+        string audioPath = $"{dir}/AudioManager.prefab";
+        if (File.Exists(audioPath))
+        {
+            var root = PrefabUtility.LoadPrefabContents(audioPath);
+            var audioMgr = root.GetComponent<AudioManager>();
+            if (audioMgr != null)
+            {
+                var sources = root.GetComponents<AudioSource>();
+                if (sources.Length >= 3)
+                {
+                    var so = new SerializedObject(audioMgr);
+                    var bgm = so.FindProperty("bgmSource");
+                    var sfx = so.FindProperty("sfxSource");
+                    var ambient = so.FindProperty("ambientSource");
+
+                    if (bgm != null && bgm.objectReferenceValue == null)
+                    { bgm.objectReferenceValue = sources[0]; wired++; }
+                    if (sfx != null && sfx.objectReferenceValue == null)
+                    { sfx.objectReferenceValue = sources[1]; wired++; }
+                    if (ambient != null && ambient.objectReferenceValue == null)
+                    { ambient.objectReferenceValue = sources[2]; wired++; }
+
+                    so.ApplyModifiedProperties();
+                }
+            }
+            PrefabUtility.SaveAsPrefabAsset(root, audioPath);
+            PrefabUtility.UnloadPrefabContents(root);
+        }
+
+        Debug.Log($"[UIWiring] Manager prefabs: wired {wired} references");
         return wired;
     }
 

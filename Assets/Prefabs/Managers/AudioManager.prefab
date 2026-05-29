@@ -47,9 +47,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3c09b35eb59b1314ebd1c031d07498c7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  bgmSource: {fileID: 0}
-  sfxSource: {fileID: 0}
-  ambientSource: {fileID: 0}
+  bgmSource: {fileID: 2894842766192240436}
+  sfxSource: {fileID: 6922681596929093226}
+  ambientSource: {fileID: 5338506412667217917}
   masterVolume: 1
   bgmVolume: 0.7
   sfxVolume: 1
