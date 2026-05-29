@@ -59,8 +59,8 @@ public class InputManager : MonoBehaviour
         if (skill2ButtonP2 != null) skill2ButtonP2.gameObject.SetActive(showP2);
     }
 
-    private bool Key(Key key) => kb != null && kb[key].isPressed;
-    private bool KeyDown(Key key) => kb != null && kb[key].wasPressedThisFrame;
+    private bool KeyHeld(UnityEngine.InputSystem.Key k) => kb != null && kb[k].isPressed;
+    private bool KeyPressed(UnityEngine.InputSystem.Key k) => kb != null && kb[k].wasPressedThisFrame;
 
     // ============ 移动 ============
 
@@ -74,10 +74,10 @@ public class InputManager : MonoBehaviour
             if (enableKeyboard && touch == Vector2.zero && kb != null)
             {
                 float x = 0, y = 0;
-                if (Key(UnityEngine.InputSystem.Key.A) || Key(UnityEngine.InputSystem.Key.LeftArrow)) x = -1;
-                else if (Key(UnityEngine.InputSystem.Key.D) || Key(UnityEngine.InputSystem.Key.RightArrow)) x = 1;
-                if (Key(UnityEngine.InputSystem.Key.W) || Key(UnityEngine.InputSystem.Key.UpArrow)) y = 1;
-                else if (Key(UnityEngine.InputSystem.Key.S) || Key(UnityEngine.InputSystem.Key.DownArrow)) y = -1;
+                if (KeyHeld(UnityEngine.InputSystem.Key.A) || KeyHeld(UnityEngine.InputSystem.Key.LeftArrow)) x = -1;
+                else if (KeyHeld(UnityEngine.InputSystem.Key.D) || KeyHeld(UnityEngine.InputSystem.Key.RightArrow)) x = 1;
+                if (KeyHeld(UnityEngine.InputSystem.Key.W) || KeyHeld(UnityEngine.InputSystem.Key.UpArrow)) y = 1;
+                else if (KeyHeld(UnityEngine.InputSystem.Key.S) || KeyHeld(UnityEngine.InputSystem.Key.DownArrow)) y = -1;
                 return new Vector2(x, y);
             }
             return touch;
@@ -88,10 +88,10 @@ public class InputManager : MonoBehaviour
             if (enableKeyboard && touch == Vector2.zero && kb != null)
             {
                 float x = 0, y = 0;
-                if (Key(UnityEngine.InputSystem.Key.J)) x = -1;
-                else if (Key(UnityEngine.InputSystem.Key.L)) x = 1;
-                if (Key(UnityEngine.InputSystem.Key.I)) y = 1;
-                else if (Key(UnityEngine.InputSystem.Key.K)) y = -1;
+                if (KeyHeld(UnityEngine.InputSystem.Key.J)) x = -1;
+                else if (KeyHeld(UnityEngine.InputSystem.Key.L)) x = 1;
+                if (KeyHeld(UnityEngine.InputSystem.Key.I)) y = 1;
+                else if (KeyHeld(UnityEngine.InputSystem.Key.K)) y = -1;
                 return new Vector2(x, y);
             }
             return touch;
@@ -106,13 +106,13 @@ public class InputManager : MonoBehaviour
         if (playerIndex == 0)
         {
             bool touch = jumpButtonP1 != null && jumpButtonP1.WasPressedThisFrame;
-            bool key = enableKeyboard && (KeyDown(UnityEngine.InputSystem.Key.Space) || KeyDown(UnityEngine.InputSystem.Key.W) || KeyDown(UnityEngine.InputSystem.Key.UpArrow));
+            bool key = enableKeyboard && (KeyPressed(UnityEngine.InputSystem.Key.Space) || KeyPressed(UnityEngine.InputSystem.Key.W) || KeyPressed(UnityEngine.InputSystem.Key.UpArrow));
             return touch || key;
         }
         else
         {
             bool touch = jumpButtonP2 != null && jumpButtonP2.WasPressedThisFrame;
-            bool key = enableKeyboard && KeyDown(UnityEngine.InputSystem.Key.I);
+            bool key = enableKeyboard && KeyPressed(UnityEngine.InputSystem.Key.I);
             return touch || key;
         }
     }
@@ -125,14 +125,14 @@ public class InputManager : MonoBehaviour
         if (playerIndex == 0)
         {
             bool touch = attackButtonP1 != null && attackButtonP1.WasPressedThisFrame;
-            bool key = enableKeyboard && KeyDown(UnityEngine.InputSystem.Key.J);
+            bool key = enableKeyboard && KeyPressed(UnityEngine.InputSystem.Key.J);
             bool mouse = enableKeyboard && Mouse.current != null && Mouse.current.leftButton.wasPressedThisFrame;
             return touch || key || mouse;
         }
         else
         {
             bool touch = attackButtonP2 != null && attackButtonP2.WasPressedThisFrame;
-            bool key = enableKeyboard && KeyDown(UnityEngine.InputSystem.Key.Numpad1);
+            bool key = enableKeyboard && KeyPressed(UnityEngine.InputSystem.Key.Numpad1);
             return touch || key;
         }
     }
@@ -143,13 +143,13 @@ public class InputManager : MonoBehaviour
         if (playerIndex == 0)
         {
             bool touch = attackButtonP1 != null && attackButtonP1.IsPressed;
-            bool key = enableKeyboard && Key(UnityEngine.InputSystem.Key.J);
+            bool key = enableKeyboard && KeyHeld(UnityEngine.InputSystem.Key.J);
             return touch || key;
         }
         else
         {
             bool touch = attackButtonP2 != null && attackButtonP2.IsPressed;
-            bool key = enableKeyboard && Key(UnityEngine.InputSystem.Key.Numpad1);
+            bool key = enableKeyboard && KeyHeld(UnityEngine.InputSystem.Key.Numpad1);
             return touch || key;
         }
     }
@@ -162,13 +162,13 @@ public class InputManager : MonoBehaviour
         if (playerIndex == 0)
         {
             bool touch = skill1ButtonP1 != null && skill1ButtonP1.WasPressedThisFrame;
-            bool key = enableKeyboard && KeyDown(UnityEngine.InputSystem.Key.Q);
+            bool key = enableKeyboard && KeyPressed(UnityEngine.InputSystem.Key.Q);
             return touch || key;
         }
         else
         {
             bool touch = skill1ButtonP2 != null && skill1ButtonP2.WasPressedThisFrame;
-            bool key = enableKeyboard && KeyDown(UnityEngine.InputSystem.Key.Numpad4);
+            bool key = enableKeyboard && KeyPressed(UnityEngine.InputSystem.Key.Numpad4);
             return touch || key;
         }
     }
@@ -179,13 +179,13 @@ public class InputManager : MonoBehaviour
         if (playerIndex == 0)
         {
             bool touch = skill2ButtonP1 != null && skill2ButtonP1.WasPressedThisFrame;
-            bool key = enableKeyboard && KeyDown(UnityEngine.InputSystem.Key.E);
+            bool key = enableKeyboard && KeyPressed(UnityEngine.InputSystem.Key.E);
             return touch || key;
         }
         else
         {
             bool touch = skill2ButtonP2 != null && skill2ButtonP2.WasPressedThisFrame;
-            bool key = enableKeyboard && KeyDown(UnityEngine.InputSystem.Key.Numpad6);
+            bool key = enableKeyboard && KeyPressed(UnityEngine.InputSystem.Key.Numpad6);
             return touch || key;
         }
     }
@@ -196,13 +196,13 @@ public class InputManager : MonoBehaviour
         if (playerIndex == 0)
         {
             bool touch = skill1ButtonP1 != null && skill1ButtonP1.IsPressed;
-            bool key = enableKeyboard && Key(UnityEngine.InputSystem.Key.Q);
+            bool key = enableKeyboard && KeyHeld(UnityEngine.InputSystem.Key.Q);
             return touch || key;
         }
         else
         {
             bool touch = skill1ButtonP2 != null && skill1ButtonP2.IsPressed;
-            bool key = enableKeyboard && Key(UnityEngine.InputSystem.Key.Numpad4);
+            bool key = enableKeyboard && KeyHeld(UnityEngine.InputSystem.Key.Numpad4);
             return touch || key;
         }
     }
@@ -215,13 +215,13 @@ public class InputManager : MonoBehaviour
         if (playerIndex == 0)
         {
             bool touch = interactButtonP1 != null && interactButtonP1.WasPressedThisFrame;
-            bool key = enableKeyboard && KeyDown(UnityEngine.InputSystem.Key.F);
+            bool key = enableKeyboard && KeyPressed(UnityEngine.InputSystem.Key.F);
             return touch || key;
         }
         else
         {
             bool touch = interactButtonP2 != null && interactButtonP2.WasPressedThisFrame;
-            bool key = enableKeyboard && KeyDown(UnityEngine.InputSystem.Key.Numpad5);
+            bool key = enableKeyboard && KeyPressed(UnityEngine.InputSystem.Key.Numpad5);
             return touch || key;
         }
     }
@@ -232,13 +232,13 @@ public class InputManager : MonoBehaviour
         if (playerIndex == 0)
         {
             bool touch = interactButtonP1 != null && interactButtonP1.IsPressed;
-            bool key = enableKeyboard && Key(UnityEngine.InputSystem.Key.F);
+            bool key = enableKeyboard && KeyHeld(UnityEngine.InputSystem.Key.F);
             return touch || key;
         }
         else
         {
             bool touch = interactButtonP2 != null && interactButtonP2.IsPressed;
-            bool key = enableKeyboard && Key(UnityEngine.InputSystem.Key.Numpad5);
+            bool key = enableKeyboard && KeyHeld(UnityEngine.InputSystem.Key.Numpad5);
             return touch || key;
         }
     }
@@ -251,13 +251,13 @@ public class InputManager : MonoBehaviour
         if (playerIndex == 0)
         {
             bool touch = dashButtonP1 != null && dashButtonP1.WasPressedThisFrame;
-            bool key = enableKeyboard && (KeyDown(UnityEngine.InputSystem.Key.LeftShift) || KeyDown(UnityEngine.InputSystem.Key.K));
+            bool key = enableKeyboard && (KeyPressed(UnityEngine.InputSystem.Key.LeftShift) || KeyPressed(UnityEngine.InputSystem.Key.K));
             return touch || key;
         }
         else
         {
             bool touch = dashButtonP2 != null && dashButtonP2.WasPressedThisFrame;
-            bool key = enableKeyboard && KeyDown(UnityEngine.InputSystem.Key.Numpad2);
+            bool key = enableKeyboard && KeyPressed(UnityEngine.InputSystem.Key.Numpad2);
             return touch || key;
         }
     }
