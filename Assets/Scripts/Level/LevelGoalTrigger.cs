@@ -9,7 +9,7 @@ using UnityEngine;
 public class LevelGoalTrigger : MonoBehaviour
 {
     [Header("到达条件")]
-    [SerializeField] private bool requireBothPlayers = true;
+    [SerializeField] private bool requireBothPlayers = false;
 
     [Header("视觉")]
     [SerializeField] private SpriteRenderer goalRenderer;

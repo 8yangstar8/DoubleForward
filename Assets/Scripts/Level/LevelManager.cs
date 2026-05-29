@@ -116,14 +116,20 @@ public class LevelManager : MonoBehaviour
         if (IsLevelComplete) return;
         IsLevelComplete = true;
 
-        SaveSystem.Instance?.MarkLevelComplete(levelData.chapter, levelData.levelIndex);
+        if (levelData != null)
+            SaveSystem.Instance?.MarkLevelComplete(levelData.chapter, levelData.levelIndex);
         GameManager.Instance?.SetState(GameManager.GameState.LevelComplete);
         OnLevelComplete?.Invoke();
+        Debug.Log("[LevelManager] Level completed!");
     }
 
     public void RestartLevel()
     {
-        SceneLoader.Instance?.LoadScene(levelData.sceneName);
+        if (levelData != null)
+            SceneLoader.Instance?.LoadScene(levelData.sceneName);
+        else
+            UnityEngine.SceneManagement.SceneManager.LoadScene(
+                UnityEngine.SceneManagement.SceneManager.GetActiveScene().name);
     }
 
     public float GetLevelTime() => levelTimer;

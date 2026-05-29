@@ -4,6 +4,7 @@
     "references": [
         "DoubleForward.Runtime",
         "Unity.TextMeshPro",
+        "Unity.TextMeshPro.Editor",
         "Unity.RenderPipelines.Universal.Runtime",
         "Unity.RenderPipelines.Core.Runtime",
         "Unity.InputSystem",
