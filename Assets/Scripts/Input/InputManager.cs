@@ -1,5 +1,5 @@
 using UnityEngine;
-using UnityEngine.InputSystem;
+using Kbd = UnityEngine.InputSystem.Keyboard;
 
 public class InputManager : MonoBehaviour
 {
@@ -11,7 +11,7 @@ public class InputManager : MonoBehaviour
     [SerializeField] private TouchButton skill1ButtonP1;
     [SerializeField] private TouchButton skill2ButtonP1;
 
-    [Header("Player 2 Controls (Split Screen)")]
+    [Header("Player 2 Controls")]
     [SerializeField] private VirtualJoystick joystickP2;
     [SerializeField] private TouchButton jumpButtonP2;
     [SerializeField] private TouchButton skill1ButtonP2;
@@ -29,30 +29,14 @@ public class InputManager : MonoBehaviour
     [SerializeField] private TouchButton dashButtonP1;
     [SerializeField] private TouchButton dashButtonP2;
 
-    [Header("键盘设置")]
-    [SerializeField] private bool enableKeyboard = true;
-
     public enum PlayMode { SinglePlayer, LocalSplitScreen, Network }
     public PlayMode CurrentMode { get; private set; } = PlayMode.SinglePlayer;
-
     private bool inputEnabled = true;
-    private Keyboard kb;
 
     void Awake()
     {
         if (Instance != null && Instance != this) { Destroy(gameObject); return; }
         Instance = this;
-        enableKeyboard = true;
-    }
-
-    void Update()
-    {
-        kb = Keyboard.current;
-    }
-
-    void Start()
-    {
-        Debug.Log($"[InputManager] Keyboard enabled: {enableKeyboard}, Keyboard.current: {(Keyboard.current != null ? "OK" : "NULL")}");
     }
 
     public void SetPlayMode(PlayMode mode)
@@ -65,210 +49,117 @@ public class InputManager : MonoBehaviour
         if (skill2ButtonP2 != null) skill2ButtonP2.gameObject.SetActive(showP2);
     }
 
-    private bool KeyHeld(UnityEngine.InputSystem.Key k) => kb != null && kb[k].isPressed;
-    private bool KeyPressed(UnityEngine.InputSystem.Key k) => kb != null && kb[k].wasPressedThisFrame;
-
-    // ============ 移动 ============
-
     public Vector2 GetMoveInput(int playerIndex)
     {
         if (!inputEnabled) return Vector2.zero;
+        var kb = Kbd.current;
 
         if (playerIndex == 0)
         {
             Vector2 touch = joystickP1 != null ? joystickP1.Direction : Vector2.zero;
-            if (enableKeyboard && touch == Vector2.zero && kb != null)
+            if (touch == Vector2.zero && kb != null)
             {
                 float x = 0, y = 0;
-                if (KeyHeld(UnityEngine.InputSystem.Key.A) || KeyHeld(UnityEngine.InputSystem.Key.LeftArrow)) x = -1;
-                else if (KeyHeld(UnityEngine.InputSystem.Key.D) || KeyHeld(UnityEngine.InputSystem.Key.RightArrow)) x = 1;
-                if (KeyHeld(UnityEngine.InputSystem.Key.W) || KeyHeld(UnityEngine.InputSystem.Key.UpArrow)) y = 1;
-                else if (KeyHeld(UnityEngine.InputSystem.Key.S) || KeyHeld(UnityEngine.InputSystem.Key.DownArrow)) y = -1;
+                if (kb.aKey.isPressed || kb.leftArrowKey.isPressed) x = -1;
+                else if (kb.dKey.isPressed || kb.rightArrowKey.isPressed) x = 1;
+                if (kb.wKey.isPressed || kb.upArrowKey.isPressed) y = 1;
+                else if (kb.sKey.isPressed || kb.downArrowKey.isPressed) y = -1;
                 return new Vector2(x, y);
             }
             return touch;
         }
-        else
-        {
-            Vector2 touch = joystickP2 != null ? joystickP2.Direction : Vector2.zero;
-            if (enableKeyboard && touch == Vector2.zero && kb != null)
-            {
-                float x = 0, y = 0;
-                if (KeyHeld(UnityEngine.InputSystem.Key.J)) x = -1;
-                else if (KeyHeld(UnityEngine.InputSystem.Key.L)) x = 1;
-                if (KeyHeld(UnityEngine.InputSystem.Key.I)) y = 1;
-                else if (KeyHeld(UnityEngine.InputSystem.Key.K)) y = -1;
-                return new Vector2(x, y);
-            }
-            return touch;
-        }
+        return joystickP2 != null ? joystickP2.Direction : Vector2.zero;
     }
-
-    // ============ 跳跃 ============
 
     public bool GetJumpPressed(int playerIndex)
     {
         if (!inputEnabled) return false;
+        var kb = Kbd.current;
         if (playerIndex == 0)
-        {
-            bool touch = jumpButtonP1 != null && jumpButtonP1.WasPressedThisFrame;
-            bool key = enableKeyboard && (KeyPressed(UnityEngine.InputSystem.Key.Space) || KeyPressed(UnityEngine.InputSystem.Key.W) || KeyPressed(UnityEngine.InputSystem.Key.UpArrow));
-            return touch || key;
-        }
-        else
-        {
-            bool touch = jumpButtonP2 != null && jumpButtonP2.WasPressedThisFrame;
-            bool key = enableKeyboard && KeyPressed(UnityEngine.InputSystem.Key.I);
-            return touch || key;
-        }
+            return (jumpButtonP1 != null && jumpButtonP1.WasPressedThisFrame)
+                || (kb != null && kb.spaceKey.wasPressedThisFrame);
+        return jumpButtonP2 != null && jumpButtonP2.WasPressedThisFrame;
     }
-
-    // ============ 攻击 ============
 
     public bool GetAttackPressed(int playerIndex)
     {
         if (!inputEnabled) return false;
+        var kb = Kbd.current;
         if (playerIndex == 0)
-        {
-            bool touch = attackButtonP1 != null && attackButtonP1.WasPressedThisFrame;
-            bool key = enableKeyboard && KeyPressed(UnityEngine.InputSystem.Key.J);
-            bool mouse = enableKeyboard && Mouse.current != null && Mouse.current.leftButton.wasPressedThisFrame;
-            return touch || key || mouse;
-        }
-        else
-        {
-            bool touch = attackButtonP2 != null && attackButtonP2.WasPressedThisFrame;
-            bool key = enableKeyboard && KeyPressed(UnityEngine.InputSystem.Key.Numpad1);
-            return touch || key;
-        }
+            return (attackButtonP1 != null && attackButtonP1.WasPressedThisFrame)
+                || (kb != null && kb.jKey.wasPressedThisFrame);
+        return attackButtonP2 != null && attackButtonP2.WasPressedThisFrame;
     }
 
     public bool GetAttackHeld(int playerIndex)
     {
         if (!inputEnabled) return false;
+        var kb = Kbd.current;
         if (playerIndex == 0)
-        {
-            bool touch = attackButtonP1 != null && attackButtonP1.IsPressed;
-            bool key = enableKeyboard && KeyHeld(UnityEngine.InputSystem.Key.J);
-            return touch || key;
-        }
-        else
-        {
-            bool touch = attackButtonP2 != null && attackButtonP2.IsPressed;
-            bool key = enableKeyboard && KeyHeld(UnityEngine.InputSystem.Key.Numpad1);
-            return touch || key;
-        }
+            return (attackButtonP1 != null && attackButtonP1.IsPressed)
+                || (kb != null && kb.jKey.isPressed);
+        return attackButtonP2 != null && attackButtonP2.IsPressed;
     }
-
-    // ============ 技能 ============
 
     public bool GetSkill1Pressed(int playerIndex)
     {
         if (!inputEnabled) return false;
+        var kb = Kbd.current;
         if (playerIndex == 0)
-        {
-            bool touch = skill1ButtonP1 != null && skill1ButtonP1.WasPressedThisFrame;
-            bool key = enableKeyboard && KeyPressed(UnityEngine.InputSystem.Key.Q);
-            return touch || key;
-        }
-        else
-        {
-            bool touch = skill1ButtonP2 != null && skill1ButtonP2.WasPressedThisFrame;
-            bool key = enableKeyboard && KeyPressed(UnityEngine.InputSystem.Key.Numpad4);
-            return touch || key;
-        }
+            return (skill1ButtonP1 != null && skill1ButtonP1.WasPressedThisFrame)
+                || (kb != null && kb.qKey.wasPressedThisFrame);
+        return skill1ButtonP2 != null && skill1ButtonP2.WasPressedThisFrame;
     }
 
     public bool GetSkill2Pressed(int playerIndex)
     {
         if (!inputEnabled) return false;
+        var kb = Kbd.current;
         if (playerIndex == 0)
-        {
-            bool touch = skill2ButtonP1 != null && skill2ButtonP1.WasPressedThisFrame;
-            bool key = enableKeyboard && KeyPressed(UnityEngine.InputSystem.Key.E);
-            return touch || key;
-        }
-        else
-        {
-            bool touch = skill2ButtonP2 != null && skill2ButtonP2.WasPressedThisFrame;
-            bool key = enableKeyboard && KeyPressed(UnityEngine.InputSystem.Key.Numpad6);
-            return touch || key;
-        }
+            return (skill2ButtonP1 != null && skill2ButtonP1.WasPressedThisFrame)
+                || (kb != null && kb.eKey.wasPressedThisFrame);
+        return skill2ButtonP2 != null && skill2ButtonP2.WasPressedThisFrame;
     }
 
     public bool GetSkill1Held(int playerIndex)
     {
         if (!inputEnabled) return false;
+        var kb = Kbd.current;
         if (playerIndex == 0)
-        {
-            bool touch = skill1ButtonP1 != null && skill1ButtonP1.IsPressed;
-            bool key = enableKeyboard && KeyHeld(UnityEngine.InputSystem.Key.Q);
-            return touch || key;
-        }
-        else
-        {
-            bool touch = skill1ButtonP2 != null && skill1ButtonP2.IsPressed;
-            bool key = enableKeyboard && KeyHeld(UnityEngine.InputSystem.Key.Numpad4);
-            return touch || key;
-        }
+            return (skill1ButtonP1 != null && skill1ButtonP1.IsPressed)
+                || (kb != null && kb.qKey.isPressed);
+        return skill1ButtonP2 != null && skill1ButtonP2.IsPressed;
     }
-
-    // ============ 交互 ============
 
     public bool GetInteractPressed(int playerIndex)
     {
         if (!inputEnabled) return false;
+        var kb = Kbd.current;
         if (playerIndex == 0)
-        {
-            bool touch = interactButtonP1 != null && interactButtonP1.WasPressedThisFrame;
-            bool key = enableKeyboard && KeyPressed(UnityEngine.InputSystem.Key.F);
-            return touch || key;
-        }
-        else
-        {
-            bool touch = interactButtonP2 != null && interactButtonP2.WasPressedThisFrame;
-            bool key = enableKeyboard && KeyPressed(UnityEngine.InputSystem.Key.Numpad5);
-            return touch || key;
-        }
+            return (interactButtonP1 != null && interactButtonP1.WasPressedThisFrame)
+                || (kb != null && kb.fKey.wasPressedThisFrame);
+        return interactButtonP2 != null && interactButtonP2.WasPressedThisFrame;
     }
 
     public bool GetInteractHeld(int playerIndex)
     {
         if (!inputEnabled) return false;
+        var kb = Kbd.current;
         if (playerIndex == 0)
-        {
-            bool touch = interactButtonP1 != null && interactButtonP1.IsPressed;
-            bool key = enableKeyboard && KeyHeld(UnityEngine.InputSystem.Key.F);
-            return touch || key;
-        }
-        else
-        {
-            bool touch = interactButtonP2 != null && interactButtonP2.IsPressed;
-            bool key = enableKeyboard && KeyHeld(UnityEngine.InputSystem.Key.Numpad5);
-            return touch || key;
-        }
+            return (interactButtonP1 != null && interactButtonP1.IsPressed)
+                || (kb != null && kb.fKey.isPressed);
+        return interactButtonP2 != null && interactButtonP2.IsPressed;
     }
-
-    // ============ 冲刺 ============
 
     public bool GetDashPressed(int playerIndex)
     {
         if (!inputEnabled) return false;
+        var kb = Kbd.current;
         if (playerIndex == 0)
-        {
-            bool touch = dashButtonP1 != null && dashButtonP1.WasPressedThisFrame;
-            bool key = enableKeyboard && (KeyPressed(UnityEngine.InputSystem.Key.LeftShift) || KeyPressed(UnityEngine.InputSystem.Key.K));
-            return touch || key;
-        }
-        else
-        {
-            bool touch = dashButtonP2 != null && dashButtonP2.WasPressedThisFrame;
-            bool key = enableKeyboard && KeyPressed(UnityEngine.InputSystem.Key.Numpad2);
-            return touch || key;
-        }
+            return (dashButtonP1 != null && dashButtonP1.WasPressedThisFrame)
+                || (kb != null && (kb.leftShiftKey.wasPressedThisFrame || kb.kKey.wasPressedThisFrame));
+        return dashButtonP2 != null && dashButtonP2.WasPressedThisFrame;
     }
-
-    // ============ *Down 别名 ============
 
     public bool GetJumpDown(int playerIndex) => GetJumpPressed(playerIndex);
     public bool GetAttackDown(int playerIndex) => GetAttackPressed(playerIndex);
@@ -276,8 +167,6 @@ public class InputManager : MonoBehaviour
     public bool GetSkill2Down(int playerIndex) => GetSkill2Pressed(playerIndex);
     public bool GetInteractDown(int playerIndex) => GetInteractPressed(playerIndex);
     public bool GetDashDown(int playerIndex) => GetDashPressed(playerIndex);
-
-    // ============ 全局输入控制 ============
 
     public void SetInputEnabled(bool enabled) { inputEnabled = enabled; }
     public bool IsInputEnabled => inputEnabled;
