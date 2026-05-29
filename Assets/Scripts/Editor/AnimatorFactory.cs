@@ -11,6 +11,63 @@ public static class AnimatorFactory
 {
     private const string ANIM_DIR = "Assets/Animations";
 
+    [MenuItem("DoubleForward/Patch Animator Parameters", false, 53)]
+    public static void PatchAllParameters()
+    {
+        string[] playerParams = {
+            "B:IsRunning", "B:IsGrounded", "B:IsDashing", "B:IsWallSliding",
+            "B:IsOnLadder", "B:IsClimbing", "B:IsHurt", "B:IsJumping", "B:IsFalling",
+            "F:Speed", "F:VelocityX", "F:VelocityY", "F:HealthPercent",
+            "T:Attack", "T:Hurt", "T:Death", "T:Die", "T:Respawn", "T:Revive",
+            "T:Jump", "T:Land", "T:WallJump", "T:Heal", "T:Skill", "T:Ability",
+            "T:Interact",
+            "I:AttackCombo", "I:AttackIndex", "I:AbilityIndex"
+        };
+
+        string ctrlDir = $"{ANIM_DIR}/Controllers";
+        if (!Directory.Exists(ctrlDir)) return;
+
+        int total = 0;
+        var files = Directory.GetFiles(ctrlDir, "*.controller");
+        foreach (var file in files)
+        {
+            string path = file.Replace('\\', '/');
+            var controller = AssetDatabase.LoadAssetAtPath<AnimatorController>(path);
+            if (controller == null) continue;
+
+            int added = 0;
+            foreach (var p in playerParams)
+            {
+                string typeLetter = p.Substring(0, 1);
+                string paramName = p.Substring(2);
+
+                bool exists = false;
+                foreach (var existing in controller.parameters)
+                    if (existing.name == paramName) { exists = true; break; }
+                if (exists) continue;
+
+                var pType = typeLetter switch {
+                    "B" => AnimatorControllerParameterType.Bool,
+                    "F" => AnimatorControllerParameterType.Float,
+                    "T" => AnimatorControllerParameterType.Trigger,
+                    "I" => AnimatorControllerParameterType.Int,
+                    _ => AnimatorControllerParameterType.Float
+                };
+                controller.AddParameter(paramName, pType);
+                added++;
+            }
+
+            if (added > 0)
+            {
+                EditorUtility.SetDirty(controller);
+                total += added;
+            }
+        }
+
+        AssetDatabase.SaveAssets();
+        Debug.Log($"[AnimatorFactory] Patched {total} parameters across {files.Length} controllers");
+    }
+
     [MenuItem("DoubleForward/Create Animator Controllers", false, 52)]
     public static void CreateAll()
     {
