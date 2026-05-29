@@ -46,7 +46,7 @@ public class SpringPad : MonoBehaviour
         if (dir == Vector2.zero) dir = Vector2.up;
 
         if (overrideVelocity)
-            rb.linearVelocity = dir * bounceForce;
+            rb.velocity = dir * bounceForce;
         else
             rb.AddForce(dir * bounceForce, ForceMode2D.Impulse);
 
@@ -217,7 +217,7 @@ public class TeleportPad : MonoBehaviour, IInteractable
 
         var rb = playerObj.GetComponent<Rigidbody2D>();
         if (rb != null)
-            rb.linearVelocity = Vector2.zero;
+            rb.velocity = Vector2.zero;
 
         // 效果
         if (teleportParticles != null)

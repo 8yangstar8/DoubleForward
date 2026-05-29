@@ -96,7 +96,7 @@ public class SwingRope : MonoBehaviour
 
         // 保持速度为0（由绳索控制移动）
         if (playerRb != null)
-            playerRb.linearVelocity = Vector2.zero;
+            playerRb.velocity = Vector2.zero;
     }
 
     private Vector3 GetRopeEndPosition()
@@ -141,7 +141,7 @@ public class SwingRope : MonoBehaviour
         {
             originalGravity = playerRb.gravityScale;
             playerRb.gravityScale = 0;
-            playerRb.linearVelocity = Vector2.zero;
+            playerRb.velocity = Vector2.zero;
         }
 
         // 根据玩家位置计算初始角度
@@ -173,7 +173,7 @@ public class SwingRope : MonoBehaviour
         if (playerRb != null)
         {
             playerRb.gravityScale = originalGravity;
-            playerRb.linearVelocity = launchVelocity;
+            playerRb.velocity = launchVelocity;
         }
 
         isActive = false;

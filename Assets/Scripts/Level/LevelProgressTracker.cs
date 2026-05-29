@@ -5,6 +5,18 @@ public class LevelProgressTracker : MonoBehaviour
 {
     [SerializeField] private List<LevelData> allLevels = new List<LevelData>();
 
+    /// <summary>
+    /// Whether all collectibles in the current level have been gathered.
+    /// </summary>
+    public bool AllCollected
+    {
+        get
+        {
+            if (LevelManager.Instance == null) return true;
+            return LevelManager.Instance.CollectedCount >= LevelManager.Instance.TotalCollectibles;
+        }
+    }
+
     public int GetUnlockedLevelCount()
     {
         int count = 1;

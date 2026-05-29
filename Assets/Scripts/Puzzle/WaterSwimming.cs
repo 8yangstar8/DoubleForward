@@ -91,7 +91,7 @@ public class WaterSwimming : MonoBehaviour
             rb = rb,
             health = other.GetComponent<PlayerHealth>(),
             originalGravity = rb.gravityScale,
-            originalDrag = rb.linearDamping,
+            originalDrag = rb.drag,
             currentOxygen = maxOxygen,
             drowningTimer = 0f,
             bubbleTimer = 0f,
@@ -103,7 +103,7 @@ public class WaterSwimming : MonoBehaviour
 
         // 修改物理
         rb.gravityScale = 0.3f;
-        rb.linearDamping = waterDrag;
+        rb.drag = waterDrag;
 
         // 入水溅射效果
         SpawnSplash(other.transform.position);
@@ -128,7 +128,7 @@ public class WaterSwimming : MonoBehaviour
 
         // 恢复物理
         state.rb.gravityScale = state.originalGravity;
-        state.rb.linearDamping = state.originalDrag;
+        state.rb.drag = state.originalDrag;
 
         // 出水溅射效果
         SpawnSplash(other.transform.position);
@@ -226,11 +226,11 @@ public class WaterSwimming : MonoBehaviour
             state.rb.AddForce(Vector2.up * surfacePull);
 
             // 减少垂直速度抖动
-            if (Mathf.Abs(state.rb.linearVelocity.y) < 0.5f)
+            if (Mathf.Abs(state.rb.velocity.y) < 0.5f)
             {
-                state.rb.linearVelocity = new Vector2(
-                    state.rb.linearVelocity.x,
-                    state.rb.linearVelocity.y * 0.9f
+                state.rb.velocity = new Vector2(
+                    state.rb.velocity.x,
+                    state.rb.velocity.y * 0.9f
                 );
             }
         }
@@ -258,7 +258,7 @@ public class WaterSwimming : MonoBehaviour
                 if (state.isSurfacing)
                 {
                     // 从水面跳出
-                    state.rb.linearVelocity = new Vector2(state.rb.linearVelocity.x, swimJumpForce);
+                    state.rb.velocity = new Vector2(state.rb.velocity.x, swimJumpForce);
                 }
                 else if (state.isSubmerged)
                 {
@@ -270,9 +270,9 @@ public class WaterSwimming : MonoBehaviour
 
         // 限制水中最大速度
         float maxSpeed = swimSpeed * 1.5f;
-        if (state.rb.linearVelocity.magnitude > maxSpeed)
+        if (state.rb.velocity.magnitude > maxSpeed)
         {
-            state.rb.linearVelocity = state.rb.linearVelocity.normalized * maxSpeed;
+            state.rb.velocity = state.rb.velocity.normalized * maxSpeed;
         }
     }
 

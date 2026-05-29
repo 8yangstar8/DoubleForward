@@ -191,7 +191,7 @@ public class NewGamePlusManager : MonoBehaviour
             }
             data.lastChapter = 1;
             data.lastLevel = 1;
-            data.totalStars = 0;
+            // totalStars is computed from levelStars, already reset above
             SaveSystem.Instance.Save();
         }
 

@@ -231,7 +231,7 @@ public class PlayerCombat : MonoBehaviour
         var rb = GetComponent<Rigidbody2D>();
         if (rb != null)
         {
-            rb.linearVelocity = new Vector2(rb.linearVelocity.x * 0.3f, -airAttackDownForce);
+            rb.velocity = new Vector2(rb.velocity.x * 0.3f, -airAttackDownForce);
         }
 
         StartCoroutine(AirAttackLandDetection());

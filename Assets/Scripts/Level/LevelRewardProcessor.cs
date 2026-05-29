@@ -239,7 +239,7 @@ public class LevelRewardProcessor : MonoBehaviour
         if (levelCatalog != null)
         {
             var entry = levelCatalog.GetLevel(chapter, level);
-            if (entry != null) return entry.parTime;
+            if (entry != null && entry.levelData != null) return entry.levelData.parTime;
         }
 
         // 从LevelManager获取

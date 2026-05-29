@@ -322,7 +322,7 @@ public class TutorialFlowManager : MonoBehaviour
 
         if (TutorialOverlayUI.Instance != null)
         {
-            TutorialOverlayUI.Instance.ShowTutorial(title, desc, step.highlightTarget);
+            TutorialOverlayUI.Instance.ShowSingleTip(title, desc);
         }
 
         // 显示输入指引

@@ -111,6 +111,12 @@ public static class PrefabFactory
         attackPoint.transform.SetParent(obj.transform);
         attackPoint.transform.localPosition = new Vector3(0.8f, 0.2f, 0);
 
+        // -- Animator (must be added before PlayerAnimator due to RequireComponent) --
+        var animator = obj.AddComponent<Animator>();
+        var ctrlPath = $"{ANIM_DIR}/{name}Controller.controller";
+        var ctrl = AssetDatabase.LoadAssetAtPath<RuntimeAnimatorController>(ctrlPath);
+        if (ctrl != null) animator.runtimeAnimatorController = ctrl;
+
         // -- Core Scripts --
         obj.AddComponent<PlayerController>();
         obj.AddComponent<PlayerHealth>();
@@ -128,12 +134,6 @@ public static class PrefabFactory
             obj.AddComponent<LuxAbilities>();
         else
             obj.AddComponent<NoxAbilities>();
-
-        // -- Animator --
-        var animator = obj.AddComponent<Animator>();
-        var ctrlPath = $"{ANIM_DIR}/{name}Controller.controller";
-        var ctrl = AssetDatabase.LoadAssetAtPath<RuntimeAnimatorController>(ctrlPath);
-        if (ctrl != null) animator.runtimeAnimatorController = ctrl;
 
         // -- 子物体：光环/阴影 --
         var auraObj = new GameObject("Aura");

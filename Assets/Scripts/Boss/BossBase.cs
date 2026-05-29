@@ -135,6 +135,11 @@ public abstract class BossBase : MonoBehaviour
         gameObject.SetActive(false);
     }
 
+    protected void RaiseOnBossDefeated()
+    {
+        OnBossDefeated?.Invoke();
+    }
+
     protected BossPhase GetCurrentPhase()
     {
         if (CurrentPhaseIndex < phases.Count)

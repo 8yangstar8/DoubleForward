@@ -34,7 +34,7 @@ public class PlayerController : MonoBehaviour
     public bool IsGrounded { get; private set; }
     public bool IsFacingRight { get; private set; } = true;
     public bool IsDashing { get; private set; }
-    public Vector2 Velocity => rb.linearVelocity;
+    public Vector2 Velocity => rb.velocity;
 
     private Rigidbody2D rb;
     private bool canDoubleJump;
@@ -76,7 +76,7 @@ public class PlayerController : MonoBehaviour
         }
 
         // Coyote time: 离开地面后仍允许短暂跳跃
-        if (wasGrounded && !IsGrounded && rb.linearVelocity.y <= 0)
+        if (wasGrounded && !IsGrounded && rb.velocity.y <= 0)
             coyoteTimer = coyoteTime;
         else if (!IsGrounded)
             coyoteTimer -= Time.deltaTime;
@@ -164,7 +164,7 @@ public class PlayerController : MonoBehaviour
         var statusEffect = GetComponent<PlayerStatusEffect>();
         if (statusEffect != null && statusEffect.IsRooted)
         {
-            rb.linearVelocity = new Vector2(0, rb.linearVelocity.y);
+            rb.velocity = new Vector2(0, rb.velocity.y);
             return;
         }
 
@@ -178,7 +178,7 @@ public class PlayerController : MonoBehaviour
         if (statusEffect != null)
             speed *= statusEffect.SpeedMultiplier;
 
-        rb.linearVelocity = new Vector2(input.x * speed, rb.linearVelocity.y);
+        rb.velocity = new Vector2(input.x * speed, rb.velocity.y);
 
         if (input.x > 0.01f)
         {
@@ -205,7 +205,7 @@ public class PlayerController : MonoBehaviour
 
         if (IsGrounded || canCoyoteJump)
         {
-            rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);
+            rb.velocity = new Vector2(rb.velocity.x, jumpForce);
             hasDoubleJumped = false;
             coyoteTimer = 0; // 消耗coyote time
             OnJumped?.Invoke();
@@ -215,7 +215,7 @@ public class PlayerController : MonoBehaviour
         }
         else if (canDoubleJump && !hasDoubleJumped)
         {
-            rb.linearVelocity = new Vector2(rb.linearVelocity.x, doubleJumpForce);
+            rb.velocity = new Vector2(rb.velocity.x, doubleJumpForce);
             hasDoubleJumped = true;
             OnJumped?.Invoke();
         }
@@ -234,7 +234,7 @@ public class PlayerController : MonoBehaviour
         IsDashing = true;
         dashTimer = dashDuration;
         float dir = IsFacingRight ? 1f : -1f;
-        rb.linearVelocity = new Vector2(dir * dashSpeed, 0f);
+        rb.velocity = new Vector2(dir * dashSpeed, 0f);
         OnDashed?.Invoke();
 
         // 同步检测
@@ -296,7 +296,7 @@ public class PlayerController : MonoBehaviour
             Vector2.right * dir, wallCheckDistance, groundLayer);
 
         // 墙壁滑行：非地面 + 贴墙 + 有水平输入
-        bool wantsToSlide = isTouchingWall && !IsGrounded && rb.linearVelocity.y < 0;
+        bool wantsToSlide = isTouchingWall && !IsGrounded && rb.velocity.y < 0;
 
         if (wantsToSlide && InputManager.Instance != null)
         {
@@ -311,15 +311,15 @@ public class PlayerController : MonoBehaviour
 
         if (IsWallSliding)
         {
-            rb.linearVelocity = new Vector2(rb.linearVelocity.x,
-                Mathf.Max(rb.linearVelocity.y, -wallSlideSpeed));
+            rb.velocity = new Vector2(rb.velocity.x,
+                Mathf.Max(rb.velocity.y, -wallSlideSpeed));
         }
 
         // 墙跳锁定计时
         if (wallJumpLockTimer > 0)
         {
             wallJumpLockTimer -= Time.deltaTime;
-            rb.linearVelocity = new Vector2(wallJumpDir * wallJumpForceX, rb.linearVelocity.y);
+            rb.velocity = new Vector2(wallJumpDir * wallJumpForceX, rb.velocity.y);
         }
     }
 
@@ -328,7 +328,7 @@ public class PlayerController : MonoBehaviour
         if (!IsWallSliding) return;
 
         wallJumpDir = IsFacingRight ? -1 : 1;
-        rb.linearVelocity = new Vector2(wallJumpDir * wallJumpForceX, wallJumpForceY);
+        rb.velocity = new Vector2(wallJumpDir * wallJumpForceX, wallJumpForceY);
         wallJumpLockTimer = wallJumpLockTime;
 
         // 翻转面向
@@ -353,7 +353,7 @@ public class PlayerController : MonoBehaviour
         currentLadder = ladder;
         IsOnLadder = true;
         rb.gravityScale = ladder.DisableGravity ? 0 : rb.gravityScale;
-        rb.linearVelocity = Vector2.zero;
+        rb.velocity = Vector2.zero;
     }
 
     public void ExitLadder()
@@ -372,7 +372,7 @@ public class PlayerController : MonoBehaviour
         if (InputManager.Instance == null) return;
         Vector2 input = InputManager.Instance.GetMoveInput(playerIndex);
 
-        rb.linearVelocity = new Vector2(
+        rb.velocity = new Vector2(
             input.x * moveSpeed * 0.5f,
             input.y * currentLadder.ClimbSpeed
         );
@@ -391,7 +391,7 @@ public class PlayerController : MonoBehaviour
         isFrozen = frozen;
         if (frozen)
         {
-            rb.linearVelocity = Vector2.zero;
+            rb.velocity = Vector2.zero;
             rb.constraints = RigidbodyConstraints2D.FreezeAll;
         }
         else
@@ -405,7 +405,7 @@ public class PlayerController : MonoBehaviour
     public void Respawn(Vector3 position)
     {
         transform.position = position;
-        rb.linearVelocity = Vector2.zero;
+        rb.velocity = Vector2.zero;
         IsDashing = false;
         hasDoubleJumped = false;
         isFrozen = false;

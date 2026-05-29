@@ -125,7 +125,7 @@ public class VoidBoss : BossBase
             var proj = Instantiate(shadowProjectilePrefab, transform.position, Quaternion.identity);
             var projRb = proj.GetComponent<Rigidbody2D>();
             if (projRb != null)
-                projRb.linearVelocity = dir * projectileSpeed;
+                projRb.velocity = dir * projectileSpeed;
 
             // 添加伤害
             if (proj.GetComponent<Hazard>() == null)
@@ -288,7 +288,7 @@ public class VoidBoss : BossBase
             yield return null;
         }
 
-        OnBossDefeated?.Invoke();
+        RaiseOnBossDefeated();
         LevelManager.Instance?.CompleteLevel();
         Destroy(gameObject);
     }

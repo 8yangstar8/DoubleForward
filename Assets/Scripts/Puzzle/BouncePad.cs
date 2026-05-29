@@ -84,8 +84,8 @@ public class BouncePad : MonoBehaviour
 
         if (overrideVelocity)
         {
-            float hSpeed = preserveHorizontalSpeed ? rb.linearVelocity.x : direction.x * force;
-            rb.linearVelocity = new Vector2(hSpeed, direction.y * force);
+            float hSpeed = preserveHorizontalSpeed ? rb.velocity.x : direction.x * force;
+            rb.velocity = new Vector2(hSpeed, direction.y * force);
         }
         else
         {

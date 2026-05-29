@@ -97,7 +97,7 @@ public class SettingsPersistence : MonoBehaviour
 
         // 语言
         if (LocalizationSystem.Instance != null)
-            LocalizationSystem.Instance.SetLanguage(LanguageIndex);
+            LocalizationSystem.Instance.SetLanguage((LocalizationSystem.Language)LanguageIndex);
 
         // 振动
         if (HapticFeedback.Instance != null)
@@ -135,7 +135,7 @@ public class SettingsPersistence : MonoBehaviour
         LanguageIndex = index;
         PlayerPrefs.SetInt(KEY_LANGUAGE, index);
         Save();
-        LocalizationSystem.Instance?.SetLanguage(index);
+        LocalizationSystem.Instance?.SetLanguage((LocalizationSystem.Language)index);
         EventBus.Publish(new LanguageChangedEvent { languageIndex = index });
     }
 
@@ -176,7 +176,7 @@ public class SettingsPersistence : MonoBehaviour
         ColorblindMode = mode;
         PlayerPrefs.SetInt(KEY_COLORBLIND, mode);
         Save();
-        AccessibilityManager.Instance?.SetColorblindMode(mode);
+        AccessibilityManager.Instance?.SetColorBlindMode((AccessibilityManager.ColorBlindMode)mode);
     }
 
     public void SetSubtitleSize(float size)

@@ -178,7 +178,7 @@ public class Ladder : MonoBehaviour
 
         // 给跳离助力
         if (rb != null)
-            rb.linearVelocity = new Vector2(rb.linearVelocity.x, exitBoostForce);
+            rb.velocity = new Vector2(rb.velocity.x, exitBoostForce);
 
         hasPlayerOnLadder = false;
         playerOnLadder = null;
@@ -202,7 +202,7 @@ public class Ladder : MonoBehaviour
             // 给一个小向上推力以便上到平台
             var rb = playerOnLadder.GetComponent<Rigidbody2D>();
             if (rb != null)
-                rb.linearVelocity = new Vector2(rb.linearVelocity.x, exitBoostForce * 0.5f);
+                rb.velocity = new Vector2(rb.velocity.x, exitBoostForce * 0.5f);
 
             ExitLadder();
         }

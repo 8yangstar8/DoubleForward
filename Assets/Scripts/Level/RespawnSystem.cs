@@ -331,13 +331,13 @@ public class RespawnSystem : MonoBehaviour
 
             var rb = data.controller.GetComponent<Rigidbody2D>();
             if (rb != null)
-                rb.linearVelocity = Vector2.zero;
+                rb.velocity = Vector2.zero;
         }
 
         if (data.health != null)
         {
             float maxHP = data.health.MaxHealth;
-            data.health.Respawn(maxHP * healthOnRespawn, invincibilityDuration);
+            data.health.Respawn();
         }
 
         data.isDead = false;

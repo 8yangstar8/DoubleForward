@@ -318,6 +318,38 @@ public class ProjectBootstrapper : EditorWindow
         }
     }
 
+    /// <summary>
+    /// 命令行批处理模式入口 - 供 Unity -executeMethod 调用
+    /// </summary>
+    public static void RunFullSetupFromCommandLine()
+    {
+        Debug.Log("[Setup] Running full setup from command line...");
+        try
+        {
+            URPSetupFactory.SetupAll();
+            ProjectLayerSetup.SetupAll();
+            PlaceholderSpriteGenerator.GenerateAll();
+            AnimatorFactory.CreateAll();
+            PrefabFactory.CreateAll();
+            ScriptableObjectFactory.CreateAll();
+            SceneFactory.CreateAll();
+            AudioPlaceholderFactory.GenerateAll();
+            ResourcesSetupFactory.SetupAll();
+            LocalizationExpander.ExpandAll();
+            InputControlsFactory.CreateAll();
+
+            AssetDatabase.SaveAssets();
+            AssetDatabase.Refresh();
+
+            Debug.Log("[Setup] Full setup completed successfully from command line!");
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogError($"[Setup] Command line setup failed: {e}");
+            EditorApplication.Exit(1);
+        }
+    }
+
     // ==================== GameInitializer自动关联 ====================
 
     private void AutoWireGameInitializer()

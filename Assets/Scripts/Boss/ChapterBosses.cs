@@ -114,7 +114,7 @@ public class ForestGuardianBoss : BossBase
                 transform.position + Vector3.up * 2f, Quaternion.identity);
             var rb = leaf.GetComponent<Rigidbody2D>();
             if (rb != null)
-                rb.linearVelocity = dir * leafSpeed;
+                rb.velocity = dir * leafSpeed;
 
             Destroy(leaf, 4f);
             yield return new WaitForSeconds(0.15f);
@@ -200,7 +200,7 @@ public class ForestGuardianBoss : BossBase
             chapter = 1
         });
 
-        OnBossDefeated?.Invoke();
+        RaiseOnBossDefeated();
         Destroy(gameObject);
     }
 }
@@ -318,7 +318,7 @@ public class GearTyrantBoss : BossBase
             var rb = gear.GetComponent<Rigidbody2D>();
             if (rb != null)
             {
-                rb.linearVelocity = dir * gearSpeed;
+                rb.velocity = dir * gearSpeed;
                 rb.angularVelocity = 360f; // 旋转
             }
             Destroy(gear, 5f);
@@ -446,7 +446,7 @@ public class GearTyrantBoss : BossBase
         }
 
         EventBus.Publish(new BossDefeatedEvent { bossName = bossName, chapter = 2 });
-        OnBossDefeated?.Invoke();
+        RaiseOnBossDefeated();
         Destroy(gameObject);
     }
 }
@@ -635,7 +635,7 @@ public class AbyssSerpentBoss : BossBase
                 Quaternion.identity);
             var rb = venom.GetComponent<Rigidbody2D>();
             if (rb != null)
-                rb.linearVelocity = dir.normalized * venomSpeed;
+                rb.velocity = dir.normalized * venomSpeed;
             Destroy(venom, 4f);
 
             yield return new WaitForSeconds(0.12f);
@@ -696,7 +696,7 @@ public class AbyssSerpentBoss : BossBase
         yield return new WaitForSeconds(1.5f);
 
         EventBus.Publish(new BossDefeatedEvent { bossName = bossName, chapter = 3 });
-        OnBossDefeated?.Invoke();
+        RaiseOnBossDefeated();
         Destroy(gameObject);
     }
 }
@@ -905,7 +905,7 @@ public class RuinSentinelBoss : BossBase
                 transform.position + Vector3.up, Quaternion.identity);
             var rb = rune.GetComponent<Rigidbody2D>();
             if (rb != null)
-                rb.linearVelocity = dir * runeSpeed;
+                rb.velocity = dir * runeSpeed;
             Destroy(rune, 5f);
         }
 
@@ -980,7 +980,7 @@ public class RuinSentinelBoss : BossBase
         yield return new WaitForSeconds(0.5f);
 
         EventBus.Publish(new BossDefeatedEvent { bossName = bossName, chapter = 4 });
-        OnBossDefeated?.Invoke();
+        RaiseOnBossDefeated();
         Destroy(gameObject);
     }
 }

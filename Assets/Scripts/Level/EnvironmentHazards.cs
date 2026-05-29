@@ -299,7 +299,7 @@ public class FallingRock : MonoBehaviour
         if (rb != null)
         {
             rb.bodyType = RigidbodyType2D.Kinematic;
-            rb.linearVelocity = Vector2.zero;
+            rb.velocity = Vector2.zero;
         }
 
         hasTriggered = false;

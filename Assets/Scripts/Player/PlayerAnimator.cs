@@ -59,8 +59,7 @@ public class PlayerAnimator : MonoBehaviour
         controller.OnDashed += PlayDash;
         controller.OnLanded += PlayLand;
 
-        if (controller.OnWallJumped != null)
-            controller.OnWallJumped += PlayWallJump;
+        controller.OnWallJumped += PlayWallJump;
 
         // 订阅事件
         EventBus.Subscribe<PlayerDamagedEvent>(OnPlayerDamaged);

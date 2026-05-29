@@ -195,7 +195,7 @@ public class ChapterStoryManager : MonoBehaviour
         }
 
         // 查找对应的过渡对话
-        LevelTransitionDialogue transition = null;
+        ChapterStoryData.LevelTransitionDialogue transition = null;
         foreach (var t in story.transitions)
         {
             if (t.afterLevel == completedLevel)

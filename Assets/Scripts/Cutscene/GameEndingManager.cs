@@ -138,14 +138,14 @@ public class GameEndingManager : MonoBehaviour
             }
 
             // 构建对话行
-            var lines = new System.Collections.Generic.List<DialogueLine>();
+            var lines = new System.Collections.Generic.List<DialogueSystem.DialogueLine>();
             string[] paragraphs = text.Split('\n');
             foreach (var para in paragraphs)
             {
                 string trimmed = para.Trim();
                 if (!string.IsNullOrEmpty(trimmed))
                 {
-                    lines.Add(new DialogueLine
+                    lines.Add(new DialogueSystem.DialogueLine
                     {
                         speakerName = "",
                         text = trimmed,

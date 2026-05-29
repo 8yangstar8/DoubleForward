@@ -363,7 +363,7 @@ public class DailyRewardUI : MonoBehaviour
     {
         float t = 0;
         Color originalColor = text.color;
-        Vector3 startPos = text.rectTransform.anchoredPosition;
+        Vector2 startPos = text.rectTransform.anchoredPosition;
 
         while (t < duration)
         {

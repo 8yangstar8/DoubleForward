@@ -112,7 +112,7 @@ public class PlayerDeathEffect : MonoBehaviour
         // 8. 禁用物理
         if (rb != null)
         {
-            rb.linearVelocity = Vector2.zero;
+            rb.velocity = Vector2.zero;
             rb.gravityScale = 0;
         }
 

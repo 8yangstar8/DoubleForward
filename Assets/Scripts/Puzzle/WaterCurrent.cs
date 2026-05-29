@@ -21,14 +21,14 @@ public class WaterCurrent : MonoBehaviour
 
         rb.AddForce(flowDirection.normalized * flowForce);
         rb.AddForce(Vector2.up * buoyancyForce);
-        rb.linearDamping = dragInWater;
+        rb.drag = dragInWater;
     }
 
     void OnTriggerExit2D(Collider2D other)
     {
         var rb = other.GetComponent<Rigidbody2D>();
         if (rb != null)
-            rb.linearDamping = 0f;
+            rb.drag = 0f;
     }
 
     public void SetFlowDirection(Vector2 direction)

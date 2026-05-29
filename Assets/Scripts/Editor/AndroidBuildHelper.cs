@@ -244,7 +244,7 @@ public class AndroidBuildHelper : EditorWindow
 
         if (report.summary.result == BuildResult.Succeeded)
         {
-            long sizeBytes = report.summary.totalSize;
+            long sizeBytes = (long)report.summary.totalSize;
             string sizeMB = (sizeBytes / (1024f * 1024f)).ToString("F1");
             EditorUtility.DisplayDialog("构建成功",
                 $"构建完成！\n路径：{outputPath}\n大小：{sizeMB} MB\n耗时：{report.summary.totalTime.TotalSeconds:F0}秒",

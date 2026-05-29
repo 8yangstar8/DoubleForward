@@ -168,7 +168,7 @@ public class StoryRecapSystem : MonoBehaviour
         }
 
         if (AnalyticsTracker.Instance != null)
-            AnalyticsTracker.Instance.TrackEvent("story_replay", ("storyId", storyId));
+            AnalyticsTracker.Instance.TrackEvent("story_replay", new System.Collections.Generic.Dictionary<string, string> { { "storyId", storyId } });
     }
 
     // ==================== 播放方法 ====================

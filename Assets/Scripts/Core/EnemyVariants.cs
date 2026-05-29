@@ -179,7 +179,7 @@ public class ShadowExploder : EnemyBase
         {
             isFusing = true;
             fuseTimer = fuseTime;
-            rb.linearVelocity = Vector2.zero;
+            rb.velocity = Vector2.zero;
             return;
         }
 
@@ -191,7 +191,7 @@ public class ShadowExploder : EnemyBase
 
         // 冲刺追击（比普通追击更快）
         Vector2 dir = ((Vector2)currentTarget.position - (Vector2)transform.position).normalized;
-        rb.linearVelocity = new Vector2(dir.x * chaseSpeed * chaseSpeedBoost, rb.linearVelocity.y);
+        rb.velocity = new Vector2(dir.x * chaseSpeed * chaseSpeedBoost, rb.velocity.y);
         FaceDirection(dir.x);
     }
 
@@ -321,13 +321,13 @@ public class ShadowMage : EnemyBase
         if (dist < fleeDistance)
         {
             Vector2 fleeDir = ((Vector2)transform.position - (Vector2)currentTarget.position).normalized;
-            rb.linearVelocity = new Vector2(fleeDir.x * chaseSpeed, rb.linearVelocity.y);
+            rb.velocity = new Vector2(fleeDir.x * chaseSpeed, rb.velocity.y);
             FaceDirection(-fleeDir.x); // 面向敌人
         }
         // 在攻击范围内 — 停下施法
         else if (dist <= spellRange)
         {
-            rb.linearVelocity = new Vector2(0, rb.linearVelocity.y);
+            rb.velocity = new Vector2(0, rb.velocity.y);
             FaceDirection(currentTarget.position.x - transform.position.x);
 
             if (spellTimer <= 0)
@@ -340,7 +340,7 @@ public class ShadowMage : EnemyBase
         {
             // 靠近到施法距离
             Vector2 dir = ((Vector2)currentTarget.position - (Vector2)transform.position).normalized;
-            rb.linearVelocity = new Vector2(dir.x * chaseSpeed, rb.linearVelocity.y);
+            rb.velocity = new Vector2(dir.x * chaseSpeed, rb.velocity.y);
             FaceDirection(dir.x);
         }
     }

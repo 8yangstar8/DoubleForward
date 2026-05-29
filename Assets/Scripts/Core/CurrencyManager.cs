@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections.Generic;
 
 /// <summary>
 /// 货币系统 - 管理游戏内的金币和宝石
@@ -70,7 +71,7 @@ public class CurrencyManager : MonoBehaviour
 
         if (AnalyticsTracker.Instance != null)
             AnalyticsTracker.Instance.TrackEvent("currency_earned",
-                ("type", "coins"), ("amount", amount.ToString()), ("source", source));
+                new Dictionary<string, string> { {"type", "coins"}, {"amount", amount.ToString()}, {"source", source} });
     }
 
     /// <summary>
@@ -85,7 +86,7 @@ public class CurrencyManager : MonoBehaviour
 
         if (AnalyticsTracker.Instance != null)
             AnalyticsTracker.Instance.TrackEvent("currency_earned",
-                ("type", "gems"), ("amount", amount.ToString()), ("source", source));
+                new Dictionary<string, string> { {"type", "gems"}, {"amount", amount.ToString()}, {"source", source} });
     }
 
     /// <summary>
@@ -106,7 +107,7 @@ public class CurrencyManager : MonoBehaviour
 
         if (AnalyticsTracker.Instance != null)
             AnalyticsTracker.Instance.TrackEvent("currency_spent",
-                ("type", "coins"), ("amount", amount.ToString()), ("item", itemId));
+                new Dictionary<string, string> { {"type", "coins"}, {"amount", amount.ToString()}, {"item", itemId} });
 
         return true;
     }
@@ -129,7 +130,7 @@ public class CurrencyManager : MonoBehaviour
 
         if (AnalyticsTracker.Instance != null)
             AnalyticsTracker.Instance.TrackEvent("currency_spent",
-                ("type", "gems"), ("amount", amount.ToString()), ("item", itemId));
+                new Dictionary<string, string> { {"type", "gems"}, {"amount", amount.ToString()}, {"item", itemId} });
 
         return true;
     }

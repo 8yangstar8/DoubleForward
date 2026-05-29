@@ -78,7 +78,7 @@ public class PlayerMovementTuning : MonoBehaviour
         if (wasGrounded && !controller.IsGrounded)
         {
             // 如果不是因为跳跃离开地面，给予土狼时间
-            if (rb.linearVelocity.y <= 0.1f)
+            if (rb.velocity.y <= 0.1f)
                 coyoteTimer = coyoteTime;
         }
 
@@ -137,20 +137,20 @@ public class PlayerMovementTuning : MonoBehaviour
         }
 
         // 下落时增加重力
-        if (rb.linearVelocity.y < 0)
+        if (rb.velocity.y < 0)
         {
-            rb.linearVelocity += Vector2.up * Physics2D.gravity.y * (fallMultiplier - 1) * Time.deltaTime;
+            rb.velocity += Vector2.up * Physics2D.gravity.y * (fallMultiplier - 1) * Time.deltaTime;
         }
         // 上升时松开跳跃键 → 快速降落（短按=低跳）
-        else if (rb.linearVelocity.y > 0 && !jumpHeld)
+        else if (rb.velocity.y > 0 && !jumpHeld)
         {
-            rb.linearVelocity += Vector2.up * Physics2D.gravity.y * (lowJumpMultiplier - 1) * Time.deltaTime;
+            rb.velocity += Vector2.up * Physics2D.gravity.y * (lowJumpMultiplier - 1) * Time.deltaTime;
         }
 
         // 限制最大下落速度
-        if (rb.linearVelocity.y < -maxFallSpeed)
+        if (rb.velocity.y < -maxFallSpeed)
         {
-            rb.linearVelocity = new Vector2(rb.linearVelocity.x, -maxFallSpeed);
+            rb.velocity = new Vector2(rb.velocity.x, -maxFallSpeed);
         }
     }
 

@@ -62,7 +62,7 @@ public class ShadowArcher : EnemyBase
         var proj = Instantiate(projectilePrefab, firePoint.position, Quaternion.identity);
         var rb2d = proj.GetComponent<Rigidbody2D>();
         if (rb2d != null)
-            rb2d.linearVelocity = dir * projectileSpeed;
+            rb2d.velocity = dir * projectileSpeed;
 
         // 旋转投射物朝向
         float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
@@ -174,7 +174,7 @@ public class ShadowFlyer : EnemyBase
             else
             {
                 Vector2 dir = (targetPos - (Vector2)transform.position).normalized;
-                rb.linearVelocity = dir * patrolSpeed;
+                rb.velocity = dir * patrolSpeed;
                 FaceDirection(dir.x);
             }
         }
@@ -183,7 +183,7 @@ public class ShadowFlyer : EnemyBase
             // 原地悬浮
             Vector2 hoverPos = spawnPosition + Vector2.up * (hoverHeight + hoverOffset);
             Vector2 dir = (hoverPos - (Vector2)transform.position).normalized;
-            rb.linearVelocity = dir * patrolSpeed * 0.5f;
+            rb.velocity = dir * patrolSpeed * 0.5f;
         }
     }
 
@@ -205,7 +205,7 @@ public class ShadowFlyer : EnemyBase
             hoverPos.y += hoverOffset;
 
             Vector2 dir = (hoverPos - (Vector2)transform.position).normalized;
-            rb.linearVelocity = dir * chaseSpeed;
+            rb.velocity = dir * chaseSpeed;
             FaceDirection(dir.x);
 
             // 俯冲攻击
@@ -220,7 +220,7 @@ public class ShadowFlyer : EnemyBase
         {
             // 俯冲中
             Vector2 dir = (diveBombTarget - (Vector2)transform.position).normalized;
-            rb.linearVelocity = dir * diveBombSpeed;
+            rb.velocity = dir * diveBombSpeed;
 
             if (Vector2.Distance(transform.position, diveBombTarget) < 0.5f)
             {

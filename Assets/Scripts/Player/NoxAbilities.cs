@@ -54,7 +54,7 @@ public class NoxAbilities : PlayerAbilityBase
         if (sr != null)
             sr.color = new Color(0.3f, 0.1f, 0.5f, 0.5f);
 
-        rb.linearVelocity = new Vector2(dir * phaseDistance / phaseDuration, 0f);
+        rb.velocity = new Vector2(dir * phaseDistance / phaseDuration, 0f);
         rb.gravityScale = 0f;
 
         yield return new WaitForSeconds(phaseDuration);

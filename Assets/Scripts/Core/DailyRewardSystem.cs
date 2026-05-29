@@ -102,9 +102,7 @@ public class DailyRewardSystem : MonoBehaviour
         // 分析
         if (AnalyticsTracker.Instance != null)
             AnalyticsTracker.Instance.TrackEvent("daily_reward_claimed",
-                ("day", CurrentDay.ToString()),
-                ("streak", CurrentStreak.ToString()),
-                ("coins", reward.coins.ToString()));
+                new Dictionary<string, string> { {"day", CurrentDay.ToString()}, {"streak", CurrentStreak.ToString()}, {"coins", reward.coins.ToString()} });
 
         if (SoundFeedback.Instance != null)
             SoundFeedback.Instance.Play("reward_claim");

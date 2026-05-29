@@ -130,7 +130,7 @@ public class PlayerHealth : MonoBehaviour
         Invoke(nameof(Respawn), deathRespawnDelay);
     }
 
-    private void Respawn()
+    public void Respawn()
     {
         CurrentHealth = maxHealth;
         controller.Respawn(lastCheckpointPosition);

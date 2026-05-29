@@ -255,7 +255,7 @@ public class PhotoMode : MonoBehaviour
 
         if (AnalyticsTracker.Instance != null)
             AnalyticsTracker.Instance.TrackEvent("photo_captured",
-                ("filter", filters[currentFilterIndex].name));
+                new System.Collections.Generic.Dictionary<string, string> { { "filter", filters[currentFilterIndex].name } });
     }
 
     private string SavePhotoToFile(Texture2D photo)

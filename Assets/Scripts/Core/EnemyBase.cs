@@ -68,6 +68,7 @@ public abstract class EnemyBase : MonoBehaviour, IDamageable
     public float HealthPercent => currentHealth / maxHealth;
     public EnemyState State => currentState;
     public bool IsDead => currentState == EnemyState.Dead;
+    public bool IsAlive => currentState != EnemyState.Dead;
 
     // IDamageable implementation
     bool IDamageable.IsAlive => !IsDead;
@@ -137,7 +138,7 @@ public abstract class EnemyBase : MonoBehaviour, IDamageable
         {
             // 到达巡逻点
             patrolWaitTimer += Time.deltaTime;
-            rb.linearVelocity = new Vector2(0, rb.linearVelocity.y);
+            rb.velocity = new Vector2(0, rb.velocity.y);
 
             if (patrolWaitTimer >= patrolWaitTime)
             {
@@ -149,7 +150,7 @@ public abstract class EnemyBase : MonoBehaviour, IDamageable
         {
             // 移向巡逻点
             Vector2 dir = ((Vector2)target.position - (Vector2)transform.position).normalized;
-            rb.linearVelocity = new Vector2(dir.x * patrolSpeed, rb.linearVelocity.y);
+            rb.velocity = new Vector2(dir.x * patrolSpeed, rb.velocity.y);
             FaceDirection(dir.x);
         }
     }
@@ -183,7 +184,7 @@ public abstract class EnemyBase : MonoBehaviour, IDamageable
         // 到达攻击范围
         if (dist <= attackRange)
         {
-            rb.linearVelocity = new Vector2(0, rb.linearVelocity.y);
+            rb.velocity = new Vector2(0, rb.velocity.y);
             if (attackTimer <= 0)
                 SetState(EnemyState.Attack);
         }
@@ -191,7 +192,7 @@ public abstract class EnemyBase : MonoBehaviour, IDamageable
         {
             // 追击
             Vector2 dir = ((Vector2)currentTarget.position - (Vector2)transform.position).normalized;
-            rb.linearVelocity = new Vector2(dir.x * chaseSpeed, rb.linearVelocity.y);
+            rb.velocity = new Vector2(dir.x * chaseSpeed, rb.velocity.y);
             FaceDirection(dir.x);
         }
     }
@@ -314,7 +315,7 @@ public abstract class EnemyBase : MonoBehaviour, IDamageable
         if (HapticFeedback.Instance != null)
             HapticFeedback.Instance.Medium();
 
-        rb.linearVelocity = Vector2.zero;
+        rb.velocity = Vector2.zero;
         rb.simulated = false;
 
         // 播放死亡动画后销毁
@@ -383,7 +384,7 @@ public abstract class EnemyBase : MonoBehaviour, IDamageable
     {
         if (animator == null) return;
 
-        animator.SetFloat("Speed", Mathf.Abs(rb.linearVelocity.x));
+        animator.SetFloat("Speed", Mathf.Abs(rb.velocity.x));
         animator.SetBool("IsChasing", currentState == EnemyState.Chase);
         animator.SetBool("IsAttacking", currentState == EnemyState.Attack);
     }

@@ -79,7 +79,7 @@ public class PlayerRespawnEffect : MonoBehaviour
         if (rb != null)
         {
             rb.gravityScale = 0;
-            rb.linearVelocity = Vector2.zero;
+            rb.velocity = Vector2.zero;
         }
 
         // 3. 从上方降落

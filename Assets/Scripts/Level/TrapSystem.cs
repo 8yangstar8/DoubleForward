@@ -709,7 +709,7 @@ public class ArrowTrap : MonoBehaviour
         if (rb != null)
         {
             rb.gravityScale = 0;
-            rb.linearVelocity = dir * arrowSpeed;
+            rb.velocity = dir * arrowSpeed;
         }
 
         // 设置伤害

@@ -283,7 +283,7 @@ public class DualPlayerCamera : MonoBehaviour
         if (playerTransform == null) return Vector3.zero;
         var rb = playerTransform.GetComponent<Rigidbody2D>();
         if (rb != null)
-            return new Vector3(rb.linearVelocity.x, rb.linearVelocity.y, 0);
+            return new Vector3(rb.velocity.x, rb.velocity.y, 0);
         return Vector3.zero;
     }
 
