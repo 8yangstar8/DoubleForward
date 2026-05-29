@@ -33,14 +33,21 @@ public static class ChineseFontSetup
             return;
         }
 
-        // 删除旧的损坏资产
+        // 删除旧资产重建
         if (File.Exists(FONT_ASSET_PATH))
         {
             AssetDatabase.DeleteAsset(FONT_ASSET_PATH);
         }
 
-        // 创建字体资产
-        var fontAsset = TMP_FontAsset.CreateFontAsset(font);
+        // 创建高质量字体资产（大采样+大图集=清晰文字）
+        var fontAsset = TMP_FontAsset.CreateFontAsset(
+            font,
+            72,                              // 采样点大小（越大越清晰）
+            6,                               // 填充
+            UnityEngine.TextCore.LowLevel.GlyphRenderMode.SDFAA,
+            2048,                            // 图集宽度
+            2048                             // 图集高度
+        );
         if (fontAsset == null)
         {
             EditorUtility.DisplayDialog("Error", "CreateFontAsset failed", "OK");
@@ -150,11 +157,25 @@ public static class ChineseFontSetup
             foreach (var text in texts)
             {
                 text.font = fontAsset;
+                if (!text.enabled) text.enabled = true;
+                // 增大字体使文字清晰
+                if (text.fontSize < 28) text.fontSize = 28;
                 EditorUtility.SetDirty(text);
                 updated++;
             }
-            if (texts.Length > 0)
-                UnityEditor.SceneManagement.EditorSceneManager.SaveScene(scene);
+
+            // 修复CanvasScaler为横屏分辨率
+            var scalers = Object.FindObjectsByType<UnityEngine.UI.CanvasScaler>(FindObjectsSortMode.None);
+            foreach (var scaler in scalers)
+            {
+                if (scaler.referenceResolution.x < scaler.referenceResolution.y)
+                {
+                    scaler.referenceResolution = new Vector2(1920, 1080);
+                    EditorUtility.SetDirty(scaler);
+                }
+            }
+
+            UnityEditor.SceneManagement.EditorSceneManager.SaveScene(scene);
         }
 
         if (!string.IsNullOrEmpty(currentScene) && File.Exists(currentScene))
