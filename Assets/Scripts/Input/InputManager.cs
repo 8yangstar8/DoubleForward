@@ -42,11 +42,17 @@ public class InputManager : MonoBehaviour
     {
         if (Instance != null && Instance != this) { Destroy(gameObject); return; }
         Instance = this;
+        enableKeyboard = true;
     }
 
     void Update()
     {
         kb = Keyboard.current;
+    }
+
+    void Start()
+    {
+        Debug.Log($"[InputManager] Keyboard enabled: {enableKeyboard}, Keyboard.current: {(Keyboard.current != null ? "OK" : "NULL")}");
     }
 
     public void SetPlayMode(PlayMode mode)
