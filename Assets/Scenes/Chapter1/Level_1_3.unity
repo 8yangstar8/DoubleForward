@@ -1045,7 +1045,7 @@ GameObject:
   - component: {fileID: 238566829}
   - component: {fileID: 238566831}
   - component: {fileID: 238566830}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Platform_5
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3140,7 +3140,7 @@ GameObject:
   - component: {fileID: 831235473}
   - component: {fileID: 831235472}
   - component: {fileID: 831235471}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Enemy_3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3600,7 +3600,7 @@ GameObject:
   - component: {fileID: 845812711}
   - component: {fileID: 845812713}
   - component: {fileID: 845812712}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Platform_2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3732,7 +3732,7 @@ GameObject:
   - component: {fileID: 855181220}
   - component: {fileID: 855181219}
   - component: {fileID: 855181218}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Enemy_0
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4807,7 +4807,7 @@ GameObject:
   - component: {fileID: 1069228262}
   - component: {fileID: 1069228264}
   - component: {fileID: 1069228263}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Platform_0
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5190,7 +5190,7 @@ GameObject:
   - component: {fileID: 1171319611}
   - component: {fileID: 1171319613}
   - component: {fileID: 1171319612}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Platform_4
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -6016,7 +6016,7 @@ GameObject:
   - component: {fileID: 1362244089}
   - component: {fileID: 1362244091}
   - component: {fileID: 1362244090}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Platform_3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -7692,7 +7692,7 @@ GameObject:
   - component: {fileID: 2112916827}
   - component: {fileID: 2112916829}
   - component: {fileID: 2112916828}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Platform_1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -7853,7 +7853,7 @@ GameObject:
   - component: {fileID: 2135321372}
   - component: {fileID: 2135321374}
   - component: {fileID: 2135321373}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Ground
   m_TagString: Untagged
   m_Icon: {fileID: 0}

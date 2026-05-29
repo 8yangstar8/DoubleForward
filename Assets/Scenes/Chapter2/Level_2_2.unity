@@ -583,7 +583,7 @@ GameObject:
   - component: {fileID: 327455536}
   - component: {fileID: 327455538}
   - component: {fileID: 327455537}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Platform_0
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1139,7 +1139,7 @@ GameObject:
   - component: {fileID: 514589892}
   - component: {fileID: 514589894}
   - component: {fileID: 514589893}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Platform_2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2146,7 +2146,7 @@ GameObject:
   - component: {fileID: 664375332}
   - component: {fileID: 664375334}
   - component: {fileID: 664375333}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Platform_4
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3190,7 +3190,7 @@ GameObject:
   - component: {fileID: 1014592951}
   - component: {fileID: 1014592950}
   - component: {fileID: 1014592949}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Enemy_3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3536,7 +3536,7 @@ GameObject:
   - component: {fileID: 1107256877}
   - component: {fileID: 1107256876}
   - component: {fileID: 1107256875}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Enemy_1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3730,7 +3730,7 @@ GameObject:
   - component: {fileID: 1232036496}
   - component: {fileID: 1232036498}
   - component: {fileID: 1232036497}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Ground
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4284,7 +4284,7 @@ GameObject:
   - component: {fileID: 1411498499}
   - component: {fileID: 1411498501}
   - component: {fileID: 1411498500}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Platform_3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5061,7 +5061,7 @@ GameObject:
   - component: {fileID: 1527108313}
   - component: {fileID: 1527108312}
   - component: {fileID: 1527108311}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Enemy_2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5384,7 +5384,7 @@ GameObject:
   - component: {fileID: 1630994023}
   - component: {fileID: 1630994022}
   - component: {fileID: 1630994021}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Enemy_0
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -7035,7 +7035,7 @@ GameObject:
   - component: {fileID: 2021067915}
   - component: {fileID: 2021067917}
   - component: {fileID: 2021067916}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Platform_1
   m_TagString: Untagged
   m_Icon: {fileID: 0}

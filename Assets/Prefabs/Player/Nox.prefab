@@ -24,7 +24,7 @@ GameObject:
   - component: {fileID: 6083703208737870831}
   - component: {fileID: 5384131505730220064}
   - component: {fileID: 5108123332690736835}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Nox
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -207,22 +207,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4f6f9dff0c6f3254dadfef431e3fb003, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerIndex: 0
-  playerType: 0
+  playerIndex: 1
+  playerType: 1
   moveSpeed: 5
   jumpForce: 10
   doubleJumpForce: 8
   dashSpeed: 12
   dashDuration: 0.2
-  groundCheck: {fileID: 0}
+  groundCheck: {fileID: 791044281369127271}
   groundCheckRadius: 0.2
   groundLayer:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 256
   coyoteTime: 0.1
   jumpBufferTime: 0.15
   passiveSpeedBuff: 0.2
-  wallCheckPoint: {fileID: 0}
+  wallCheckPoint: {fileID: 1947446818707221958}
   wallCheckDistance: 0.3
   wallSlideSpeed: 2
   wallJumpForceX: 8

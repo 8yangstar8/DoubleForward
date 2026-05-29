@@ -55,7 +55,7 @@ GameObject:
   - component: {fileID: 525795618436451713}
   - component: {fileID: 9176560871734734903}
   - component: {fileID: 3230936547897849650}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Lux
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -245,15 +245,15 @@ MonoBehaviour:
   doubleJumpForce: 8
   dashSpeed: 12
   dashDuration: 0.2
-  groundCheck: {fileID: 0}
+  groundCheck: {fileID: 1664670535018103422}
   groundCheckRadius: 0.2
   groundLayer:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 256
   coyoteTime: 0.1
   jumpBufferTime: 0.15
   passiveSpeedBuff: 0.2
-  wallCheckPoint: {fileID: 0}
+  wallCheckPoint: {fileID: 2684843389624520626}
   wallCheckDistance: 0.3
   wallSlideSpeed: 2
   wallJumpForceX: 8
