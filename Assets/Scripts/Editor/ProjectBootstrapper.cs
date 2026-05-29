@@ -341,6 +341,9 @@ public class ProjectBootstrapper : EditorWindow
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
 
+            // 自动关联GameInitializer
+            AutoWireGameInitializerStatic();
+
             Debug.Log("[Setup] Full setup completed successfully from command line!");
         }
         catch (System.Exception e)
@@ -351,6 +354,74 @@ public class ProjectBootstrapper : EditorWindow
     }
 
     // ==================== GameInitializer自动关联 ====================
+
+    /// <summary>
+    /// 静态版AutoWire - 可在批处理模式下调用
+    /// </summary>
+    public static void AutoWireGameInitializerStatic()
+    {
+        string bootPath = "Assets/Scenes/Boot.unity";
+        if (!File.Exists(bootPath))
+        {
+            Debug.LogWarning("[Setup] Boot scene not found, skipping AutoWire");
+            return;
+        }
+
+        var currentScene = EditorSceneManager.GetActiveScene().path;
+        EditorSceneManager.OpenScene(bootPath);
+
+        var initializer = Object.FindAnyObjectByType<GameInitializer>();
+        if (initializer == null)
+        {
+            Debug.LogWarning("[Setup] GameInitializer not found in Boot scene");
+            if (!string.IsNullOrEmpty(currentScene))
+                EditorSceneManager.OpenScene(currentScene);
+            return;
+        }
+
+        var so = new SerializedObject(initializer);
+        int wiredCount = 0;
+
+        string managerDir = "Assets/Prefabs/Managers";
+        if (Directory.Exists(managerDir))
+        {
+            var prefabFiles = Directory.GetFiles(managerDir, "*.prefab");
+            Debug.Log($"[Setup] Found {prefabFiles.Length} prefab files in {managerDir}");
+            foreach (var file in prefabFiles)
+            {
+                string assetPath = file.Replace('\\', '/');
+                var prefab = AssetDatabase.LoadAssetAtPath<GameObject>(assetPath);
+                if (prefab == null) { Debug.LogWarning($"[Setup] Could not load prefab: {assetPath}"); continue; }
+
+                string prefabName = Path.GetFileNameWithoutExtension(assetPath);
+                string propName = GetPrefabPropertyName(prefabName);
+                if (string.IsNullOrEmpty(propName)) { Debug.Log($"[Setup] No mapping for prefab: {prefabName}"); continue; }
+
+                var prop = so.FindProperty(propName);
+                if (prop == null) { Debug.LogWarning($"[Setup] Property not found: {propName}"); continue; }
+
+                if (prop.objectReferenceValue == null)
+                {
+                    prop.objectReferenceValue = prefab;
+                    wiredCount++;
+                    Debug.Log($"[Setup] Wired: {prefabName} -> {propName}");
+                }
+                else
+                {
+                    Debug.Log($"[Setup] Already wired: {propName}");
+                }
+            }
+        }
+        else
+        {
+            Debug.LogWarning($"[Setup] Manager directory not found: {managerDir}");
+        }
+
+        so.ApplyModifiedProperties();
+        EditorSceneManager.SaveScene(EditorSceneManager.GetActiveScene());
+
+        Debug.Log($"[Setup] Wired {wiredCount} manager prefabs to GameInitializer");
+    }
 
     private void AutoWireGameInitializer()
     {
@@ -413,7 +484,7 @@ public class ProjectBootstrapper : EditorWindow
         Debug.Log($"[Setup] Wired {wiredCount} manager prefabs to GameInitializer");
     }
 
-    private string GetPrefabPropertyName(string prefabName)
+    private static string GetPrefabPropertyName(string prefabName)
     {
         // Manager名 → SerializedProperty名 映射
         var map = new System.Collections.Generic.Dictionary<string, string>
