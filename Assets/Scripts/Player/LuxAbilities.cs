@@ -37,6 +37,7 @@ public class LuxAbilities : PlayerAbilityBase
         float dir = controller.IsFacingRight ? 1f : -1f;
         Vector3 spawnPos = firePoint != null ? firePoint.position : transform.position;
 
+        if (lightBeamPrefab == null) { EndAbility(); return; }
         activeBeam = Instantiate(lightBeamPrefab, spawnPos, Quaternion.identity);
         activeBeam.transform.SetParent(transform);
         activeBeam.transform.localScale = new Vector3(dir * beamLength, 1, 1);

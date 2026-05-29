@@ -92,6 +92,9 @@ public static class ChineseFontSetup
         }
         Debug.Log($"[FontSetup] Font asset validated: atlas={check.atlasTextures[0].name}");
 
+        // 添加TMP默认字体(LiberationSans)为fallback，支持♥⏸等符号
+        AddDefaultFontAsFallback(check);
+
         // 设为默认字体
         SetAsDefault(check);
 
@@ -103,6 +106,26 @@ public static class ChineseFontSetup
     }
 
     public static void SetupFromCommandLine() { Setup(); }
+
+    private static void AddDefaultFontAsFallback(TMP_FontAsset fontAsset)
+    {
+        // 找到LiberationSans SDF（TMP自带，含♥⏸等符号）
+        string[] guids = AssetDatabase.FindAssets("LiberationSans SDF t:TMP_FontAsset");
+        if (guids.Length == 0) return;
+
+        var libFont = AssetDatabase.LoadAssetAtPath<TMP_FontAsset>(AssetDatabase.GUIDToAssetPath(guids[0]));
+        if (libFont == null) return;
+
+        if (fontAsset.fallbackFontAssetTable == null)
+            fontAsset.fallbackFontAssetTable = new System.Collections.Generic.List<TMP_FontAsset>();
+
+        if (!fontAsset.fallbackFontAssetTable.Contains(libFont))
+        {
+            fontAsset.fallbackFontAssetTable.Add(libFont);
+            EditorUtility.SetDirty(fontAsset);
+            Debug.Log("[FontSetup] Added LiberationSans SDF as fallback for symbols");
+        }
+    }
 
     private static void SetAsDefault(TMP_FontAsset fontAsset)
     {
