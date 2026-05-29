@@ -1,17 +1,13 @@
 {
     "name": "DoubleForward.Editor",
-    "rootNamespace": "DoubleForward.Editor",
+    "rootNamespace": "",
     "references": [
-        "DoubleForward.Core",
-        "DoubleForward.Player",
-        "DoubleForward.Level",
-        "DoubleForward.Puzzle",
-        "DoubleForward.Camera",
-        "DoubleForward.Boss",
-        "DoubleForward.Input",
-        "DoubleForward.Cutscene",
-        "DoubleForward.Network",
-        "DoubleForward.UI"
+        "DoubleForward.Runtime",
+        "Unity.TextMeshPro",
+        "Unity.RenderPipelines.Universal.Runtime",
+        "Unity.RenderPipelines.Core.Runtime",
+        "Unity.InputSystem",
+        "Unity.Netcode.Runtime"
     ],
     "includePlatforms": [
         "Editor"

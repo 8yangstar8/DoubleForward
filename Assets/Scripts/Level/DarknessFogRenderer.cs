@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections;
 
 /// <summary>
 /// 黑暗迷雾渲染器 - DarknessSystem的视觉渲染组件

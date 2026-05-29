@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections;
 
 /// <summary>
 /// 收集品类型 - 扩展基础Collectible，增加不同种类的拾取物

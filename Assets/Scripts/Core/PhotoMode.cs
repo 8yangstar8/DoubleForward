@@ -3,6 +3,8 @@ using UnityEngine.UI;
 using TMPro;
 using System.IO;
 using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 
 /// <summary>
 /// 拍照模式 - 游戏内截图功能

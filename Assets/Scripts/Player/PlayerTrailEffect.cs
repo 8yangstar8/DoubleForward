@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections;
 
 /// <summary>
 /// 玩家拖尾特效 - Lux留下光之轨迹，Nox留下暗影轨迹

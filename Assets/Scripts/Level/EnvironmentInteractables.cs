@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 /// <summary>
 /// 环境交互物件合集 - 可破坏物、弹簧、梯子、绳索、开关门等

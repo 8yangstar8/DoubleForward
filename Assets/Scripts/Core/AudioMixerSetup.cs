@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.Audio;
+using System.Collections;
 
 /// <summary>
 /// 音频混音器配置 - 管理BGM/SFX/环境音的音量和效果

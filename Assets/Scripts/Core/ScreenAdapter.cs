@@ -1,4 +1,6 @@
 using UnityEngine;
+using System.Collections.Generic;
+using System.Linq;
 
 /// <summary>
 /// 屏幕适配管理器 - 处理不同分辨率、刘海屏、折叠屏

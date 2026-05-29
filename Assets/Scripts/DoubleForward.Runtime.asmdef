@@ -1,9 +1,12 @@
 {
-    "name": "DoubleForward.Camera",
-    "rootNamespace": "DoubleForward.Camera",
+    "name": "DoubleForward.Runtime",
+    "rootNamespace": "",
     "references": [
-        "DoubleForward.Core",
-        "DoubleForward.Player"
+        "Unity.TextMeshPro",
+        "Unity.RenderPipelines.Universal.Runtime",
+        "Unity.InputSystem",
+        "Unity.Netcode.Runtime",
+        "Unity.Networking.Transport"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

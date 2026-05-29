@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections;
 
 /// <summary>
 /// 音频区域 - 进入时切换BGM或增加环境音效层
