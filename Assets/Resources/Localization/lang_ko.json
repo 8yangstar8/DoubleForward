@@ -260,5 +260,223 @@
         {"key": "loading_tip_12", "value": "톱날은 적에게도 피해를 줍니다"},
         {"key": "loading_tip_13", "value": "텔레포트 패드로 먼 곳에 빠르게 이동"},
         {"key": "loading_tip_14", "value": "전환 블록은 럭스와 녹스의 협력이 필요"}
-    ]
+    ,
+
+        {"key": "input_press_key", "value": "Press a button..."},
+
+        {"key": "achievement_hidden", "value": "Hidden Achievement"},
+
+        {"key": "loading", "value": "Loading..."},
+
+        {"key": "save_new", "value": "New Save"},
+
+        {"key": "confirm_delete", "value": "Delete save {0}? This cannot be undone."},
+
+        {"key": "confirm_yes", "value": "Confirm"},
+
+        {"key": "confirm_no", "value": "Cancel"},
+
+        {"key": "ngplus_title", "value": "New Game+"},
+
+        {"key": "ngplus_difficulty", "value": "NG+ Difficulty Multiplier"},
+
+        {"key": "ngplus_cycle", "value": "Cycle {0}"},
+
+        {"key": "ngplus_start", "value": "Start New Cycle"},
+
+        {"key": "ngplus_enemies_stronger", "value": "Enemies ×{0} stronger"},
+
+        {"key": "complete_stars", "value": "Star Rating"},
+
+        {"key": "complete_rank_s", "value": "Rank S"},
+
+        {"key": "complete_rank_a", "value": "Rank A"},
+
+        {"key": "complete_rank_b", "value": "Rank B"},
+
+        {"key": "complete_rank_c", "value": "Rank C"},
+
+        {"key": "bossrush_title", "value": "Boss Rush"},
+
+        {"key": "bossrush_best_time", "value": "Best Time"},
+
+        {"key": "bossrush_current", "value": "Current Wave"},
+
+        {"key": "bossrush_cleared", "value": "All Cleared!"},
+
+        {"key": "coop_score_title", "value": "Co-op Score"},
+
+        {"key": "coop_sync_bonus", "value": "Sync Bonus"},
+
+        {"key": "coop_revive_count", "value": "Revive Count"},
+
+        {"key": "challenge_title", "value": "Challenges"},
+
+        {"key": "challenge_daily", "value": "Daily Challenge"},
+
+        {"key": "challenge_weekly", "value": "Weekly Challenge"},
+
+        {"key": "challenge_complete", "value": "Challenge Complete!"},
+
+        {"key": "modifier_title", "value": "Level Modifiers"},
+
+        {"key": "modifier_speed", "value": "Speed Mode"},
+
+        {"key": "modifier_mirror", "value": "Mirror Mode"},
+
+        {"key": "modifier_onelife", "value": "One Life Mode"},
+
+        {"key": "modifier_noskill", "value": "No Skills Mode"},
+
+        {"key": "story_chapter_intro", "value": "Chapter Start"},
+
+        {"key": "story_chapter_ending", "value": "Chapter End"},
+
+        {"key": "msg_save_success", "value": "Save successful"},
+
+        {"key": "msg_save_failed", "value": "Save failed"},
+
+        {"key": "msg_load_success", "value": "Load successful"},
+
+        {"key": "msg_load_failed", "value": "Load failed"},
+
+        {"key": "msg_network_error", "value": "Network error"},
+
+        {"key": "msg_sync_complete", "value": "Sync complete"},
+
+        {"key": "level_1_1_name", "value": "Light & Shadow"},
+
+        {"key": "level_1_2_name", "value": "Forest Trail"},
+
+        {"key": "level_1_3_name", "value": "Heart of the Tree"},
+
+        {"key": "level_1_4_name", "value": "Forest Guardian"},
+
+        {"key": "level_2_1_name", "value": "Gear Start"},
+
+        {"key": "level_2_2_name", "value": "Steam Passage"},
+
+        {"key": "level_2_3_name", "value": "Iron Labyrinth"},
+
+        {"key": "level_2_4_name", "value": "Heart of the Tyrant"},
+
+        {"key": "level_3_1_name", "value": "Mouth of the Abyss"},
+
+        {"key": "level_3_2_name", "value": "Dark Waters"},
+
+        {"key": "level_3_3_name", "value": "Sunken Ruins"},
+
+        {"key": "level_3_4_name", "value": "Serpent's Lair"},
+
+        {"key": "level_4_1_name", "value": "Forgotten Temple"},
+
+        {"key": "level_4_2_name", "value": "Shadow Corridor"},
+
+        {"key": "level_4_3_name", "value": "Trial of Light & Dark"},
+
+        {"key": "level_4_4_name", "value": "Ruin Sentinel"},
+
+        {"key": "level_5_1_name", "value": "Void Rift"},
+
+        {"key": "level_5_2_name", "value": "Convergence"},
+
+        {"key": "level_5_3_name", "value": "Path to the End"},
+
+        {"key": "level_5_4_name", "value": "Two Become One"},
+
+        {"key": "level_1_1_desc", "value": "Learn basics, experience light and dark cooperation"},
+
+        {"key": "level_1_2_desc", "value": "Cross the dark forest, solve first puzzles"},
+
+        {"key": "level_1_3_desc", "value": "Explore the ancient tree, discover hidden power"},
+
+        {"key": "level_1_4_desc", "value": "Challenge the Forest Guardian, prove your bond"},
+
+        {"key": "level_2_1_desc", "value": "Enter the factory, adapt to machinery"},
+
+        {"key": "level_2_2_desc", "value": "Use steam and gears to cross dangers"},
+
+        {"key": "level_2_3_desc", "value": "Find your way through the iron maze"},
+
+        {"key": "level_2_4_desc", "value": "Face the Gear Tyrant"},
+
+        {"key": "level_3_1_desc", "value": "Descend into the abyss, face the unknown"},
+
+        {"key": "level_3_2_desc", "value": "Survive the dark waters"},
+
+        {"key": "level_3_3_desc", "value": "Explore ancient secrets in the sunken ruins"},
+
+        {"key": "level_3_4_desc", "value": "Challenge the Abyss Serpent"},
+
+        {"key": "level_4_1_desc", "value": "Enter the ancient ruins"},
+
+        {"key": "level_4_2_desc", "value": "Solve light-dark mechanisms in shadow corridors"},
+
+        {"key": "level_4_3_desc", "value": "Pass the trial of light and dark"},
+
+        {"key": "level_4_4_desc", "value": "Defeat the Ruin Sentinel"},
+
+        {"key": "level_5_1_desc", "value": "Step into the void world"},
+
+        {"key": "level_5_2_desc", "value": "Light and dark converge here"},
+
+        {"key": "level_5_3_desc", "value": "The final journey"},
+
+        {"key": "level_5_4_desc", "value": "Where it all ends and begins"},
+
+        {"key": "tutorial_wall_jump", "value": "Jump near walls to wall jump"},
+
+        {"key": "tutorial_climb", "value": "Grab ladders to climb up and down"},
+
+        {"key": "tutorial_switch_char", "value": "Switch character in single player mode"},
+
+        {"key": "tutorial_revive", "value": "Hold interact near downed partner to revive"},
+
+        {"key": "tutorial_checkpoint", "value": "Activate checkpoints as respawn points"},
+
+        {"key": "skin_default", "value": "Default"},
+
+        {"key": "skin_locked", "value": "Locked"},
+
+        {"key": "skin_equip", "value": "Equip"},
+
+        {"key": "skin_equipped", "value": "Equipped"},
+
+        {"key": "ach_first_clear", "value": "First Clear"},
+
+        {"key": "ach_all_stars", "value": "Star Master"},
+
+        {"key": "ach_no_death", "value": "Undying"},
+
+        {"key": "ach_speed_run", "value": "Speed Runner"},
+
+        {"key": "ach_all_collect", "value": "Collector"},
+
+        {"key": "ach_coop_master", "value": "Perfect Partners"},
+
+        {"key": "ach_boss_rush", "value": "Boss Hunter"},
+
+        {"key": "ach_secret_finder", "value": "Secret Finder"},
+
+        {"key": "theme_light_shadow", "value": "Temple of Light & Shadow"},
+
+        {"key": "theme_ice_fire", "value": "Realm of Ice & Fire"},
+
+        {"key": "theme_sand_sea", "value": "Desert Labyrinth"},
+
+        {"key": "theme_dark_abyss", "value": "Dark Abyss"},
+
+        {"key": "theme_convergence", "value": "Convergence"},
+
+        {"key": "gameover_msg_1", "value": "Don't give up!"},
+
+        {"key": "gameover_msg_2", "value": "Try again!"},
+
+        {"key": "gameover_msg_3", "value": "Teamwork is key!"},
+
+        {"key": "gameover_hint_1", "value": "Try a different approach!"},
+
+        {"key": "gameover_hint_2", "value": "Watch the boss's attack patterns"},
+
+        {"key": "gameover_hint_3", "value": "Use the environment mechanisms"}]
 }

@@ -1,0 +1,116 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2fcef2106a2d54d418b0bef6aabf3bdc, type: 3}
+  m_Name: Config_Ch2_Lv2
+  m_EditorClassIdentifier: 
+  chapter: 2
+  level: 2
+  levelName: "\u7194\u5CA9\u4E4B\u5FC3"
+  levelNameKey: level_name_2_2
+  mapMin: {x: -5, y: -10}
+  mapMax: {x: 56, y: 20}
+  cameraBoundsMin: {x: -3, y: -5}
+  cameraBoundsMax: {x: 54, y: 15}
+  luxSpawnPoint: {x: -3, y: 0}
+  noxSpawnPoint: {x: -1, y: 0}
+  parTime: 150
+  totalCollectibles: 5
+  requireBothPlayersAtGoal: 1
+  puzzles:
+  - type: 2
+    position: {x: 8, y: 0}
+    size: {x: 1, y: 1}
+    requireBothPlayers: 0
+    linkedEventId: 
+  - type: 3
+    position: {x: 18, y: 0}
+    size: {x: 1, y: 1}
+    requireBothPlayers: 1
+    linkedEventId: 
+  - type: 4
+    position: {x: 28, y: 0}
+    size: {x: 1, y: 1}
+    requireBothPlayers: 0
+    linkedEventId: 
+  - type: 0
+    position: {x: 38, y: 0}
+    size: {x: 1, y: 1}
+    requireBothPlayers: 1
+    linkedEventId: 
+  enemies:
+  - type: 2
+    position: {x: 10, y: 0}
+    patrolPath:
+    - {x: 7, y: 0}
+    - {x: 13, y: 0}
+    detectionRange: 8
+    respawns: 0
+  - type: 3
+    position: {x: 18, y: 0}
+    patrolPath:
+    - {x: 15, y: 0}
+    - {x: 21, y: 0}
+    detectionRange: 8
+    respawns: 0
+  - type: 0
+    position: {x: 26, y: 0}
+    patrolPath:
+    - {x: 23, y: 0}
+    - {x: 29, y: 0}
+    detectionRange: 8
+    respawns: 0
+  - type: 1
+    position: {x: 34, y: 0}
+    patrolPath:
+    - {x: 31, y: 0}
+    - {x: 37, y: 0}
+    detectionRange: 8
+    respawns: 0
+  - type: 2
+    position: {x: 42, y: 0}
+    patrolPath:
+    - {x: 39, y: 0}
+    - {x: 45, y: 0}
+    detectionRange: 8
+    respawns: 0
+  collectiblePositions:
+  - {x: 5, y: 1.5}
+  - {x: 13.2, y: 3}
+  - {x: 21.4, y: 4.5}
+  - {x: 29.599998, y: 1.5}
+  - {x: 37.8, y: 3}
+  checkpoints:
+  - position: {x: 28, y: 0}
+    order: 0
+  movingPlatforms:
+  - startPosition: {x: 12, y: 2}
+    waypoints:
+    - {x: 12, y: 2}
+    - {x: 17, y: 5}
+    speed: 2.1
+    loop: 1
+  - startPosition: {x: 27, y: 3}
+    waypoints:
+    - {x: 27, y: 3}
+    - {x: 32, y: 6}
+    speed: 2.1
+    loop: 1
+  portalPairs: []
+  zones:
+  - type: 4
+    position: {x: 25, y: -1}
+    size: {x: 8, y: 2}
+    intensity: 1
+  goalPosition: {x: 51, y: 0}
+  bgmClip: {fileID: 0}
+  bossMusic: {fileID: 0}
+  dialogueTriggers: []

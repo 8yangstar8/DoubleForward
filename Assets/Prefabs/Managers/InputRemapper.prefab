@@ -1,0 +1,120 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &7933870508263645391
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4295444715421628477}
+  - component: {fileID: 7458978720416223047}
+  m_Layer: 0
+  m_Name: InputRemapper
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4295444715421628477
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7933870508263645391}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &7458978720416223047
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7933870508263645391}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c84caeac2dc5790488258901ceef4a46, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  player1Defaults:
+  - action: 0
+    primaryKey: 97
+    secondaryKey: 276
+    gamepadButton: 
+  - action: 1
+    primaryKey: 100
+    secondaryKey: 275
+    gamepadButton: 
+  - action: 2
+    primaryKey: 119
+    secondaryKey: 273
+    gamepadButton: joystick button 0
+  - action: 3
+    primaryKey: 304
+    secondaryKey: 0
+    gamepadButton: joystick button 1
+  - action: 4
+    primaryKey: 113
+    secondaryKey: 0
+    gamepadButton: joystick button 2
+  - action: 5
+    primaryKey: 101
+    secondaryKey: 0
+    gamepadButton: joystick button 3
+  - action: 6
+    primaryKey: 102
+    secondaryKey: 0
+    gamepadButton: joystick button 4
+  - action: 7
+    primaryKey: 27
+    secondaryKey: 112
+    gamepadButton: joystick button 7
+  - action: 8
+    primaryKey: 114
+    secondaryKey: 0
+    gamepadButton: joystick button 5
+  player2Defaults:
+  - action: 0
+    primaryKey: 106
+    secondaryKey: 0
+    gamepadButton: 
+  - action: 1
+    primaryKey: 108
+    secondaryKey: 0
+    gamepadButton: 
+  - action: 2
+    primaryKey: 105
+    secondaryKey: 0
+    gamepadButton: joystick 2 button 0
+  - action: 3
+    primaryKey: 303
+    secondaryKey: 0
+    gamepadButton: joystick 2 button 1
+  - action: 4
+    primaryKey: 117
+    secondaryKey: 0
+    gamepadButton: joystick 2 button 2
+  - action: 5
+    primaryKey: 111
+    secondaryKey: 0
+    gamepadButton: joystick 2 button 3
+  - action: 6
+    primaryKey: 104
+    secondaryKey: 0
+    gamepadButton: joystick 2 button 4
+  - action: 7
+    primaryKey: 27
+    secondaryKey: 0
+    gamepadButton: 
+  - action: 8
+    primaryKey: 121
+    secondaryKey: 0
+    gamepadButton: joystick 2 button 5

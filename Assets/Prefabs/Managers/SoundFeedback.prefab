@@ -1,0 +1,326 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &5133811104535009613
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1036648815789849304}
+  - component: {fileID: 3880456452305881298}
+  m_Layer: 0
+  m_Name: SoundFeedback
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1036648815789849304
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5133811104535009613}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &3880456452305881298
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5133811104535009613}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 52705cb80c29de449ba4c097c32fab75, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  jumpSound:
+    soundName: 
+    clip: {fileID: 0}
+    volume: 1
+    pitchMin: 0.95
+    pitchMax: 1.05
+    randomizePitch: 1
+  doubleJumpSound:
+    soundName: 
+    clip: {fileID: 0}
+    volume: 1
+    pitchMin: 0.95
+    pitchMax: 1.05
+    randomizePitch: 1
+  landSound:
+    soundName: 
+    clip: {fileID: 0}
+    volume: 1
+    pitchMin: 0.95
+    pitchMax: 1.05
+    randomizePitch: 1
+  dashSound:
+    soundName: 
+    clip: {fileID: 0}
+    volume: 1
+    pitchMin: 0.95
+    pitchMax: 1.05
+    randomizePitch: 1
+  hurtSound:
+    soundName: 
+    clip: {fileID: 0}
+    volume: 1
+    pitchMin: 0.95
+    pitchMax: 1.05
+    randomizePitch: 1
+  deathSound:
+    soundName: 
+    clip: {fileID: 0}
+    volume: 1
+    pitchMin: 0.95
+    pitchMax: 1.05
+    randomizePitch: 1
+  respawnSound:
+    soundName: 
+    clip: {fileID: 0}
+    volume: 1
+    pitchMin: 0.95
+    pitchMax: 1.05
+    randomizePitch: 1
+  healSound:
+    soundName: 
+    clip: {fileID: 0}
+    volume: 1
+    pitchMin: 0.95
+    pitchMax: 1.05
+    randomizePitch: 1
+  lightBeamSound:
+    soundName: 
+    clip: {fileID: 0}
+    volume: 1
+    pitchMin: 0.95
+    pitchMax: 1.05
+    randomizePitch: 1
+  lightBridgeSound:
+    soundName: 
+    clip: {fileID: 0}
+    volume: 1
+    pitchMin: 0.95
+    pitchMax: 1.05
+    randomizePitch: 1
+  shadowPhaseSound:
+    soundName: 
+    clip: {fileID: 0}
+    volume: 1
+    pitchMin: 0.95
+    pitchMax: 1.05
+    randomizePitch: 1
+  shadowZoneSound:
+    soundName: 
+    clip: {fileID: 0}
+    volume: 1
+    pitchMin: 0.95
+    pitchMax: 1.05
+    randomizePitch: 1
+  skillCooldownReadySound:
+    soundName: 
+    clip: {fileID: 0}
+    volume: 1
+    pitchMin: 0.95
+    pitchMax: 1.05
+    randomizePitch: 1
+  collectSound:
+    soundName: 
+    clip: {fileID: 0}
+    volume: 1
+    pitchMin: 0.95
+    pitchMax: 1.05
+    randomizePitch: 1
+  checkpointSound:
+    soundName: 
+    clip: {fileID: 0}
+    volume: 1
+    pitchMin: 0.95
+    pitchMax: 1.05
+    randomizePitch: 1
+  portalSound:
+    soundName: 
+    clip: {fileID: 0}
+    volume: 1
+    pitchMin: 0.95
+    pitchMax: 1.05
+    randomizePitch: 1
+  pressurePlateOnSound:
+    soundName: 
+    clip: {fileID: 0}
+    volume: 1
+    pitchMin: 0.95
+    pitchMax: 1.05
+    randomizePitch: 1
+  pressurePlateOffSound:
+    soundName: 
+    clip: {fileID: 0}
+    volume: 1
+    pitchMin: 0.95
+    pitchMax: 1.05
+    randomizePitch: 1
+  doorOpenSound:
+    soundName: 
+    clip: {fileID: 0}
+    volume: 1
+    pitchMin: 0.95
+    pitchMax: 1.05
+    randomizePitch: 1
+  doorCloseSound:
+    soundName: 
+    clip: {fileID: 0}
+    volume: 1
+    pitchMin: 0.95
+    pitchMax: 1.05
+    randomizePitch: 1
+  gearRotateSound:
+    soundName: 
+    clip: {fileID: 0}
+    volume: 1
+    pitchMin: 0.95
+    pitchMax: 1.05
+    randomizePitch: 1
+  switchSound:
+    soundName: 
+    clip: {fileID: 0}
+    volume: 1
+    pitchMin: 0.95
+    pitchMax: 1.05
+    randomizePitch: 1
+  uiClickSound:
+    soundName: 
+    clip: {fileID: 0}
+    volume: 1
+    pitchMin: 0.95
+    pitchMax: 1.05
+    randomizePitch: 1
+  uiHoverSound:
+    soundName: 
+    clip: {fileID: 0}
+    volume: 1
+    pitchMin: 0.95
+    pitchMax: 1.05
+    randomizePitch: 1
+  uiBackSound:
+    soundName: 
+    clip: {fileID: 0}
+    volume: 1
+    pitchMin: 0.95
+    pitchMax: 1.05
+    randomizePitch: 1
+  uiErrorSound:
+    soundName: 
+    clip: {fileID: 0}
+    volume: 1
+    pitchMin: 0.95
+    pitchMax: 1.05
+    randomizePitch: 1
+  uiSuccessSound:
+    soundName: 
+    clip: {fileID: 0}
+    volume: 1
+    pitchMin: 0.95
+    pitchMax: 1.05
+    randomizePitch: 1
+  levelCompleteSound:
+    soundName: 
+    clip: {fileID: 0}
+    volume: 1
+    pitchMin: 0.95
+    pitchMax: 1.05
+    randomizePitch: 1
+  starRevealSound:
+    soundName: 
+    clip: {fileID: 0}
+    volume: 1
+    pitchMin: 0.95
+    pitchMax: 1.05
+    randomizePitch: 1
+  achievementSound:
+    soundName: 
+    clip: {fileID: 0}
+    volume: 1
+    pitchMin: 0.95
+    pitchMax: 1.05
+    randomizePitch: 1
+  comboHitSound:
+    soundName: 
+    clip: {fileID: 0}
+    volume: 1
+    pitchMin: 0.95
+    pitchMax: 1.05
+    randomizePitch: 1
+  comboBreakSound:
+    soundName: 
+    clip: {fileID: 0}
+    volume: 1
+    pitchMin: 0.95
+    pitchMax: 1.05
+    randomizePitch: 1
+  footstepSound:
+    soundName: 
+    clip: {fileID: 0}
+    volume: 1
+    pitchMin: 0.95
+    pitchMax: 1.05
+    randomizePitch: 1
+  meleeHitSound:
+    soundName: 
+    clip: {fileID: 0}
+    volume: 1
+    pitchMin: 0.95
+    pitchMax: 1.05
+    randomizePitch: 1
+  rangedShootSound:
+    soundName: 
+    clip: {fileID: 0}
+    volume: 1
+    pitchMin: 0.95
+    pitchMax: 1.05
+    randomizePitch: 1
+  waterSplashSound:
+    soundName: 
+    clip: {fileID: 0}
+    volume: 1
+    pitchMin: 0.95
+    pitchMax: 1.05
+    randomizePitch: 1
+  windSound:
+    soundName: 
+    clip: {fileID: 0}
+    volume: 1
+    pitchMin: 0.95
+    pitchMax: 1.05
+    randomizePitch: 1
+  thunderSound:
+    soundName: 
+    clip: {fileID: 0}
+    volume: 1
+    pitchMin: 0.95
+    pitchMax: 1.05
+    randomizePitch: 1
+  machinerySound:
+    soundName: 
+    clip: {fileID: 0}
+    volume: 1
+    pitchMin: 0.95
+    pitchMax: 1.05
+    randomizePitch: 1
+  crystalHumSound:
+    soundName: 
+    clip: {fileID: 0}
+    volume: 1
+    pitchMin: 0.95
+    pitchMax: 1.05
+    randomizePitch: 1

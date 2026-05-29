@@ -11,64 +11,96 @@ TagManager:
   - Hazard
   - PuzzleInteractable
   - Pushable
+  - Lux
+  - Nox
+  - Enemy
+  - Boss
+  - LevelGoal
+  - Puzzle
+  - Interactable
+  - Respawn
+  - SecretArea
+  - DialogueTrigger
+  - Water
+  - Ladder
+  - MovingPlatform
+  - OneWayPlatform
+  - DeathZone
+  - BossArena
+  - Projectile
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  -
+  - 
   - Water
   - UI
-  -
-  -
+  - 
+  - 
   - Ground
   - Player
   - Enemy
-  - ShadowWall
-  - PhaseThrough
-  - Pushable
-  - LightBeam
-  - PuzzleObject
-  -
-  -
-  -
-  -
-  -
-  -
-  -
-  -
-  -
-  -
-  -
-  -
-  -
-  -
-  -
-  -
-  sortingLayers:
+  - Projectile
+  - Puzzle
+  - Interactable
+  - Trigger
+  - Water
+  - OneWayPlatform
+  - PlayerBullet
+  - EnemyBullet
+  - Boss
+  - Collectible
+  - Hazard
+  - InvisibleWall
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  m_SortingLayers:
   - name: Default
     uniqueID: 0
     locked: 0
-  - name: Background
-    uniqueID: 1
+  - name: Background_Far
+    uniqueID: 0
+    locked: 0
+  - name: Background_Mid
+    uniqueID: 0
+    locked: 0
+  - name: Background_Near
+    uniqueID: 596708057
     locked: 0
   - name: Tilemap
-    uniqueID: 2
+    uniqueID: 0
     locked: 0
-  - name: Decorations
-    uniqueID: 3
+  - name: Environment
+    uniqueID: 270112577
     locked: 0
-  - name: PuzzleObjects
-    uniqueID: 4
+  - name: Puzzles
+    uniqueID: 280410331
+    locked: 0
+  - name: Items
+    uniqueID: 0
+    locked: 0
+  - name: Enemies
+    uniqueID: 0
     locked: 0
   - name: Players
-    uniqueID: 5
+    uniqueID: 0
+    locked: 0
+  - name: Projectiles
+    uniqueID: 0
     locked: 0
   - name: Effects
-    uniqueID: 6
+    uniqueID: 0
     locked: 0
   - name: Foreground
-    uniqueID: 7
+    uniqueID: 812909395
     locked: 0
-  - name: UI
-    uniqueID: 8
+  - name: UI_World
+    uniqueID: 0
     locked: 0

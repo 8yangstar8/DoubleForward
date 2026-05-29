@@ -6,69 +6,78 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/MainMenu.unity
-    guid:
+    path: Assets/Scenes/Boot.unity
+    guid: 13eb76b550a33444db0d3094465cdd30
   - enabled: 1
-    path: Assets/Scenes/Lobby.unity
-    guid:
+    path: Assets/Scenes/MainMenu.unity
+    guid: 61e8966269a8bb244bae948e47cec779
+  - enabled: 1
+    path: Assets/Scenes/Loading.unity
+    guid: 2e4738726d20e2b48b9dda3831356519
   - enabled: 1
     path: Assets/Scenes/Chapter1/Level_1_1.unity
-    guid:
+    guid: d62c04f69d5d88f459fe3612f123109e
   - enabled: 1
     path: Assets/Scenes/Chapter1/Level_1_2.unity
-    guid:
+    guid: c49aa854c8d108a4a875cc0a894e1396
   - enabled: 1
     path: Assets/Scenes/Chapter1/Level_1_3.unity
-    guid:
+    guid: 8d155bca24350a74da623acf69901e40
+  - enabled: 1
+    path: Assets/Scenes/Chapter1/Level_1_4.unity
+    guid: 4388e27e20644e14cb24f02632ec0dba
   - enabled: 1
     path: Assets/Scenes/Chapter2/Level_2_1.unity
-    guid:
+    guid: 6c45afb2445f062448c5a520e713b814
   - enabled: 1
     path: Assets/Scenes/Chapter2/Level_2_2.unity
-    guid:
+    guid: 8fdab006b5c5f1c4eba9b87743c0e053
   - enabled: 1
     path: Assets/Scenes/Chapter2/Level_2_3.unity
-    guid:
+    guid: 0e197e31639673e49a50654331ccff96
   - enabled: 1
     path: Assets/Scenes/Chapter2/Level_2_4.unity
-    guid:
+    guid: af8efd95faf7ad8479da93e5c51a091d
   - enabled: 1
     path: Assets/Scenes/Chapter3/Level_3_1.unity
-    guid:
+    guid: f0da167324c2c26468fb8157faae1ff5
   - enabled: 1
     path: Assets/Scenes/Chapter3/Level_3_2.unity
-    guid:
+    guid: 18df44de8b1a3314c94f0c57fe92d1ae
   - enabled: 1
     path: Assets/Scenes/Chapter3/Level_3_3.unity
-    guid:
+    guid: 9d2641b5468433b4b9b95ab322ffdb14
   - enabled: 1
     path: Assets/Scenes/Chapter3/Level_3_4.unity
-    guid:
+    guid: 92b5a2550662ed54b925f683b80f2ca0
   - enabled: 1
     path: Assets/Scenes/Chapter4/Level_4_1.unity
-    guid:
+    guid: e87a1d59b05e6bd43b9e291fff0c2264
   - enabled: 1
     path: Assets/Scenes/Chapter4/Level_4_2.unity
-    guid:
+    guid: 086f94514b3c8614ca3f6a93b0956aff
   - enabled: 1
     path: Assets/Scenes/Chapter4/Level_4_3.unity
-    guid:
+    guid: 287e96572e006404da3003727eae8499
   - enabled: 1
     path: Assets/Scenes/Chapter4/Level_4_4.unity
-    guid:
-  - enabled: 1
-    path: Assets/Scenes/Chapter4/Level_4_5.unity
-    guid:
+    guid: 650d525fc7d0c494fabd7d0d732e6d39
   - enabled: 1
     path: Assets/Scenes/Chapter5/Level_5_1.unity
-    guid:
+    guid: a522d8f6ee4cf0e45b054e4d8a84331b
   - enabled: 1
     path: Assets/Scenes/Chapter5/Level_5_2.unity
-    guid:
+    guid: fdf8ca789856bb440a806a4182f0845f
   - enabled: 1
     path: Assets/Scenes/Chapter5/Level_5_3.unity
-    guid:
+    guid: 86f64dd551bbafb44b68c007fc86fd0e
   - enabled: 1
     path: Assets/Scenes/Chapter5/Level_5_4.unity
-    guid:
+    guid: 38d1f29ac40405049866842bfcb27294
+  - enabled: 1
+    path: Assets/Scenes/BossRush.unity
+    guid: 7389b1644724d984dbb487bbf3af77c9
+  - enabled: 1
+    path: Assets/Scenes/Credits.unity
+    guid: 4173c7326f753ca4b9b39f99be676518
   m_configObjects: {}

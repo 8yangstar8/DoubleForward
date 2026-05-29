@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f89b618ad1ca95c40875c15ae4c6724f, type: 3}
+  m_Name: Ch2_Lv4_Ice-FlameTitan
+  m_EditorClassIdentifier: 
+  chapter: 2
+  levelIndex: 4
+  levelName: "\u51B0\u7130\u5DE8\u50CF"
+  description: "\u7B2C2\u7AE0 \u7B2C4\u5173 - \u51B0\u7130\u5DE8\u50CF"
+  sceneName: Level_2_4
+  luxSpawnPoint: {x: -3, y: 0}
+  noxSpawnPoint: {x: -1, y: 0}
+  parTime: 360
+  hasTimerChallenge: 1
+  collectibleCount: 3
+  bgmClip: {fileID: 0}
+  ambientClip: {fileID: 0}

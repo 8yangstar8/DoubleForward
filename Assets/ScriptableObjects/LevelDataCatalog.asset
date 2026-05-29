@@ -1,0 +1,272 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e66cc7cff6235f548b9f6fa2f83f52fe, type: 3}
+  m_Name: LevelDataCatalog
+  m_EditorClassIdentifier: 
+  chapters:
+  - chapterIndex: 1
+    chapterName: "\u5149\u5F71\u795E\u6BBF"
+    chapterNameKey: chapter_1_name
+    worldTheme: LightShadow
+    chapterIcon: {fileID: 0}
+    themeColor: {r: 0, g: 0, b: 0, a: 0}
+    levels:
+    - levelData: {fileID: 11400000, guid: 2a7e9edd71d816942a50c9cdd42d5e07, type: 2}
+      levelConfig: {fileID: 11400000, guid: 169f61d6d9e7b3446911217d2035f4e0, type: 2}
+      sceneName: Level_1_1
+      isBossLevel: 0
+      isOptional: 0
+      unlockRequirement: 0
+      levelNameKey: 
+      thumbnail: {fileID: 0}
+      backgroundPreview: {fileID: 0}
+      coinReward: 0
+      specialRewardId: 
+    - levelData: {fileID: 11400000, guid: ab3dd4e6363ca6c4db5ff1883e77aa0e, type: 2}
+      levelConfig: {fileID: 11400000, guid: 7135d49473d46e5408b89be12aa81d0e, type: 2}
+      sceneName: Level_1_2
+      isBossLevel: 0
+      isOptional: 0
+      unlockRequirement: 0
+      levelNameKey: 
+      thumbnail: {fileID: 0}
+      backgroundPreview: {fileID: 0}
+      coinReward: 0
+      specialRewardId: 
+    - levelData: {fileID: 11400000, guid: 65d47aa96b3d3bb4fae8d2a6507e1644, type: 2}
+      levelConfig: {fileID: 11400000, guid: 84d16f44b1847794d9e3ccbc6d409c41, type: 2}
+      sceneName: Level_1_3
+      isBossLevel: 0
+      isOptional: 0
+      unlockRequirement: 0
+      levelNameKey: 
+      thumbnail: {fileID: 0}
+      backgroundPreview: {fileID: 0}
+      coinReward: 0
+      specialRewardId: 
+    - levelData: {fileID: 11400000, guid: ad7af24ea327a694485045c0762ffd7d, type: 2}
+      levelConfig: {fileID: 11400000, guid: bfa17fd7289d759469510fdadefdc4f8, type: 2}
+      sceneName: Level_1_4
+      isBossLevel: 1
+      isOptional: 0
+      unlockRequirement: 0
+      levelNameKey: 
+      thumbnail: {fileID: 0}
+      backgroundPreview: {fileID: 0}
+      coinReward: 0
+      specialRewardId: 
+  - chapterIndex: 2
+    chapterName: "\u51B0\u706B\u4EA4\u754C"
+    chapterNameKey: chapter_2_name
+    worldTheme: IceFire
+    chapterIcon: {fileID: 0}
+    themeColor: {r: 0, g: 0, b: 0, a: 0}
+    levels:
+    - levelData: {fileID: 11400000, guid: 95b2c5c06888da44e8e42ffd310a6422, type: 2}
+      levelConfig: {fileID: 11400000, guid: cf8391ea0e7a99e40b527c73d755aa09, type: 2}
+      sceneName: Level_2_1
+      isBossLevel: 0
+      isOptional: 0
+      unlockRequirement: 0
+      levelNameKey: 
+      thumbnail: {fileID: 0}
+      backgroundPreview: {fileID: 0}
+      coinReward: 0
+      specialRewardId: 
+    - levelData: {fileID: 11400000, guid: 1a8d28251dff1b94bb72098d74a59cce, type: 2}
+      levelConfig: {fileID: 11400000, guid: f8692bae160e15942b622b391d5296cf, type: 2}
+      sceneName: Level_2_2
+      isBossLevel: 0
+      isOptional: 0
+      unlockRequirement: 0
+      levelNameKey: 
+      thumbnail: {fileID: 0}
+      backgroundPreview: {fileID: 0}
+      coinReward: 0
+      specialRewardId: 
+    - levelData: {fileID: 11400000, guid: 0ab27671367806a4baf1eb9987129941, type: 2}
+      levelConfig: {fileID: 11400000, guid: 5469c30a6a471914081fff123276cb12, type: 2}
+      sceneName: Level_2_3
+      isBossLevel: 0
+      isOptional: 0
+      unlockRequirement: 0
+      levelNameKey: 
+      thumbnail: {fileID: 0}
+      backgroundPreview: {fileID: 0}
+      coinReward: 0
+      specialRewardId: 
+    - levelData: {fileID: 11400000, guid: 9b52dd3b91f321740836c6e18321a0f0, type: 2}
+      levelConfig: {fileID: 11400000, guid: bd22de0dd5fff2949b2640644615a4f4, type: 2}
+      sceneName: Level_2_4
+      isBossLevel: 1
+      isOptional: 0
+      unlockRequirement: 0
+      levelNameKey: 
+      thumbnail: {fileID: 0}
+      backgroundPreview: {fileID: 0}
+      coinReward: 0
+      specialRewardId: 
+  - chapterIndex: 3
+    chapterName: "\u6C99\u6D77\u8FF7\u57CE"
+    chapterNameKey: chapter_3_name
+    worldTheme: SandSea
+    chapterIcon: {fileID: 0}
+    themeColor: {r: 0, g: 0, b: 0, a: 0}
+    levels:
+    - levelData: {fileID: 11400000, guid: 2e90a6915cdd2a44fb8ed5fa426f7e52, type: 2}
+      levelConfig: {fileID: 11400000, guid: a7030b22a687f4c45a0e7e570595c4bd, type: 2}
+      sceneName: Level_3_1
+      isBossLevel: 0
+      isOptional: 0
+      unlockRequirement: 0
+      levelNameKey: 
+      thumbnail: {fileID: 0}
+      backgroundPreview: {fileID: 0}
+      coinReward: 0
+      specialRewardId: 
+    - levelData: {fileID: 11400000, guid: 5d9aa097a1681be49a0b04e1234b12e0, type: 2}
+      levelConfig: {fileID: 11400000, guid: 01c5e99c12fa46d4a8908e37c5ecb1eb, type: 2}
+      sceneName: Level_3_2
+      isBossLevel: 0
+      isOptional: 0
+      unlockRequirement: 0
+      levelNameKey: 
+      thumbnail: {fileID: 0}
+      backgroundPreview: {fileID: 0}
+      coinReward: 0
+      specialRewardId: 
+    - levelData: {fileID: 11400000, guid: 1a7a692bc1482e14bbba31ba904c8a4a, type: 2}
+      levelConfig: {fileID: 11400000, guid: 91d311bd7144d7b4f9a14f2d74242a30, type: 2}
+      sceneName: Level_3_3
+      isBossLevel: 0
+      isOptional: 0
+      unlockRequirement: 0
+      levelNameKey: 
+      thumbnail: {fileID: 0}
+      backgroundPreview: {fileID: 0}
+      coinReward: 0
+      specialRewardId: 
+    - levelData: {fileID: 11400000, guid: b21e3fb4861fc0d49b2ae8c755968dca, type: 2}
+      levelConfig: {fileID: 11400000, guid: 227a0e8f884322747a0dbd18a6f6a9ae, type: 2}
+      sceneName: Level_3_4
+      isBossLevel: 1
+      isOptional: 0
+      unlockRequirement: 0
+      levelNameKey: 
+      thumbnail: {fileID: 0}
+      backgroundPreview: {fileID: 0}
+      coinReward: 0
+      specialRewardId: 
+  - chapterIndex: 4
+    chapterName: "\u6697\u5F71\u6DF1\u6E0A"
+    chapterNameKey: chapter_4_name
+    worldTheme: DarkAbyss
+    chapterIcon: {fileID: 0}
+    themeColor: {r: 0, g: 0, b: 0, a: 0}
+    levels:
+    - levelData: {fileID: 11400000, guid: 46654f95a0a3b534980193f172989487, type: 2}
+      levelConfig: {fileID: 11400000, guid: ba14a42f58dc1b740af8d317088ce3b9, type: 2}
+      sceneName: Level_4_1
+      isBossLevel: 0
+      isOptional: 0
+      unlockRequirement: 0
+      levelNameKey: 
+      thumbnail: {fileID: 0}
+      backgroundPreview: {fileID: 0}
+      coinReward: 0
+      specialRewardId: 
+    - levelData: {fileID: 11400000, guid: 04be58e08da37994b801db09e86887a2, type: 2}
+      levelConfig: {fileID: 11400000, guid: f6d4932539a89654586f29a9a73e50aa, type: 2}
+      sceneName: Level_4_2
+      isBossLevel: 0
+      isOptional: 0
+      unlockRequirement: 0
+      levelNameKey: 
+      thumbnail: {fileID: 0}
+      backgroundPreview: {fileID: 0}
+      coinReward: 0
+      specialRewardId: 
+    - levelData: {fileID: 11400000, guid: 73c07e3ad5c97f14792a6c701993e2de, type: 2}
+      levelConfig: {fileID: 11400000, guid: 838854b017e519649957c462929fc19d, type: 2}
+      sceneName: Level_4_3
+      isBossLevel: 0
+      isOptional: 0
+      unlockRequirement: 0
+      levelNameKey: 
+      thumbnail: {fileID: 0}
+      backgroundPreview: {fileID: 0}
+      coinReward: 0
+      specialRewardId: 
+    - levelData: {fileID: 11400000, guid: c5cb68390ad64e14eb1c242f81423bbc, type: 2}
+      levelConfig: {fileID: 11400000, guid: 41c3984d0c7e0a04a8114454f3a2f88f, type: 2}
+      sceneName: Level_4_4
+      isBossLevel: 1
+      isOptional: 0
+      unlockRequirement: 0
+      levelNameKey: 
+      thumbnail: {fileID: 0}
+      backgroundPreview: {fileID: 0}
+      coinReward: 0
+      specialRewardId: 
+  - chapterIndex: 5
+    chapterName: "\u53CC\u5411\u5F52\u4E00"
+    chapterNameKey: chapter_5_name
+    worldTheme: Convergence
+    chapterIcon: {fileID: 0}
+    themeColor: {r: 0, g: 0, b: 0, a: 0}
+    levels:
+    - levelData: {fileID: 11400000, guid: 627f5eed0bf11664c86dc050f545cde1, type: 2}
+      levelConfig: {fileID: 11400000, guid: c7deeaf90f5a627448d63432a08bfe7a, type: 2}
+      sceneName: Level_5_1
+      isBossLevel: 0
+      isOptional: 0
+      unlockRequirement: 0
+      levelNameKey: 
+      thumbnail: {fileID: 0}
+      backgroundPreview: {fileID: 0}
+      coinReward: 0
+      specialRewardId: 
+    - levelData: {fileID: 11400000, guid: a0c9baf75723109448258a4f76e390e0, type: 2}
+      levelConfig: {fileID: 11400000, guid: 76ff376580865f948a4ef76ba19f64ab, type: 2}
+      sceneName: Level_5_2
+      isBossLevel: 0
+      isOptional: 0
+      unlockRequirement: 0
+      levelNameKey: 
+      thumbnail: {fileID: 0}
+      backgroundPreview: {fileID: 0}
+      coinReward: 0
+      specialRewardId: 
+    - levelData: {fileID: 11400000, guid: 709120dbcc9cf614fb0947e23f92dc47, type: 2}
+      levelConfig: {fileID: 11400000, guid: ad8c5ea4c8c413648bedace141d8cfad, type: 2}
+      sceneName: Level_5_3
+      isBossLevel: 0
+      isOptional: 0
+      unlockRequirement: 0
+      levelNameKey: 
+      thumbnail: {fileID: 0}
+      backgroundPreview: {fileID: 0}
+      coinReward: 0
+      specialRewardId: 
+    - levelData: {fileID: 11400000, guid: 9abdcde4067853248b74969628e8a653, type: 2}
+      levelConfig: {fileID: 11400000, guid: a1bb4ffc0f1c14c428cab9c17af3aa25, type: 2}
+      sceneName: Level_5_4
+      isBossLevel: 1
+      isOptional: 0
+      unlockRequirement: 0
+      levelNameKey: 
+      thumbnail: {fileID: 0}
+      backgroundPreview: {fileID: 0}
+      coinReward: 0
+      specialRewardId: 
+  starsPerLevel: 3
+  levelsPerChapter: 4

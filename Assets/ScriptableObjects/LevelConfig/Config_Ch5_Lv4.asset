@@ -1,0 +1,110 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2fcef2106a2d54d418b0bef6aabf3bdc, type: 3}
+  m_Name: Config_Ch5_Lv4
+  m_EditorClassIdentifier: 
+  chapter: 5
+  level: 4
+  levelName: "\u865A\u7A7A\u672C\u4F53"
+  levelNameKey: level_name_5_4
+  mapMin: {x: -5, y: -10}
+  mapMax: {x: 77, y: 20}
+  cameraBoundsMin: {x: -3, y: -5}
+  cameraBoundsMax: {x: 75, y: 15}
+  luxSpawnPoint: {x: -3, y: 0}
+  noxSpawnPoint: {x: -1, y: 0}
+  parTime: 480
+  totalCollectibles: 5
+  requireBothPlayersAtGoal: 1
+  puzzles:
+  - type: 0
+    position: {x: 8, y: 0}
+    size: {x: 1, y: 1}
+    requireBothPlayers: 0
+    linkedEventId: 
+  - type: 1
+    position: {x: 18, y: 0}
+    size: {x: 1, y: 1}
+    requireBothPlayers: 1
+    linkedEventId: 
+  - type: 2
+    position: {x: 28, y: 0}
+    size: {x: 1, y: 1}
+    requireBothPlayers: 0
+    linkedEventId: 
+  - type: 3
+    position: {x: 38, y: 0}
+    size: {x: 1, y: 1}
+    requireBothPlayers: 1
+    linkedEventId: 
+  - type: 4
+    position: {x: 48, y: 0}
+    size: {x: 1, y: 1}
+    requireBothPlayers: 0
+    linkedEventId: 
+  - type: 0
+    position: {x: 58, y: 0}
+    size: {x: 1, y: 1}
+    requireBothPlayers: 1
+    linkedEventId: 
+  enemies: []
+  collectiblePositions:
+  - {x: 5, y: 1.5}
+  - {x: 15, y: 3}
+  - {x: 25, y: 4.5}
+  - {x: 35, y: 1.5}
+  - {x: 45, y: 3}
+  checkpoints:
+  - position: {x: 25.666666, y: 0}
+    order: 0
+  - position: {x: 51.333332, y: 0}
+    order: 1
+  movingPlatforms:
+  - startPosition: {x: 12, y: 2}
+    waypoints:
+    - {x: 12, y: 2}
+    - {x: 17, y: 5}
+    speed: 3
+    loop: 1
+  - startPosition: {x: 27, y: 3}
+    waypoints:
+    - {x: 27, y: 3}
+    - {x: 32, y: 6}
+    speed: 3
+    loop: 1
+  - startPosition: {x: 42, y: 4}
+    waypoints:
+    - {x: 42, y: 4}
+    - {x: 47, y: 7}
+    speed: 3
+    loop: 1
+  portalPairs:
+  - portalA: {x: 15, y: 0}
+    portalB: {x: 30, y: 5}
+    portalColor: {r: 0, g: 1, b: 1, a: 1}
+  zones:
+  - type: 0
+    position: {x: 15, y: 3}
+    size: {x: 5, y: 5}
+    intensity: 1
+  - type: 1
+    position: {x: 25, y: 3}
+    size: {x: 5, y: 5}
+    intensity: 1
+  - type: 3
+    position: {x: 35, y: 3}
+    size: {x: 8, y: 8}
+    intensity: 0.3
+  goalPosition: {x: 72, y: 0}
+  bgmClip: {fileID: 0}
+  bossMusic: {fileID: 0}
+  dialogueTriggers: []

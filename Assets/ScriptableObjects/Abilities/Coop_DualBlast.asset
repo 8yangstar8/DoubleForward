@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4fdff6a89b8a5834b9e573f90ef268f7, type: 3}
+  m_Name: Coop_DualBlast
+  m_EditorClassIdentifier: 
+  abilityName: "\u5149\u6697\u9F50\u53D1"
+  description: "\u4E24\u4EBA\u540C\u65F6\u91CA\u653E\u5149\u6697\u80FD\u91CF\u9020\u6210\u8303\u56F4\u4F24\u5BB3"
+  icon: {fileID: 0}
+  cooldown: 2
+  duration: 1
+  range: 5
+  force: 8
+  effectPrefab: {fileID: 0}
+  activateSound: {fileID: 0}
+  abilityColor: {r: 1, g: 1, b: 1, a: 1}

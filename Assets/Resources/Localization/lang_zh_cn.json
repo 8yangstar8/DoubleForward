@@ -260,5 +260,223 @@
         {"key": "loading_tip_12", "value": "锯刃对敌人也会造成伤害，善用地形"},
         {"key": "loading_tip_13", "value": "传送垫可以快速移动到远处的区域"},
         {"key": "loading_tip_14", "value": "双人切换方块需要Lux和Nox配合操作"}
-    ]
+    ,
+
+        {"key": "input_press_key", "value": "请按下按钮..."},
+
+        {"key": "achievement_hidden", "value": "隐藏成就"},
+
+        {"key": "loading", "value": "加载中..."},
+
+        {"key": "save_new", "value": "新存档"},
+
+        {"key": "confirm_delete", "value": "确定删除存档 {0}？此操作不可撤销。"},
+
+        {"key": "confirm_yes", "value": "确定"},
+
+        {"key": "confirm_no", "value": "取消"},
+
+        {"key": "ngplus_title", "value": "New Game+"},
+
+        {"key": "ngplus_difficulty", "value": "NG+ 难度倍率"},
+
+        {"key": "ngplus_cycle", "value": "第{0}周目"},
+
+        {"key": "ngplus_start", "value": "开始新周目"},
+
+        {"key": "ngplus_enemies_stronger", "value": "敌人强化 ×{0}"},
+
+        {"key": "complete_stars", "value": "星级评价"},
+
+        {"key": "complete_rank_s", "value": "S级"},
+
+        {"key": "complete_rank_a", "value": "A级"},
+
+        {"key": "complete_rank_b", "value": "B级"},
+
+        {"key": "complete_rank_c", "value": "C级"},
+
+        {"key": "bossrush_title", "value": "Boss连战"},
+
+        {"key": "bossrush_best_time", "value": "最佳时间"},
+
+        {"key": "bossrush_current", "value": "当前波次"},
+
+        {"key": "bossrush_cleared", "value": "已全部击败！"},
+
+        {"key": "coop_score_title", "value": "合作评分"},
+
+        {"key": "coop_sync_bonus", "value": "同步奖励"},
+
+        {"key": "coop_revive_count", "value": "复活次数"},
+
+        {"key": "challenge_title", "value": "挑战"},
+
+        {"key": "challenge_daily", "value": "每日挑战"},
+
+        {"key": "challenge_weekly", "value": "每周挑战"},
+
+        {"key": "challenge_complete", "value": "挑战完成！"},
+
+        {"key": "modifier_title", "value": "关卡修改器"},
+
+        {"key": "modifier_speed", "value": "加速模式"},
+
+        {"key": "modifier_mirror", "value": "镜像模式"},
+
+        {"key": "modifier_onelife", "value": "一命模式"},
+
+        {"key": "modifier_noskill", "value": "无技能模式"},
+
+        {"key": "story_chapter_intro", "value": "章节开始"},
+
+        {"key": "story_chapter_ending", "value": "章节结束"},
+
+        {"key": "msg_save_success", "value": "存档保存成功"},
+
+        {"key": "msg_save_failed", "value": "存档保存失败"},
+
+        {"key": "msg_load_success", "value": "存档加载成功"},
+
+        {"key": "msg_load_failed", "value": "存档加载失败"},
+
+        {"key": "msg_network_error", "value": "网络连接错误"},
+
+        {"key": "msg_sync_complete", "value": "同步完成"},
+
+        {"key": "level_1_1_name", "value": "光影初现"},
+
+        {"key": "level_1_2_name", "value": "暗林小径"},
+
+        {"key": "level_1_3_name", "value": "古树之心"},
+
+        {"key": "level_1_4_name", "value": "森之守卫"},
+
+        {"key": "level_2_1_name", "value": "齿轮启动"},
+
+        {"key": "level_2_2_name", "value": "蒸汽通道"},
+
+        {"key": "level_2_3_name", "value": "钢铁迷宫"},
+
+        {"key": "level_2_4_name", "value": "暴君之心"},
+
+        {"key": "level_3_1_name", "value": "深渊之口"},
+
+        {"key": "level_3_2_name", "value": "幽暗水域"},
+
+        {"key": "level_3_3_name", "value": "沉船遗迹"},
+
+        {"key": "level_3_4_name", "value": "渊蛇巢穴"},
+
+        {"key": "level_4_1_name", "value": "遗忘神殿"},
+
+        {"key": "level_4_2_name", "value": "影之回廊"},
+
+        {"key": "level_4_3_name", "value": "光暗试炼"},
+
+        {"key": "level_4_4_name", "value": "废墟哨兵"},
+
+        {"key": "level_5_1_name", "value": "虚空裂隙"},
+
+        {"key": "level_5_2_name", "value": "光暗交汇"},
+
+        {"key": "level_5_3_name", "value": "终焉之路"},
+
+        {"key": "level_5_4_name", "value": "双向归一"},
+
+        {"key": "level_1_1_desc", "value": "学习基本操作，体验光暗配合"},
+
+        {"key": "level_1_2_desc", "value": "穿越暗林，解开第一个光暗谜题"},
+
+        {"key": "level_1_3_desc", "value": "深入古树内部，发现隐藏的力量"},
+
+        {"key": "level_1_4_desc", "value": "挑战森之守卫，证明你们的默契"},
+
+        {"key": "level_2_1_desc", "value": "进入工厂，适应机械环境"},
+
+        {"key": "level_2_2_desc", "value": "利用蒸汽和齿轮通过险境"},
+
+        {"key": "level_2_3_desc", "value": "在钢铁迷宫中找到出路"},
+
+        {"key": "level_2_4_desc", "value": "对抗齿轮暴君"},
+
+        {"key": "level_3_1_desc", "value": "潜入深渊，面对未知"},
+
+        {"key": "level_3_2_desc", "value": "在幽暗水域中求生"},
+
+        {"key": "level_3_3_desc", "value": "探索沉船中的远古秘密"},
+
+        {"key": "level_3_4_desc", "value": "挑战渊蛇"},
+
+        {"key": "level_4_1_desc", "value": "进入远古遗迹"},
+
+        {"key": "level_4_2_desc", "value": "在影之回廊中解开光暗机关"},
+
+        {"key": "level_4_3_desc", "value": "通过光暗试炼的考验"},
+
+        {"key": "level_4_4_desc", "value": "击败废墟哨兵"},
+
+        {"key": "level_5_1_desc", "value": "踏入虚空世界"},
+
+        {"key": "level_5_2_desc", "value": "光暗力量在此交汇"},
+
+        {"key": "level_5_3_desc", "value": "最后的旅途"},
+
+        {"key": "level_5_4_desc", "value": "一切的终点与起点"},
+
+        {"key": "tutorial_wall_jump", "value": "靠近墙壁跳跃可以蹬墙跳"},
+
+        {"key": "tutorial_climb", "value": "抓住梯子上下攀爬"},
+
+        {"key": "tutorial_switch_char", "value": "在单人模式下切换角色"},
+
+        {"key": "tutorial_revive", "value": "靠近倒地的队友长按交互复活"},
+
+        {"key": "tutorial_checkpoint", "value": "激活检查点作为复活地点"},
+
+        {"key": "skin_default", "value": "默认"},
+
+        {"key": "skin_locked", "value": "未解锁"},
+
+        {"key": "skin_equip", "value": "装备"},
+
+        {"key": "skin_equipped", "value": "已装备"},
+
+        {"key": "ach_first_clear", "value": "初次通关"},
+
+        {"key": "ach_all_stars", "value": "满星大师"},
+
+        {"key": "ach_no_death", "value": "不死之身"},
+
+        {"key": "ach_speed_run", "value": "闪电通关"},
+
+        {"key": "ach_all_collect", "value": "收集达人"},
+
+        {"key": "ach_coop_master", "value": "默契搭档"},
+
+        {"key": "ach_boss_rush", "value": "Boss猎手"},
+
+        {"key": "ach_secret_finder", "value": "秘密发现者"},
+
+        {"key": "theme_light_shadow", "value": "光影神殿"},
+
+        {"key": "theme_ice_fire", "value": "冰火交界"},
+
+        {"key": "theme_sand_sea", "value": "沙海迷城"},
+
+        {"key": "theme_dark_abyss", "value": "暗影深渊"},
+
+        {"key": "theme_convergence", "value": "双向归一"},
+
+        {"key": "gameover_msg_1", "value": "不要放弃！"},
+
+        {"key": "gameover_msg_2", "value": "再试一次吧！"},
+
+        {"key": "gameover_msg_3", "value": "两人配合是关键！"},
+
+        {"key": "gameover_hint_1", "value": "试试不同的策略！"},
+
+        {"key": "gameover_hint_2", "value": "注意Boss的攻击模式"},
+
+        {"key": "gameover_hint_3", "value": "利用环境中的机关"}]
 }
