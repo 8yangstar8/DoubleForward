@@ -112,6 +112,60 @@ public class PlayerController : MonoBehaviour
 
     private void HandleInput()
     {
+        // 键盘直接读取（新Input System API）
+        var kb = UnityEngine.InputSystem.Keyboard.current;
+        if (kb != null && playerIndex == 0)
+        {
+            float kx = 0;
+            if (kb.aKey.isPressed || kb.leftArrowKey.isPressed) kx = -1;
+            else if (kb.dKey.isPressed || kb.rightArrowKey.isPressed) kx = 1;
+
+            if (kx != 0)
+            {
+                float ky = 0;
+                if (kb.wKey.isPressed || kb.upArrowKey.isPressed) ky = 1;
+                else if (kb.sKey.isPressed || kb.downArrowKey.isPressed) ky = -1;
+                SetMoveInput(new Vector2(kx, ky));
+            }
+            else if (InputManager.Instance != null)
+            {
+                SetMoveInput(InputManager.Instance.GetMoveInput(playerIndex));
+            }
+
+            if (kb.spaceKey.wasPressedThisFrame) TryJump();
+            if (kb.jKey.wasPressedThisFrame) TryAttack();
+            if (kb.leftShiftKey.wasPressedThisFrame) TryDash();
+            if (kb.qKey.wasPressedThisFrame) TrySkill1();
+            if (kb.eKey.wasPressedThisFrame) TrySkill2();
+            return;
+        }
+
+        // P2键盘
+        if (kb != null && playerIndex == 1)
+        {
+            float kx = 0;
+            if (kb.numpad4Key.isPressed) kx = -1;
+            else if (kb.numpad6Key.isPressed) kx = 1;
+
+            if (kx != 0)
+            {
+                float ky = 0;
+                if (kb.numpad8Key.isPressed) ky = 1;
+                else if (kb.numpad2Key.isPressed) ky = -1;
+                SetMoveInput(new Vector2(kx, ky));
+            }
+            else if (InputManager.Instance != null)
+            {
+                SetMoveInput(InputManager.Instance.GetMoveInput(playerIndex));
+            }
+
+            if (kb.numpad0Key.wasPressedThisFrame) TryJump();
+            if (kb.numpad1Key.wasPressedThisFrame) TryAttack();
+            if (kb.numpad3Key.wasPressedThisFrame) TryDash();
+            return;
+        }
+
+        // 触控UI回退
         if (InputManager.Instance == null) return;
 
         Vector2 moveInput = InputManager.Instance.GetMoveInput(playerIndex);
