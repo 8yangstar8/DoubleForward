@@ -160,7 +160,7 @@ public class EnemyDirector : MonoBehaviour
 
         // DifficultyManager进一步修正
         if (DifficultyManager.Instance != null)
-            base_ *= DifficultyManager.Instance.GetCurrentModifier();
+            base_ *= DifficultyManager.Instance.DifficultyModifier;
 
         return base_;
     }

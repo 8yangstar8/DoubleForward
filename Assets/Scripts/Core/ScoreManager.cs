@@ -229,7 +229,7 @@ public class ScoreManager : MonoBehaviour
     private float GetCurrentComboMultiplier()
     {
         if (ComboSystem.Instance != null)
-            return ComboSystem.Instance.CurrentMultiplier;
+            return ComboSystem.Instance.ComboMultiplier;
         return currentComboMultiplier;
     }
 
