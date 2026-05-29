@@ -266,6 +266,12 @@ public class DualPlayerCamera : MonoBehaviour
 
     // ==================== 辅助 ====================
 
+    public void SetPlayers(Transform p1, Transform p2)
+    {
+        player1 = p1;
+        player2 = p2;
+    }
+
     private void FindPlayers()
     {
         var players = FindObjectsByType<PlayerController>(FindObjectsSortMode.None);

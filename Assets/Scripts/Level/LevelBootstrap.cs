@@ -192,6 +192,20 @@ public class LevelBootstrap : MonoBehaviour
         // 注册到LevelManager供其他系统引用
         if (LevelManager.Instance != null)
             LevelManager.Instance.RegisterPlayers(luxPlayer, noxPlayer);
+
+        // 设置相机跟随
+        if (luxPlayer != null)
+        {
+            if (DualPlayerCamera.Instance != null)
+            {
+                DualPlayerCamera.Instance.SetPlayers(luxPlayer.transform,
+                    noxPlayer != null ? noxPlayer.transform : null);
+            }
+            else if (CameraController.Instance != null)
+            {
+                CameraController.Instance.SetTarget(luxPlayer.transform);
+            }
+        }
     }
 
     /// <summary>
