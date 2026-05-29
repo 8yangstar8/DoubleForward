@@ -37,12 +37,17 @@ public class LevelManager : MonoBehaviour
 
     private void InitializeLevel()
     {
-        SpawnPlayers();
+        // LevelBootstrap负责生成玩家并等待GameInitializer
+        // LevelManager只在有levelData时独立生成（向后兼容）
+        if (levelData != null)
+        {
+            SpawnPlayers();
 
-        if (levelData.bgmClip != null)
-            AudioManager.Instance?.PlayBGM(levelData.bgmClip);
-        if (levelData.ambientClip != null)
-            AudioManager.Instance?.PlayAmbient(levelData.ambientClip);
+            if (levelData.bgmClip != null)
+                AudioManager.Instance?.PlayBGM(levelData.bgmClip);
+            if (levelData.ambientClip != null)
+                AudioManager.Instance?.PlayAmbient(levelData.ambientClip);
+        }
 
         levelTimer = 0f;
         collectiblesGathered = 0;
@@ -54,6 +59,8 @@ public class LevelManager : MonoBehaviour
 
     private void SpawnPlayers()
     {
+        if (levelData == null) return;
+
         if (luxPrefab != null)
         {
             var luxObj = Instantiate(luxPrefab, levelData.luxSpawnPoint, Quaternion.identity);
