@@ -183,18 +183,26 @@ public class LevelCompletionChecker : MonoBehaviour
     {
         if (isCompleted || conditionsMetPending) return;
 
+        // 没有条件时不自动完成（需要通过LevelGoalTrigger触发）
+        if (conditions == null || conditions.Length == 0) return;
+
         bool allMet = true;
         bool anyMet = false;
+        bool hasRequired = false;
 
         foreach (var cond in conditions)
         {
             if (!cond.isRequired) continue;
+            hasRequired = true;
 
             bool met = conditionStates.ContainsKey(cond.id) && conditionStates[cond.id];
 
             if (met) anyMet = true;
             else allMet = false;
         }
+
+        // 没有必需条件时不自动完成
+        if (!hasRequired) return;
 
         bool shouldComplete = requireAllConditions ? allMet : anyMet;
 

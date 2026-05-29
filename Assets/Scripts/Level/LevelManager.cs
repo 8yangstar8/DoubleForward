@@ -128,7 +128,7 @@ public class LevelManager : MonoBehaviour
 
     public float GetLevelTime() => levelTimer;
     public int GetCollectiblesGathered() => collectiblesGathered;
-    public int GetTotalCollectibles() => levelData.collectibleCount;
+    public int GetTotalCollectibles() => levelData != null ? levelData.collectibleCount : 0;
 
     /// <summary>
     /// 外部注册玩家引用（供LevelBootstrap使用，避免重复生成）
