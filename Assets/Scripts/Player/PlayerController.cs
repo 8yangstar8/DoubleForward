@@ -55,6 +55,11 @@ public class PlayerController : MonoBehaviour
         rb.collisionDetectionMode = CollisionDetectionMode2D.Continuous;
 
         canDoubleJump = playerType == PlayerType.Lux;
+
+        // 两个玩家互相穿过（合作游戏，避免互相阻挡）
+        int playerLayer = LayerMask.NameToLayer("Player");
+        if (playerLayer >= 0)
+            Physics2D.IgnoreLayerCollision(playerLayer, playerLayer, true);
     }
 
     void Update()
