@@ -68,19 +68,8 @@ public class PlayerController : MonoBehaviour
         if (!isPausedStatic && playerIndex == 0)
         {
             var goal = FindAnyObjectByType<LevelGoalTrigger>();
-            if (goal != null)
-            {
-                float d = Vector2.Distance(transform.position, goal.transform.position);
-                // 每秒记录一次诊断
-                if (Time.frameCount % 60 == 0)
-                    Debug.Log($"[GoalCheck] PlayerX={transform.position.x:F1} GoalX={goal.transform.position.x:F1} dist={d:F1}");
-                if (d < 2.5f)
-                    goal.NotifyPlayerArrived(playerIndex);
-            }
-            else if (Time.frameCount % 60 == 0)
-            {
-                Debug.Log("[GoalCheck] No LevelGoalTrigger found!");
-            }
+            if (goal != null && Vector2.Distance(transform.position, goal.transform.position) < 2.5f)
+                goal.NotifyPlayerArrived(playerIndex);
         }
 
         // 掉落死亡检测（备用方案：Y坐标过低则复活）
