@@ -60,12 +60,21 @@ public class PlayerController : MonoBehaviour
     void Update()
     {
         // 终点检测（备用方案：物理触发器因层碰撞可能不工作）
-        if (!isPausedStatic)
+        if (!isPausedStatic && playerIndex == 0)
         {
             var goal = FindAnyObjectByType<LevelGoalTrigger>();
-            if (goal != null && Vector2.Distance(transform.position, goal.transform.position) < 2.5f)
+            if (goal != null)
             {
-                goal.NotifyPlayerArrived(playerIndex);
+                float d = Vector2.Distance(transform.position, goal.transform.position);
+                // 每秒记录一次诊断
+                if (Time.frameCount % 60 == 0)
+                    Debug.Log($"[GoalCheck] PlayerX={transform.position.x:F1} GoalX={goal.transform.position.x:F1} dist={d:F1}");
+                if (d < 2.5f)
+                    goal.NotifyPlayerArrived(playerIndex);
+            }
+            else if (Time.frameCount % 60 == 0)
+            {
+                Debug.Log("[GoalCheck] No LevelGoalTrigger found!");
             }
         }
 
