@@ -226,6 +226,11 @@ public static class ProjectLayerSetup
         // Boss不碰敌人
         IgnoreCollision(boss, enemy, true);
 
+        // 确保Player和Default层可以碰撞（LevelGoalTrigger在Default层）
+        IgnoreCollision(player, 0, false); // Default layer = 0
+        // 确保Player和Ground层碰撞
+        IgnoreCollision(player, 8, false); // Ground layer = 8
+
         Debug.Log("[LayerSetup] Physics collision matrix configured");
     }
 

@@ -52,7 +52,11 @@ public class LevelGoalTrigger : MonoBehaviour
         if (isCompleted) return;
 
         var player = other.GetComponent<PlayerController>();
+        if (player == null)
+            player = other.GetComponentInParent<PlayerController>();
         if (player == null) return;
+
+        Debug.Log($"[Goal] Player {player.PlayerIndex} reached goal!");
 
         if (player.PlayerIndex == 0)
             player1Arrived = true;

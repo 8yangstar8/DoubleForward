@@ -61,6 +61,11 @@ public class PauseMenuUI : MonoBehaviour
 
         if (pausePanel != null)
             pausePanel.SetActive(false);
+
+        // 确保Canvas本身是激活的（只隐藏子面板）
+        var parentCanvas = GetComponentInParent<Canvas>(true);
+        if (parentCanvas != null && !parentCanvas.gameObject.activeSelf)
+            parentCanvas.gameObject.SetActive(true);
     }
 
     void Update()
