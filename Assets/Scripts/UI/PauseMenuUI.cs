@@ -163,6 +163,13 @@ public class PauseMenuUI : MonoBehaviour
         if (pausePanel != null)
             pausePanel.SetActive(false);
 
+        // 隐藏整个PauseCanvas（PlayerController激活了它）
+        var parentCanvas = GetComponentInParent<Canvas>(true);
+        if (parentCanvas != null && parentCanvas.gameObject.name.Contains("Pause"))
+            parentCanvas.gameObject.SetActive(false);
+
+        Time.timeScale = 1f;
+
         if (GameFlowManager.Instance != null)
             GameFlowManager.Instance.ResumeGame();
         else
