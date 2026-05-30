@@ -59,13 +59,16 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
-        // ESC暂停（放在这里因为PauseCanvas默认inactive，其Update不执行）
+        // ESC暂停（手动跟踪按键状态，确保timeScale=0时也能恢复）
         if (playerIndex == 0)
         {
             var kb = UnityEngine.InputSystem.Keyboard.current;
-            if (kb != null && kb.escapeKey.wasPressedThisFrame)
+            if (kb != null)
             {
-                HandlePauseToggle();
+                bool escNow = kb.escapeKey.isPressed;
+                if (escNow && !escWasPressed)
+                    HandlePauseToggle();
+                escWasPressed = escNow;
             }
         }
 
@@ -480,19 +483,20 @@ public class PlayerController : MonoBehaviour
     // ============ 暂停控制 ============
 
     private static bool isPausedStatic;
+    private bool escWasPressed;
 
     private void HandlePauseToggle()
     {
         if (!isPausedStatic)
         {
-            // 暂停
             isPausedStatic = true;
             Time.timeScale = 0f;
 
-            // 激活并显示PauseCanvas
-            var pauseUI = FindAnyObjectByType<PauseMenuUI>(FindObjectsInactive.Include);
-            if (pauseUI != null)
+            // 找到PauseMenuUI（包括inactive的）
+            var allPause = Resources.FindObjectsOfTypeAll<PauseMenuUI>();
+            if (allPause.Length > 0)
             {
+                var pauseUI = allPause[0];
                 pauseUI.gameObject.SetActive(true);
                 var parentCanvas = pauseUI.GetComponentInParent<Canvas>(true);
                 if (parentCanvas != null) parentCanvas.gameObject.SetActive(true);
@@ -502,13 +506,12 @@ public class PlayerController : MonoBehaviour
         }
         else
         {
-            // 恢复
             isPausedStatic = false;
             Time.timeScale = 1f;
 
-            var pauseUI = FindAnyObjectByType<PauseMenuUI>(FindObjectsInactive.Include);
-            if (pauseUI != null)
-                pauseUI.OnResume();
+            var allPause = Resources.FindObjectsOfTypeAll<PauseMenuUI>();
+            if (allPause.Length > 0)
+                allPause[0].OnResume();
             Debug.Log("[Player] Game Resumed");
         }
     }
