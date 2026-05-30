@@ -59,18 +59,7 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
-        // ESC暂停（手动跟踪按键状态，确保timeScale=0时也能恢复）
-        if (playerIndex == 0)
-        {
-            var kb = UnityEngine.InputSystem.Keyboard.current;
-            if (kb != null)
-            {
-                bool escNow = kb.escapeKey.isPressed;
-                if (escNow && !escWasPressed)
-                    HandlePauseToggle();
-                escWasPressed = escNow;
-            }
-        }
+        // ESC在OnGUI中处理（Update中的Input System在timeScale=0时可能不工作）
 
         if (isFrozen) return;
 
@@ -483,7 +472,17 @@ public class PlayerController : MonoBehaviour
     // ============ 暂停控制 ============
 
     private static bool isPausedStatic;
-    private bool escWasPressed;
+
+    void OnGUI()
+    {
+        if (playerIndex != 0) return;
+        Event e = Event.current;
+        if (e.type == EventType.KeyDown && e.keyCode == KeyCode.Escape)
+        {
+            HandlePauseToggle();
+            e.Use();
+        }
+    }
 
     private void HandlePauseToggle()
     {

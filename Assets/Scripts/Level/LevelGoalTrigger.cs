@@ -27,10 +27,9 @@ public class LevelGoalTrigger : MonoBehaviour
 
     void Start()
     {
-        GetComponent<BoxCollider2D>().isTrigger = true;
-
-        if (goalParticles != null)
-            goalParticles.Play();
+        var col = GetComponent<BoxCollider2D>();
+        col.isTrigger = true;
+        Debug.Log($"[Goal] Ready at {transform.position}, collider size={col.size}, isTrigger={col.isTrigger}");
     }
 
     void Update()
