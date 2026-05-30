@@ -83,7 +83,7 @@ public class VFXManager : MonoBehaviour
 
         if (!pools.ContainsKey(effectName))
         {
-            Debug.LogWarning($"[VFX] 特效不存在: {effectName}");
+            // 占位阶段特效未配置，静默跳过
             return null;
         }
 

@@ -38,8 +38,13 @@ public class LevelCompleteUI : MonoBehaviour
         var lm = LevelManager.Instance;
         if (lm == null) return;
 
-        if (levelNameText != null && lm.CurrentLevel != null)
-            levelNameText.text = lm.CurrentLevel.DisplayName;
+        if (levelNameText != null)
+        {
+            if (lm.CurrentLevel != null)
+                levelNameText.text = lm.CurrentLevel.DisplayName;
+            else if (GameFlowManager.Instance != null)
+                levelNameText.text = $"关卡 {GameFlowManager.Instance.CurrentChapter}-{GameFlowManager.Instance.CurrentLevel} 完成！";
+        }
 
         float time = lm.GetLevelTime();
         if (timeText != null)
@@ -112,11 +117,22 @@ public class LevelCompleteUI : MonoBehaviour
     private void OnNextLevel()
     {
         Time.timeScale = 1f;
-        var lm = LevelManager.Instance;
-        if (lm?.CurrentLevel == null) return;
 
-        int nextLevel = lm.CurrentLevel.levelIndex + 1;
-        int nextChapter = lm.CurrentLevel.chapter;
+        // 优先用GameFlowManager的当前进度（LevelData SO可能未赋值）
+        int curChapter = 1, curLevel = 1;
+        if (GameFlowManager.Instance != null)
+        {
+            curChapter = GameFlowManager.Instance.CurrentChapter;
+            curLevel = GameFlowManager.Instance.CurrentLevel;
+        }
+        else if (LevelManager.Instance?.CurrentLevel != null)
+        {
+            curChapter = LevelManager.Instance.CurrentLevel.chapter;
+            curLevel = LevelManager.Instance.CurrentLevel.levelIndex;
+        }
+
+        int nextLevel = curLevel + 1;
+        int nextChapter = curChapter;
 
         int[] levelsPerChapter = { 4, 4, 4, 4, 4 };
         int maxInChapter = nextChapter <= levelsPerChapter.Length ? levelsPerChapter[nextChapter - 1] : 4;
@@ -136,7 +152,9 @@ public class LevelCompleteUI : MonoBehaviour
     private void OnReplay()
     {
         Time.timeScale = 1f;
-        LevelManager.Instance?.RestartLevel();
+        int ch = GameFlowManager.Instance?.CurrentChapter ?? 1;
+        int lv = GameFlowManager.Instance?.CurrentLevel ?? 1;
+        GameManager.Instance?.LoadLevel(ch, lv);
     }
 
     private void OnMenu()
