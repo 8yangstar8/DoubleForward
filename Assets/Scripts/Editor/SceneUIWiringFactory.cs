@@ -356,8 +356,171 @@ public static class SceneUIWiringFactory
             so.ApplyModifiedProperties();
         }
 
+        // LevelCompleteUI — 如果不存在则创建
+        var lcUI = Object.FindAnyObjectByType<LevelCompleteUI>();
+        if (lcUI == null)
+        {
+            wired += CreateLevelCompleteCanvas();
+        }
+
         EditorSceneManager.SaveScene(EditorSceneManager.GetActiveScene());
         return wired;
+    }
+
+    // ==================== LevelComplete UI ====================
+
+    private static int CreateLevelCompleteCanvas()
+    {
+        var canvasObj = new GameObject("LevelCompleteCanvas");
+        var canvas = canvasObj.AddComponent<Canvas>();
+        canvas.renderMode = RenderMode.ScreenSpaceOverlay;
+        canvas.sortingOrder = 50;
+
+        var scaler = canvasObj.AddComponent<UnityEngine.UI.CanvasScaler>();
+        scaler.uiScaleMode = UnityEngine.UI.CanvasScaler.ScaleMode.ScaleWithScreenSize;
+        scaler.referenceResolution = new Vector2(1920, 1080);
+        scaler.matchWidthOrHeight = 0.5f;
+
+        canvasObj.AddComponent<UnityEngine.UI.GraphicRaycaster>();
+
+        // 面板（默认隐藏）
+        var panel = new GameObject("CompletePanel");
+        panel.transform.SetParent(canvasObj.transform, false);
+        var panelRect = panel.AddComponent<RectTransform>();
+        panelRect.anchorMin = new Vector2(0.25f, 0.15f);
+        panelRect.anchorMax = new Vector2(0.75f, 0.85f);
+        panelRect.offsetMin = Vector2.zero;
+        panelRect.offsetMax = Vector2.zero;
+        var panelImg = panel.AddComponent<UnityEngine.UI.Image>();
+        panelImg.color = new Color(0.1f, 0.1f, 0.15f, 0.95f);
+        panel.SetActive(false);
+
+        // 标题
+        CreateTMPText(panel.transform, "TitleText", "关卡完成！",
+            new Vector2(0, 200), 48, Color.yellow);
+
+        // 时间
+        CreateTMPText(panel.transform, "TimeText", "用时: 00:00",
+            new Vector2(0, 100), 28, Color.white);
+
+        // 收集品
+        CreateTMPText(panel.transform, "CollectibleText", "收集: 0/0",
+            new Vector2(0, 50), 28, Color.white);
+
+        // 星级区域
+        for (int i = 0; i < 3; i++)
+        {
+            var star = new GameObject($"Star_{i}");
+            star.transform.SetParent(panel.transform, false);
+            var starRect = star.AddComponent<RectTransform>();
+            starRect.anchoredPosition = new Vector2(-60 + i * 60, 0);
+            starRect.sizeDelta = new Vector2(50, 50);
+            var starImg = star.AddComponent<UnityEngine.UI.Image>();
+            starImg.color = Color.gray;
+        }
+
+        // 按钮
+        CreateUIButton(panel.transform, "NextLevelButton", "下一关",
+            new Vector2(0, -120), new Vector2(200, 50));
+        CreateUIButton(panel.transform, "ReplayButton", "重新挑战",
+            new Vector2(0, -180), new Vector2(200, 50));
+        CreateUIButton(panel.transform, "MenuButton", "返回菜单",
+            new Vector2(0, -240), new Vector2(200, 50));
+
+        // 添加LevelCompleteUI组件并关联
+        var lcUI = canvasObj.AddComponent<LevelCompleteUI>();
+        var so = new SerializedObject(lcUI);
+
+        var panelProp = so.FindProperty("completePanel");
+        if (panelProp != null) panelProp.objectReferenceValue = panel;
+
+        WireTMPOnSO(so, "levelNameText", panel.transform, "TitleText");
+        WireTMPOnSO(so, "timeText", panel.transform, "TimeText");
+        WireTMPOnSO(so, "collectibleText", panel.transform, "CollectibleText");
+        WireButtonOnSO(so, "nextLevelButton", panel.transform, "NextLevelButton");
+        WireButtonOnSO(so, "replayButton", panel.transform, "ReplayButton");
+        WireButtonOnSO(so, "menuButton", panel.transform, "MenuButton");
+
+        // 星级Image数组
+        var starsProp = so.FindProperty("stars");
+        if (starsProp != null)
+        {
+            starsProp.arraySize = 3;
+            for (int i = 0; i < 3; i++)
+            {
+                var starObj = panel.transform.Find($"Star_{i}");
+                if (starObj != null)
+                    starsProp.GetArrayElementAtIndex(i).objectReferenceValue =
+                        starObj.GetComponent<UnityEngine.UI.Image>();
+            }
+        }
+
+        so.ApplyModifiedProperties();
+        Debug.Log("[UIWiring] Created LevelCompleteCanvas");
+        return 10;
+    }
+
+    private static void CreateTMPText(Transform parent, string name, string text,
+        Vector2 pos, float fontSize, Color color)
+    {
+        var obj = new GameObject(name);
+        obj.transform.SetParent(parent, false);
+        var rect = obj.AddComponent<RectTransform>();
+        rect.anchoredPosition = pos;
+        rect.sizeDelta = new Vector2(400, 60);
+        var tmp = obj.AddComponent<TMPro.TextMeshProUGUI>();
+        tmp.text = text;
+        tmp.fontSize = fontSize;
+        tmp.color = color;
+        tmp.alignment = TMPro.TextAlignmentOptions.Center;
+    }
+
+    private static void CreateUIButton(Transform parent, string name, string label,
+        Vector2 pos, Vector2 size)
+    {
+        var obj = new GameObject(name);
+        obj.transform.SetParent(parent, false);
+        var rect = obj.AddComponent<RectTransform>();
+        rect.anchoredPosition = pos;
+        rect.sizeDelta = size;
+        var img = obj.AddComponent<UnityEngine.UI.Image>();
+        img.color = new Color(0.25f, 0.25f, 0.35f, 0.9f);
+        obj.AddComponent<UnityEngine.UI.Button>();
+
+        var textObj = new GameObject("Text");
+        textObj.transform.SetParent(obj.transform, false);
+        var textRect = textObj.AddComponent<RectTransform>();
+        textRect.anchorMin = Vector2.zero;
+        textRect.anchorMax = Vector2.one;
+        textRect.offsetMin = Vector2.zero;
+        textRect.offsetMax = Vector2.zero;
+        var tmp = textObj.AddComponent<TMPro.TextMeshProUGUI>();
+        tmp.text = label;
+        tmp.fontSize = 24;
+        tmp.color = Color.white;
+        tmp.alignment = TMPro.TextAlignmentOptions.Center;
+    }
+
+    private static void WireTMPOnSO(SerializedObject so, string propName,
+        Transform parent, string childName)
+    {
+        var prop = so.FindProperty(propName);
+        if (prop == null) return;
+        var child = parent.Find(childName);
+        if (child == null) return;
+        var tmp = child.GetComponent<TMPro.TextMeshProUGUI>();
+        if (tmp != null) prop.objectReferenceValue = tmp;
+    }
+
+    private static void WireButtonOnSO(SerializedObject so, string propName,
+        Transform parent, string childName)
+    {
+        var prop = so.FindProperty(propName);
+        if (prop == null) return;
+        var child = parent.Find(childName);
+        if (child == null) return;
+        var btn = child.GetComponent<UnityEngine.UI.Button>();
+        if (btn != null) prop.objectReferenceValue = btn;
     }
 
     // ==================== Layer 分配 ====================

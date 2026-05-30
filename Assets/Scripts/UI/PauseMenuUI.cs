@@ -66,12 +66,11 @@ public class PauseMenuUI : MonoBehaviour
     void Update()
     {
         // ESC 或手柄 Start 键暂停/恢复
-        bool pausePressed = Input.GetKeyDown(KeyCode.Escape);
-
-        #if ENABLE_INPUT_SYSTEM
+        bool pausePressed = false;
+        var kb = UnityEngine.InputSystem.Keyboard.current;
+        if (kb != null) pausePressed = kb.escapeKey.wasPressedThisFrame;
         if (UnityEngine.InputSystem.Gamepad.current != null)
             pausePressed |= UnityEngine.InputSystem.Gamepad.current.startButton.wasPressedThisFrame;
-        #endif
 
         if (pausePressed)
         {
