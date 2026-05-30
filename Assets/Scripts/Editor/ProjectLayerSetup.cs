@@ -46,6 +46,7 @@ public static class ProjectLayerSetup
 
     // 自定义Tag
     private static readonly string[] CustomTags = {
+        "Player",
         "Lux",
         "Nox",
         "Enemy",

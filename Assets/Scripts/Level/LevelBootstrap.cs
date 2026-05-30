@@ -180,6 +180,8 @@ public class LevelBootstrap : MonoBehaviour
             var luxObj = Instantiate(luxPrefab, luxPos, Quaternion.identity);
             luxObj.name = "Lux";
             luxPlayer = luxObj.GetComponent<PlayerController>();
+            // 设置初始复活点为出生位置
+            luxObj.GetComponent<PlayerHealth>()?.SetCheckpoint(luxPos);
         }
 
         if (noxPrefab != null)
@@ -187,6 +189,7 @@ public class LevelBootstrap : MonoBehaviour
             var noxObj = Instantiate(noxPrefab, noxPos, Quaternion.identity);
             noxObj.name = "Nox";
             noxPlayer = noxObj.GetComponent<PlayerController>();
+            noxObj.GetComponent<PlayerHealth>()?.SetCheckpoint(noxPos);
         }
 
         // 注册到LevelManager供其他系统引用

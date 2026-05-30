@@ -143,6 +143,20 @@ public static class SceneUIWiringFactory
                 wired++;
             }
 
+            // Player tag (DeathZone, AudioZone, etc. use CompareTag("Player"))
+            try
+            {
+                if (root.tag != "Player")
+                {
+                    root.tag = "Player";
+                    wired++;
+                }
+            }
+            catch (UnityException)
+            {
+                Debug.LogWarning("[UIWiring] 'Player' tag not defined. Run Setup Layers & Tags first.");
+            }
+
             so.ApplyModifiedProperties();
             PrefabUtility.SaveAsPrefabAsset(root, path);
             PrefabUtility.UnloadPrefabContents(root);
