@@ -59,7 +59,15 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
-        // ESC在OnGUI中处理（Update中的Input System在timeScale=0时可能不工作）
+        // 终点检测（备用方案：如果物理触发器因层碰撞不工作）
+        if (playerIndex == 0 && !isPausedStatic)
+        {
+            var goal = FindAnyObjectByType<LevelGoalTrigger>();
+            if (goal != null && Vector2.Distance(transform.position, goal.transform.position) < 2f)
+            {
+                goal.SendMessage("OnTriggerEnter2D", GetComponent<Collider2D>(), SendMessageOptions.DontRequireReceiver);
+            }
+        }
 
         if (isFrozen) return;
 
@@ -488,29 +496,44 @@ public class PlayerController : MonoBehaviour
     {
         if (!isPausedStatic)
         {
+            // 暂停
             isPausedStatic = true;
             Time.timeScale = 0f;
 
-            // 找到PauseMenuUI（包括inactive的）
-            var allPause = Resources.FindObjectsOfTypeAll<PauseMenuUI>();
-            if (allPause.Length > 0)
+            // 直接找PauseCanvas和PausePanel
+            var allCanvas = Resources.FindObjectsOfTypeAll<Canvas>();
+            foreach (var c in allCanvas)
             {
-                var pauseUI = allPause[0];
-                pauseUI.gameObject.SetActive(true);
-                var parentCanvas = pauseUI.GetComponentInParent<Canvas>(true);
-                if (parentCanvas != null) parentCanvas.gameObject.SetActive(true);
-                pauseUI.ShowPause();
+                if (c.gameObject.name.Contains("Pause"))
+                {
+                    c.gameObject.SetActive(true);
+                    // 找到并显示PausePanel
+                    var panel = c.transform.Find("PausePanel");
+                    if (panel != null) panel.gameObject.SetActive(true);
+                    // 确保在最前面
+                    c.sortingOrder = 200;
+                    break;
+                }
             }
-            Debug.Log("[Player] Game Paused");
+
+            Debug.Log("[Player] Game Paused (UI visible)");
         }
         else
         {
+            // 恢复
             isPausedStatic = false;
             Time.timeScale = 1f;
 
-            var allPause = Resources.FindObjectsOfTypeAll<PauseMenuUI>();
-            if (allPause.Length > 0)
-                allPause[0].OnResume();
+            var allCanvas = Resources.FindObjectsOfTypeAll<Canvas>();
+            foreach (var c in allCanvas)
+            {
+                if (c.gameObject.name.Contains("Pause"))
+                {
+                    c.gameObject.SetActive(false);
+                    break;
+                }
+            }
+
             Debug.Log("[Player] Game Resumed");
         }
     }
