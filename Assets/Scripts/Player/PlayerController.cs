@@ -69,6 +69,14 @@ public class PlayerController : MonoBehaviour
             }
         }
 
+        // 掉落死亡检测（备用方案：Y坐标过低则复活）
+        if (transform.position.y < -20f)
+        {
+            var health = GetComponent<PlayerHealth>();
+            if (health != null && health.IsAlive)
+                health.TakeDamage(999);
+        }
+
         if (isFrozen) return;
 
         bool wasGrounded = IsGrounded;
