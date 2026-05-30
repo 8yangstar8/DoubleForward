@@ -59,6 +59,16 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
+        // ESC暂停（放在这里因为PauseCanvas默认inactive，其Update不执行）
+        if (playerIndex == 0)
+        {
+            var kb = UnityEngine.InputSystem.Keyboard.current;
+            if (kb != null && kb.escapeKey.wasPressedThisFrame)
+            {
+                HandlePauseToggle();
+            }
+        }
+
         if (isFrozen) return;
 
         bool wasGrounded = IsGrounded;
@@ -465,6 +475,42 @@ public class PlayerController : MonoBehaviour
         isFrozen = false;
         rb.constraints = RigidbodyConstraints2D.FreezeRotation;
         if (IsOnLadder) ExitLadder();
+    }
+
+    // ============ 暂停控制 ============
+
+    private static bool isPausedStatic;
+
+    private void HandlePauseToggle()
+    {
+        if (!isPausedStatic)
+        {
+            // 暂停
+            isPausedStatic = true;
+            Time.timeScale = 0f;
+
+            // 激活并显示PauseCanvas
+            var pauseUI = FindAnyObjectByType<PauseMenuUI>(FindObjectsInactive.Include);
+            if (pauseUI != null)
+            {
+                pauseUI.gameObject.SetActive(true);
+                var parentCanvas = pauseUI.GetComponentInParent<Canvas>(true);
+                if (parentCanvas != null) parentCanvas.gameObject.SetActive(true);
+                pauseUI.ShowPause();
+            }
+            Debug.Log("[Player] Game Paused");
+        }
+        else
+        {
+            // 恢复
+            isPausedStatic = false;
+            Time.timeScale = 1f;
+
+            var pauseUI = FindAnyObjectByType<PauseMenuUI>(FindObjectsInactive.Include);
+            if (pauseUI != null)
+                pauseUI.OnResume();
+            Debug.Log("[Player] Game Resumed");
+        }
     }
 
     void OnDrawGizmosSelected()

@@ -156,7 +156,7 @@ public class PauseMenuUI : MonoBehaviour
         }
     }
 
-    private void OnResume()
+    public void OnResume()
     {
         isPaused = false;
 
