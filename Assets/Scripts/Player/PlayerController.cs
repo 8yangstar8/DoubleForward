@@ -59,13 +59,13 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
-        // 终点检测（备用方案：如果物理触发器因层碰撞不工作）
-        if (playerIndex == 0 && !isPausedStatic)
+        // 终点检测（备用方案：物理触发器因层碰撞可能不工作）
+        if (!isPausedStatic)
         {
             var goal = FindAnyObjectByType<LevelGoalTrigger>();
-            if (goal != null && Vector2.Distance(transform.position, goal.transform.position) < 2f)
+            if (goal != null && Vector2.Distance(transform.position, goal.transform.position) < 2.5f)
             {
-                goal.SendMessage("OnTriggerEnter2D", GetComponent<Collider2D>(), SendMessageOptions.DontRequireReceiver);
+                goal.NotifyPlayerArrived(playerIndex);
             }
         }
 

@@ -55,9 +55,17 @@ public class LevelGoalTrigger : MonoBehaviour
             player = other.GetComponentInParent<PlayerController>();
         if (player == null) return;
 
-        Debug.Log($"[Goal] Player {player.PlayerIndex} reached goal!");
+        NotifyPlayerArrived(player.PlayerIndex);
+    }
 
-        if (player.PlayerIndex == 0)
+    /// <summary>玩家到达终点（供PlayerController距离检测直接调用）</summary>
+    public void NotifyPlayerArrived(int playerIndex)
+    {
+        if (isCompleted) return;
+
+        Debug.Log($"[Goal] Player {playerIndex} reached goal!");
+
+        if (playerIndex == 0)
             player1Arrived = true;
         else
             player2Arrived = true;
@@ -68,7 +76,7 @@ public class LevelGoalTrigger : MonoBehaviour
 
         // 通知LevelCompletionChecker
         if (LevelCompletionChecker.Instance != null)
-            LevelCompletionChecker.Instance.OnPlayerReachedGoal(player.PlayerIndex);
+            LevelCompletionChecker.Instance.OnPlayerReachedGoal(playerIndex);
 
         // 直接完成判定
         if (!requireBothPlayers || (player1Arrived && player2Arrived))
