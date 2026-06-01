@@ -158,12 +158,99 @@ public static class SceneUIWiringFactory
             }
 
             so.ApplyModifiedProperties();
+
+            // ===== PlayerCombat 引用关联 =====
+            var combat = root.GetComponent<PlayerCombat>();
+            if (combat != null)
+            {
+                var cso = new SerializedObject(combat);
+                var attackPoint = root.transform.Find("AttackPoint");
+                int enemyLayer = LayerMask.NameToLayer("Enemy");
+
+                if (attackPoint != null)
+                {
+                    var mp = cso.FindProperty("meleeAttackPoint");
+                    if (mp != null && mp.objectReferenceValue == null)
+                    { mp.objectReferenceValue = attackPoint; wired++; }
+
+                    var fp = cso.FindProperty("firePoint");
+                    if (fp != null && fp.objectReferenceValue == null)
+                    { fp.objectReferenceValue = attackPoint; wired++; }
+                }
+
+                if (enemyLayer >= 0)
+                {
+                    var el = cso.FindProperty("enemyLayer");
+                    if (el != null && el.intValue == 0)
+                    { el.intValue = 1 << enemyLayer; wired++; }
+                }
+
+                // 玩家光弹预制体
+                var projPrefab = GetOrCreatePlayerProjectile(name);
+                if (projPrefab != null)
+                {
+                    var pp = cso.FindProperty("projectilePrefab");
+                    if (pp != null && pp.objectReferenceValue == null)
+                    { pp.objectReferenceValue = projPrefab; wired++; }
+                }
+
+                cso.ApplyModifiedProperties();
+            }
+
             PrefabUtility.SaveAsPrefabAsset(root, path);
             PrefabUtility.UnloadPrefabContents(root);
         }
 
         Debug.Log($"[UIWiring] Player prefabs: wired {wired} references");
         return wired;
+    }
+
+    // ==================== 玩家光弹预制体 ====================
+
+    private static GameObject GetOrCreatePlayerProjectile(string playerName)
+    {
+        string dir = "Assets/Prefabs/Player";
+        string path = $"{dir}/{playerName}Bolt.prefab";
+
+        var existing = AssetDatabase.LoadAssetAtPath<GameObject>(path);
+        if (existing != null) return existing;
+
+        // 创建光弹
+        var obj = new GameObject($"{playerName}Bolt");
+
+        var sr = obj.AddComponent<UnityEngine.SpriteRenderer>();
+        sr.color = playerName == "Lux" ? new Color(1f, 0.95f, 0.5f) : new Color(0.6f, 0.3f, 0.9f);
+        sr.sortingOrder = 9;
+        // 使用占位精灵
+        var sprite = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Art/VFX/GlowSoft.png");
+        if (sprite != null) sr.sprite = sprite;
+
+        var col = obj.AddComponent<UnityEngine.CircleCollider2D>();
+        col.radius = 0.25f;
+        col.isTrigger = true;
+
+        var rb = obj.AddComponent<UnityEngine.Rigidbody2D>();
+        rb.gravityScale = 0;
+        rb.bodyType = UnityEngine.RigidbodyType2D.Kinematic;
+
+        var proj = obj.AddComponent<Projectile>();
+        // hitLayers = Ground + Enemy
+        var pso = new SerializedObject(proj);
+        int groundLayer = LayerMask.NameToLayer("Ground");
+        int enemyLayer = LayerMask.NameToLayer("Enemy");
+        int mask = 0;
+        if (groundLayer >= 0) mask |= 1 << groundLayer;
+        if (enemyLayer >= 0) mask |= 1 << enemyLayer;
+        var hl = pso.FindProperty("hitLayers");
+        if (hl != null) hl.intValue = mask;
+        var lt = pso.FindProperty("lifetime");
+        if (lt != null) lt.floatValue = 3f;
+        pso.ApplyModifiedProperties();
+
+        var saved = PrefabUtility.SaveAsPrefabAsset(obj, path);
+        Object.DestroyImmediate(obj);
+        Debug.Log($"[UIWiring] Created player projectile: {path}");
+        return saved;
     }
 
     // ==================== Enemy Prefabs ====================

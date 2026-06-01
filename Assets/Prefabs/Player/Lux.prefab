@@ -57,7 +57,7 @@ GameObject:
   - component: {fileID: 3230936547897849650}
   m_Layer: 9
   m_Name: Lux
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -289,14 +289,14 @@ MonoBehaviour:
   baseDamage: 1
   attackCooldown: 0.3
   comboResetTime: 0.8
-  meleeAttackPoint: {fileID: 0}
+  meleeAttackPoint: {fileID: 635014432493786484}
   meleeRange: 1.2
   meleeArcAngle: 120
   enemyLayer:
     serializedVersion: 2
-    m_Bits: 0
-  projectilePrefab: {fileID: 0}
-  firePoint: {fileID: 0}
+    m_Bits: 1024
+  projectilePrefab: {fileID: 6120877944185760698, guid: 07f7a7087d986ba49add7e03a9f16f29, type: 3}
+  firePoint: {fileID: 635014432493786484}
   projectileSpeed: 12
   projectileCooldown: 0.5
   knockbackForce: 5

@@ -26,7 +26,7 @@ GameObject:
   - component: {fileID: 5108123332690736835}
   m_Layer: 9
   m_Name: Nox
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -258,14 +258,14 @@ MonoBehaviour:
   baseDamage: 1
   attackCooldown: 0.3
   comboResetTime: 0.8
-  meleeAttackPoint: {fileID: 0}
+  meleeAttackPoint: {fileID: 2227758664584787125}
   meleeRange: 1.2
   meleeArcAngle: 120
   enemyLayer:
     serializedVersion: 2
-    m_Bits: 0
-  projectilePrefab: {fileID: 0}
-  firePoint: {fileID: 0}
+    m_Bits: 1024
+  projectilePrefab: {fileID: 878335465286599167, guid: a22f900fba49b464aa997ddfd7a31d9d, type: 3}
+  firePoint: {fileID: 2227758664584787125}
   projectileSpeed: 12
   projectileCooldown: 0.5
   knockbackForce: 5
