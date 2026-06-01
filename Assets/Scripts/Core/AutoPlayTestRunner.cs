@@ -125,6 +125,37 @@ public class AutoPlayTestRunner : MonoBehaviour
                         yield return new WaitForSeconds(0.3f);
                         Check($"Melee damaged enemy ({hpBefore}->{enemy.CurrentHealth})",
                             enemy.CurrentHealth < hpBefore);
+
+                        // 远程攻击测试（光弹）
+                        // 敌人改回Dynamic但冻结约束（Kinematic-Kinematic触发器不可靠）
+                        if (enemyRb != null)
+                        {
+                            enemyRb.bodyType = RigidbodyType2D.Dynamic;
+                            enemyRb.constraints = RigidbodyConstraints2D.FreezeAll;
+                        }
+                        enemy.transform.position = fixedEnemyPos;
+                        lux.transform.position = fixedEnemyPos + Vector3.left * 4.0f;
+                        lux.SetMoveInput(Vector2.right);
+                        yield return null;
+                        enemy.transform.position = fixedEnemyPos;
+                        float hpBeforeRanged = enemy.CurrentHealth;
+                        combat.RangedAttack();
+                        yield return null;
+                        var bolts = Object.FindObjectsByType<Projectile>(FindObjectsSortMode.None);
+                        Debug.Log($"[AUTOPLAY] DIAG bolts spawned={bolts.Length} " +
+                            $"enemyBodyType={enemyRb?.bodyType} enemyLayer={enemy.gameObject.layer}");
+                        if (bolts.Length > 0)
+                            Debug.Log($"[AUTOPLAY] DIAG boltX={bolts[0].transform.position.x:F2} enemyX={enemy.transform.position.x:F2}");
+                        // 光弹飞行需要时间（4单位/12速度≈0.33s）
+                        float waited = 0;
+                        while (waited < 1.5f && enemy.CurrentHealth >= hpBeforeRanged)
+                        {
+                            enemy.transform.position = fixedEnemyPos; // 保持静止
+                            waited += Time.deltaTime;
+                            yield return null;
+                        }
+                        Check($"Ranged bolt damaged enemy ({hpBeforeRanged}->{enemy.CurrentHealth})",
+                            enemy.CurrentHealth < hpBeforeRanged);
                     }
                 }
                 else
