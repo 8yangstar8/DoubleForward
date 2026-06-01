@@ -110,8 +110,16 @@ public class AutoPlayTestRunner : MonoBehaviour
                     float hpBefore = enemy.CurrentHealth;
                     var combat = lux.GetComponent<PlayerCombat>();
                     Check("Lux has PlayerCombat", combat != null);
+
                     if (combat != null)
                     {
+                        // 冻结敌人位置确保命中稳定（敌人AI可能移动）
+                        var enemyRb = enemy.GetComponent<Rigidbody2D>();
+                        Vector3 enemyPos = enemy.transform.position;
+                        yield return null;
+                        enemy.transform.position = enemyPos;
+                        if (enemyRb != null) enemyRb.velocity = Vector2.zero;
+
                         combat.MeleeAttack();
                         yield return new WaitForSeconds(0.3f);
                         Check($"Melee damaged enemy ({hpBefore}->{enemy.CurrentHealth})",
