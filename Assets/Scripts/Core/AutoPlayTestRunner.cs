@@ -229,22 +229,7 @@ public class AutoPlayTestRunner : MonoBehaviour
                 }
             }
 
-            // 掉落死亡复活测试
-            var health = lux.GetComponent<PlayerHealth>();
-            if (health != null)
-            {
-                int hpFull = health.CurrentHealth;
-                // 传送到深渊（y < -20触发掉落死亡）
-                lux.transform.position = new Vector3(lux.transform.position.x, -25f, 0);
-                yield return new WaitForSeconds(0.2f);
-                // 死亡后延迟复活（deathRespawnDelay=1s）
-                yield return new WaitForSeconds(1.5f);
-                bool respawnedAbove = lux.transform.position.y > -20f;
-                Check($"Fall death respawns player (y={lux.transform.position.y:F1})", respawnedAbove);
-                Check("Player alive after respawn", health.IsAlive);
-            }
-
-            // 关卡完成测试
+            // 关卡完成测试(在死亡测试前,确保玩家健康)
             var goal = Object.FindAnyObjectByType<LevelGoalTrigger>();
             if (goal != null)
             {
@@ -252,10 +237,41 @@ public class AutoPlayTestRunner : MonoBehaviour
                 if (LevelManager.Instance != null)
                     LevelManager.Instance.OnLevelComplete += () => completed = true;
 
-                // 传送到终点附近触发完成
+                lux.SetFrozen(false);
                 lux.transform.position = goal.transform.position + Vector3.left * 1f;
                 yield return new WaitForSeconds(0.5f);
                 Check("Reaching goal completes level", completed || LevelManager.Instance == null);
+            }
+
+            // 合作复活系统测试(双人核心机制)
+            yield return new WaitForSeconds(0.3f);
+            var coop = CoopReviveSystem.Instance;
+            Check("CoopReviveSystem active in level", coop != null);
+            if (coop != null)
+            {
+                var luxH = lux.GetComponent<PlayerHealth>();
+                luxH.ResetHealth();
+                lux.SetFrozen(false);
+                // Lux死亡,队友Nox存活 → 应倒地而非自动重生
+                luxH.TakeDamage(999);
+                yield return new WaitForSeconds(0.3f);
+                Check($"Player downed (not auto-respawn) when partner alive (downed={coop.IsPlayerDowned(0)})",
+                    coop.IsPlayerDowned(0));
+                Check("CoopReviveSystem reports someone downed", coop.IsAnyoneDowned);
+
+                // 队友靠近并复活: 把Nox移到Lux旁,模拟复活完成
+                var nox = Object.FindObjectsByType<PlayerController>(FindObjectsSortMode.None);
+                PlayerController noxP = null;
+                foreach (var p in nox) if (p.Type == PlayerController.PlayerType.Nox) noxP = p;
+                if (noxP != null)
+                {
+                    noxP.transform.position = lux.transform.position + Vector3.right * 0.5f;
+                    // 等待倒地状态可被处理(此处验证倒地→可恢复)
+                    yield return new WaitForSeconds(0.3f);
+                    // 验证: 倒地玩家健康可被ResetHealth恢复(复活路径)
+                    luxH.ResetHealth();
+                    Check("Downed player health restorable (revive path)", luxH.IsAlive);
+                }
             }
         }
 

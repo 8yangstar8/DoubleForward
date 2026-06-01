@@ -123,12 +123,26 @@ public class PlayerHealth : MonoBehaviour
         OnDeath?.Invoke();
         GetComponent<PlayerAnimator>()?.PlayDeath();
 
+        int myIndex = controller != null ? controller.PlayerIndex : 0;
+
         EventBus.Publish(new PlayerDeathEvent
         {
-            playerIndex = controller != null ? controller.PlayerIndex : 0,
+            playerIndex = myIndex,
             deathPosition = transform.position
         });
 
+        // 合作复活: 若合作系统激活且队友存活,交由其处理倒地/复活,不自动重生
+        if (CoopReviveSystem.Instance != null)
+        {
+            int partner = 1 - myIndex;
+            if (!CoopReviveSystem.Instance.IsPlayerDowned(partner))
+            {
+                // 队友存活,进入倒地状态等待救援(合作系统接管)
+                return;
+            }
+        }
+
+        // 单人/无合作系统/队友也倒下: 自动重生
         Invoke(nameof(Respawn), deathRespawnDelay);
     }
 

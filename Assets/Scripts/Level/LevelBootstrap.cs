@@ -72,6 +72,13 @@ public class LevelBootstrap : MonoBehaviour
         if (CoopAbilitySystem.Instance != null)
             CoopAbilitySystem.Instance.Initialize(luxPlayer, noxPlayer);
 
+        // 合作复活系统(双人核心机制): 若不存在则创建
+        if (CoopReviveSystem.Instance == null && luxPlayer != null && noxPlayer != null)
+        {
+            var coopReviveObj = new GameObject("CoopReviveSystem");
+            coopReviveObj.AddComponent<CoopReviveSystem>();
+        }
+
         // ====== 4. 播放音乐 ======
         if (levelBGM != null && AudioManager.Instance != null)
             AudioManager.Instance.PlayBGM(levelBGM);
