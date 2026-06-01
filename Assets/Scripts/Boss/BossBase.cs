@@ -2,7 +2,7 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
-public abstract class BossBase : MonoBehaviour
+public abstract class BossBase : MonoBehaviour, IDamageable
 {
     [Header("Boss Stats")]
     [SerializeField] protected int maxHealth = 20;

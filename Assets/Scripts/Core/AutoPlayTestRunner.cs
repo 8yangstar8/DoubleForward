@@ -259,7 +259,51 @@ public class AutoPlayTestRunner : MonoBehaviour
             }
         }
 
+        // ===== Boss战测试(加载Boss关Level_1_4) =====
+        yield return RunBossTest();
+
         yield return null;
         Done = true;
+    }
+
+    private IEnumerator RunBossTest()
+    {
+        if (GameManager.Instance == null) yield break;
+        GameManager.Instance.LoadLevel(1, 4); // 第1章Boss关
+        yield return new WaitForSecondsRealtime(3f);
+
+        var boss = Object.FindAnyObjectByType<BossBase>();
+        Check("Boss spawned in boss level", boss != null);
+        if (boss == null) yield break;
+
+        // Boss实现IDamageable(玩家可攻击)
+        var damageable = boss.GetComponent<IDamageable>();
+        Check("Boss implements IDamageable (player can hit it)", damageable != null);
+
+        // 启动Boss战
+        boss.StartBattle();
+        yield return null;
+        Check("Boss battle active", boss.IsBattleActive);
+
+        // 玩家攻击Boss造成伤害
+        var players = Object.FindObjectsByType<PlayerController>(FindObjectsSortMode.None);
+        PlayerController lux = null;
+        foreach (var p in players) if (p.Type == PlayerController.PlayerType.Lux) lux = p;
+
+        if (lux != null && damageable != null)
+        {
+            int bossHpBefore = boss.CurrentHealth;
+            // 直接通过IDamageable施加伤害(验证接口可用)
+            damageable.TakeDamage(5);
+            yield return null;
+            Check($"Boss takes damage ({bossHpBefore}->{boss.CurrentHealth})",
+                boss.CurrentHealth < bossHpBefore);
+
+            // 验证击败流程
+            while (boss.IsAlive)
+                boss.TakeDamage(50);
+            yield return new WaitForSeconds(0.2f);
+            Check("Boss can be defeated", !boss.IsAlive);
+        }
     }
 }
