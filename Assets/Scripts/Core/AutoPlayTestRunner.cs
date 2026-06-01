@@ -101,25 +101,26 @@ public class AutoPlayTestRunner : MonoBehaviour
                 if (sceneEnemies.Length > 0)
                 {
                     var enemy = sceneEnemies[0];
-                    // 传送玩家到敌人左侧（敌人需在攻击点前方，留出攻击点偏移0.8）
-                    lux.transform.position = enemy.transform.position + Vector3.left * 1.4f;
-                    lux.SetMoveInput(Vector2.right); // 面向右
-                    yield return null;
-                    yield return null;
-
-                    float hpBefore = enemy.CurrentHealth;
                     var combat = lux.GetComponent<PlayerCombat>();
                     Check("Lux has PlayerCombat", combat != null);
 
                     if (combat != null)
                     {
-                        // 冻结敌人位置确保命中稳定（敌人AI可能移动）
+                        // 完全冻结敌人（kinematic），固定位置不被AI移动
                         var enemyRb = enemy.GetComponent<Rigidbody2D>();
-                        Vector3 enemyPos = enemy.transform.position;
-                        yield return null;
-                        enemy.transform.position = enemyPos;
-                        if (enemyRb != null) enemyRb.velocity = Vector2.zero;
+                        if (enemyRb != null) enemyRb.bodyType = RigidbodyType2D.Kinematic;
+                        Vector3 fixedEnemyPos = enemy.transform.position;
 
+                        // 攻击前一刻精确定位双方
+                        lux.transform.position = fixedEnemyPos + Vector3.left * 1.0f;
+                        enemy.transform.position = fixedEnemyPos;
+                        lux.SetMoveInput(Vector2.right); // 面向右
+                        yield return null;
+                        // 再次锁定（防止任何漂移）
+                        enemy.transform.position = fixedEnemyPos;
+                        lux.transform.position = fixedEnemyPos + Vector3.left * 1.0f;
+
+                        float hpBefore = enemy.CurrentHealth;
                         combat.MeleeAttack();
                         yield return new WaitForSeconds(0.3f);
                         Check($"Melee damaged enemy ({hpBefore}->{enemy.CurrentHealth})",
@@ -130,6 +131,35 @@ public class AutoPlayTestRunner : MonoBehaviour
                 {
                     Check("Scene has enemies to test combat", false);
                 }
+            }
+
+            // 掉落死亡复活测试
+            var health = lux.GetComponent<PlayerHealth>();
+            if (health != null)
+            {
+                int hpFull = health.CurrentHealth;
+                // 传送到深渊（y < -20触发掉落死亡）
+                lux.transform.position = new Vector3(lux.transform.position.x, -25f, 0);
+                yield return new WaitForSeconds(0.2f);
+                // 死亡后延迟复活（deathRespawnDelay=1s）
+                yield return new WaitForSeconds(1.5f);
+                bool respawnedAbove = lux.transform.position.y > -20f;
+                Check($"Fall death respawns player (y={lux.transform.position.y:F1})", respawnedAbove);
+                Check("Player alive after respawn", health.IsAlive);
+            }
+
+            // 关卡完成测试
+            var goal = Object.FindAnyObjectByType<LevelGoalTrigger>();
+            if (goal != null)
+            {
+                bool completed = false;
+                if (LevelManager.Instance != null)
+                    LevelManager.Instance.OnLevelComplete += () => completed = true;
+
+                // 传送到终点附近触发完成
+                lux.transform.position = goal.transform.position + Vector3.left * 1f;
+                yield return new WaitForSeconds(0.5f);
+                Check("Reaching goal completes level", completed || LevelManager.Instance == null);
             }
         }
 
