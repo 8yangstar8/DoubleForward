@@ -164,15 +164,18 @@ public class AutoPlayTestRunner : MonoBehaviour
                             lux.transform.position = enemy.transform.position + Vector3.left * 0.8f;
                             lux.SetFrozen(true); // 玩家不动,让敌人攻击
                             int playerHpBefore = luxHealth.CurrentHealth;
-                            // 等敌人侦测→追击→攻击(detectionRange=8,attackRange=1.5)
+                            // 等敌人侦测→追击→首次攻击,命中即停(测单次伤害)
                             float atkWait = 0;
                             while (atkWait < 4f && luxHealth.CurrentHealth >= playerHpBefore)
                             {
                                 atkWait += Time.deltaTime;
                                 yield return null;
                             }
+                            int dmgTaken = playerHpBefore - luxHealth.CurrentHealth;
                             Check($"Enemy attacks player ({playerHpBefore}->{luxHealth.CurrentHealth})",
-                                luxHealth.CurrentHealth < playerHpBefore);
+                                dmgTaken > 0);
+                            // 平衡: 单次攻击只扣1滴血,不秒杀(玩家3滴血可承受多次)
+                            Check($"Enemy single hit = 1 heart (dmg={dmgTaken})", dmgTaken == 1);
                             lux.SetFrozen(false);
                             luxHealth.ResetHealth();
                         }

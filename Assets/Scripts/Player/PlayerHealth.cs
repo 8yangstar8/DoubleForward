@@ -71,7 +71,9 @@ public class PlayerHealth : MonoBehaviour
     {
         if (!IsAlive || IsInvincible) return;
 
-        int intDamage = Mathf.CeilToInt(damage);
+        // 敌人/陷阱用0-100伤害尺度,玩家用心形血量(3滴)。约20点=1滴血
+        // 至少1滴,配合1.5秒无敌帧,玩家可承受多次打击
+        int intDamage = Mathf.Clamp(Mathf.RoundToInt(damage / 20f), 1, maxHealth);
         CurrentHealth = Mathf.Max(0, CurrentHealth - intDamage);
         OnHealthChanged?.Invoke(CurrentHealth);
 
