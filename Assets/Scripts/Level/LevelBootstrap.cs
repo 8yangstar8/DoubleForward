@@ -44,6 +44,10 @@ public class LevelBootstrap : MonoBehaviour
 
         Debug.Log($"[LevelBoot] Starting Ch.{chapter} Lv.{level}");
 
+        // ====== 0. 关卡边界墙 + 可见终点(运行时创建,避免修改场景文件) ======
+        SetupLevelBoundaries();
+        MakeGoalVisible();
+
         // ====== 1. 生成玩家 ======
         SpawnPlayers();
         yield return null;
@@ -175,6 +179,51 @@ public class LevelBootstrap : MonoBehaviour
         }
 
         Debug.Log($"[LevelBoot] Ch.{chapter} Lv.{level} fully initialized");
+    }
+
+    // ====== 运行时关卡边界墙 ======
+    private void SetupLevelBoundaries()
+    {
+        var ground = GameObject.Find("Ground");
+        if (ground == null) return;
+
+        float gx = ground.transform.position.x;
+        float halfW = ground.transform.localScale.x * 0.5f;
+        float gy = ground.transform.position.y;
+        int groundLayer = LayerMask.NameToLayer("Ground");
+
+        CreateBoundaryWall("LevelBoundary_Left", new Vector3(gx - halfW - 0.5f, gy + 6f, 0), groundLayer);
+        CreateBoundaryWall("LevelBoundary_Right", new Vector3(gx + halfW + 0.5f, gy + 6f, 0), groundLayer);
+    }
+
+    private void CreateBoundaryWall(string wallName, Vector3 pos, int layer)
+    {
+        var wall = new GameObject(wallName);
+        wall.transform.position = pos;
+        wall.transform.localScale = new Vector3(1f, 24f, 1f);
+        if (layer >= 0) wall.layer = layer;
+        var col = wall.AddComponent<BoxCollider2D>();
+        col.size = Vector2.one;
+    }
+
+    // ====== 运行时终点可见化 ======
+    private void MakeGoalVisible()
+    {
+        var goal = FindAnyObjectByType<LevelGoalTrigger>();
+        if (goal == null) return;
+        if (goal.GetComponent<SpriteRenderer>() != null) return; // 已可见
+
+        var sr = goal.gameObject.AddComponent<SpriteRenderer>();
+        sr.color = new Color(1f, 0.9f, 0.3f, 0.6f); // 金色光柱
+        sr.sortingOrder = 5;
+        // 复用玩家精灵作为占位可见标记(已在内存,避免新建纹理)
+        if (luxPrefab != null)
+        {
+            var luxSr = luxPrefab.GetComponent<SpriteRenderer>();
+            if (luxSr != null && luxSr.sprite != null)
+                sr.sprite = luxSr.sprite;
+        }
+        goal.transform.localScale = new Vector3(1.5f, 4f, 1f);
     }
 
     private void SpawnPlayers()

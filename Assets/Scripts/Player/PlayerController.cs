@@ -72,12 +72,14 @@ public class PlayerController : MonoBehaviour
                 goal.NotifyPlayerArrived(playerIndex);
         }
 
-        // 掉落死亡检测（备用方案：Y坐标过低则复活）
+        // 掉落检测：坠落超出边界则直接回检查点重生(不走合作倒地,掉坑无法被救援)
         if (transform.position.y < -20f)
         {
             var health = GetComponent<PlayerHealth>();
-            if (health != null && health.IsAlive)
-                health.TakeDamage(999);
+            if (health != null)
+                health.Respawn();
+            else
+                transform.position = new Vector3(transform.position.x, 1f, 0);
         }
 
         if (isFrozen) return;
