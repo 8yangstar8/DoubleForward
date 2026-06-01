@@ -149,6 +149,10 @@ public abstract class BossBase : MonoBehaviour, IDamageable
 
     protected virtual void OnPhaseEnter(int phaseIndex)
     {
+        // 防止phases未配置时越界
+        if (phases == null || phaseIndex < 0 || phaseIndex >= phases.Count)
+            return;
+
         var phase = phases[phaseIndex];
         if (spriteRenderer != null)
             spriteRenderer.color = phase.phaseColor;
