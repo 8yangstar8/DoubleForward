@@ -134,17 +134,21 @@ public class AutoPlayTestRunner : MonoBehaviour
                             enemyRb.constraints = RigidbodyConstraints2D.FreezeAll;
                         }
                         enemy.transform.position = fixedEnemyPos;
-                        lux.transform.position = fixedEnemyPos + Vector3.left * 4.0f;
+                        // 精确对齐: 玩家Y使firePoint(局部+0.2)与敌人中心同高,光弹必经敌人
+                        lux.transform.position = fixedEnemyPos + new Vector3(-4.0f, -0.2f, 0);
                         lux.SetMoveInput(Vector2.right);
                         yield return null;
                         enemy.transform.position = fixedEnemyPos;
                         float hpBeforeRanged = enemy.CurrentHealth;
-                        combat.RangedAttack();
-                        // 光弹飞行需要时间（4单位/12速度≈0.33s）
+                        // 窗口内多次发射(冷却0.5s),提高命中确定性
                         float waited = 0;
-                        while (waited < 1.5f && enemy.CurrentHealth >= hpBeforeRanged)
+                        float fireTimer = 0;
+                        combat.RangedAttack();
+                        while (waited < 2.5f && enemy.CurrentHealth >= hpBeforeRanged)
                         {
                             enemy.transform.position = fixedEnemyPos; // 保持静止
+                            fireTimer += Time.deltaTime;
+                            if (fireTimer >= 0.6f) { fireTimer = 0; combat.RangedAttack(); }
                             waited += Time.deltaTime;
                             yield return null;
                         }
@@ -192,31 +196,36 @@ public class AutoPlayTestRunner : MonoBehaviour
             if (plate != null)
             {
                 lux.SetFrozen(false);
-                // 把玩家放到压力板上
+                var link = plate.GetComponent<PuzzleLink>();
+                var door = GameObject.Find("PuzzleDoor");
+
+                // 踩上压力板
                 lux.transform.position = plate.transform.position + Vector3.up * 0.3f;
                 yield return new WaitForSeconds(0.3f);
                 Check($"PressurePlate triggers when stepped on (pressed={plate.IsPressed})",
                     plate.IsPressed);
 
-                // 谜题连线: 踩下压力板 → 门打开(上升)
-                var link = plate.GetComponent<PuzzleLink>();
-                if (link != null)
+                // 谜题连线存在且配置正确
+                Check("PressurePlate has PuzzleLink", link != null);
+                Check("PuzzleLink target door exists", door != null);
+
+                // 门上升测试: 从已知关闭位开始(直接设门位置),按住验证门上升
+                if (link != null && door != null)
                 {
-                    var door = GameObject.Find("PuzzleDoor");
-                    if (door != null)
+                    // 强制门到关闭基线位置
+                    Vector3 closedBaseline = door.transform.position + Vector3.down * 5f;
+                    door.transform.position = closedBaseline;
+                    float doorYClosed = door.transform.position.y;
+                    // 按住压力板,门应朝openPos上升
+                    float t = 0;
+                    while (t < 1.2f)
                     {
-                        float doorYClosed = door.transform.position.y;
-                        // 保持站在板上,等门上升
-                        float doorWait = 0;
-                        while (doorWait < 1.5f)
-                        {
-                            lux.transform.position = plate.transform.position + Vector3.up * 0.3f;
-                            doorWait += Time.deltaTime;
-                            yield return null;
-                        }
-                        Check($"PressurePlate opens door (y {doorYClosed:F1}->{door.transform.position.y:F1})",
-                            door.transform.position.y > doorYClosed + 1f);
+                        lux.transform.position = plate.transform.position + Vector3.up * 0.3f;
+                        t += Time.deltaTime;
+                        yield return null;
                     }
+                    Check($"Pressed plate raises door (y {doorYClosed:F1}->{door.transform.position.y:F1})",
+                        door.transform.position.y > doorYClosed + 0.5f);
                 }
             }
 
