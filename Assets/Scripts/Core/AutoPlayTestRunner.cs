@@ -140,12 +140,6 @@ public class AutoPlayTestRunner : MonoBehaviour
                         enemy.transform.position = fixedEnemyPos;
                         float hpBeforeRanged = enemy.CurrentHealth;
                         combat.RangedAttack();
-                        yield return null;
-                        var bolts = Object.FindObjectsByType<Projectile>(FindObjectsSortMode.None);
-                        Debug.Log($"[AUTOPLAY] DIAG bolts spawned={bolts.Length} " +
-                            $"enemyBodyType={enemyRb?.bodyType} enemyLayer={enemy.gameObject.layer}");
-                        if (bolts.Length > 0)
-                            Debug.Log($"[AUTOPLAY] DIAG boltX={bolts[0].transform.position.x:F2} enemyX={enemy.transform.position.x:F2}");
                         // 光弹飞行需要时间（4单位/12速度≈0.33s）
                         float waited = 0;
                         while (waited < 1.5f && enemy.CurrentHealth >= hpBeforeRanged)
@@ -156,6 +150,32 @@ public class AutoPlayTestRunner : MonoBehaviour
                         }
                         Check($"Ranged bolt damaged enemy ({hpBeforeRanged}->{enemy.CurrentHealth})",
                             enemy.CurrentHealth < hpBeforeRanged);
+
+                        // 敌人攻击玩家测试
+                        if (enemyRb != null)
+                        {
+                            enemyRb.constraints = RigidbodyConstraints2D.FreezeRotation;
+                            enemyRb.bodyType = RigidbodyType2D.Dynamic;
+                        }
+                        var luxHealth = lux.GetComponent<PlayerHealth>();
+                        if (luxHealth != null)
+                        {
+                            // 玩家站在敌人攻击范围内,冻结玩家位置
+                            lux.transform.position = enemy.transform.position + Vector3.left * 0.8f;
+                            lux.SetFrozen(true); // 玩家不动,让敌人攻击
+                            int playerHpBefore = luxHealth.CurrentHealth;
+                            // 等敌人侦测→追击→攻击(detectionRange=8,attackRange=1.5)
+                            float atkWait = 0;
+                            while (atkWait < 4f && luxHealth.CurrentHealth >= playerHpBefore)
+                            {
+                                atkWait += Time.deltaTime;
+                                yield return null;
+                            }
+                            Check($"Enemy attacks player ({playerHpBefore}->{luxHealth.CurrentHealth})",
+                                luxHealth.CurrentHealth < playerHpBefore);
+                            lux.SetFrozen(false);
+                            luxHealth.ResetHealth();
+                        }
                     }
                 }
                 else
