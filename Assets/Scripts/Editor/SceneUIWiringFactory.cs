@@ -464,7 +464,46 @@ public static class SceneUIWiringFactory
             wired += CreateLevelCompleteCanvas();
         }
 
+        // 压力板谜题连线 — 为每个压力板创建一扇门并连接
+        wired += WirePuzzleLinks();
+
         EditorSceneManager.SaveScene(EditorSceneManager.GetActiveScene());
+        return wired;
+    }
+
+    private static int WirePuzzleLinks()
+    {
+        int wired = 0;
+        var plates = Object.FindObjectsByType<PressurePlate>(FindObjectsSortMode.None);
+        int groundLayer = LayerMask.NameToLayer("Ground");
+
+        foreach (var plate in plates)
+        {
+            // 已连接则跳过
+            if (plate.GetComponent<PuzzleLink>() != null) continue;
+
+            // 在压力板右侧3米创建一扇门(障碍墙)
+            var door = new GameObject("PuzzleDoor");
+            door.transform.position = plate.transform.position + new Vector3(3f, 1.5f, 0);
+            if (groundLayer >= 0) door.layer = groundLayer; // 门挡住玩家
+
+            var sr = door.AddComponent<UnityEngine.SpriteRenderer>();
+            sr.color = new Color(0.6f, 0.4f, 0.2f);
+            sr.sortingOrder = 1;
+            var doorSprite = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Art/Tiles/Block.png");
+            if (doorSprite != null) sr.sprite = doorSprite;
+            door.transform.localScale = new Vector3(0.8f, 3f, 1f);
+
+            var doorCol = door.AddComponent<UnityEngine.BoxCollider2D>();
+            doorCol.size = Vector2.one;
+
+            // 连接器: 踩下压力板时门上升打开
+            var link = plate.gameObject.AddComponent<PuzzleLink>();
+            link.Configure(plate, door, Vector3.up * 3.5f);
+            wired++;
+        }
+
+        if (wired > 0) Debug.Log($"[UIWiring] Created {wired} puzzle door links");
         return wired;
     }
 

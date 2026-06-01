@@ -187,6 +187,39 @@ public class AutoPlayTestRunner : MonoBehaviour
                 }
             }
 
+            // 压力板谜题测试
+            var plate = Object.FindAnyObjectByType<PressurePlate>();
+            if (plate != null)
+            {
+                lux.SetFrozen(false);
+                // 把玩家放到压力板上
+                lux.transform.position = plate.transform.position + Vector3.up * 0.3f;
+                yield return new WaitForSeconds(0.3f);
+                Check($"PressurePlate triggers when stepped on (pressed={plate.IsPressed})",
+                    plate.IsPressed);
+
+                // 谜题连线: 踩下压力板 → 门打开(上升)
+                var link = plate.GetComponent<PuzzleLink>();
+                if (link != null)
+                {
+                    var door = GameObject.Find("PuzzleDoor");
+                    if (door != null)
+                    {
+                        float doorYClosed = door.transform.position.y;
+                        // 保持站在板上,等门上升
+                        float doorWait = 0;
+                        while (doorWait < 1.5f)
+                        {
+                            lux.transform.position = plate.transform.position + Vector3.up * 0.3f;
+                            doorWait += Time.deltaTime;
+                            yield return null;
+                        }
+                        Check($"PressurePlate opens door (y {doorYClosed:F1}->{door.transform.position.y:F1})",
+                            door.transform.position.y > doorYClosed + 1f);
+                    }
+                }
+            }
+
             // 掉落死亡复活测试
             var health = lux.GetComponent<PlayerHealth>();
             if (health != null)
