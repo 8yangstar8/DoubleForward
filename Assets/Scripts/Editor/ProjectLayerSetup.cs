@@ -25,6 +25,8 @@ public static class ProjectLayerSetup
         (20, "Collectible"),
         (21, "Hazard"),
         (22, "InvisibleWall"),
+        (23, "ShadowWall"),      // 影墙(仅Nox影穿时可通过)
+        (24, "PhaseThrough"),    // Nox影穿期间所处的层
     };
 
     // 自定义Sorting Layer（从后到前渲染顺序）
@@ -85,6 +87,20 @@ public static class ProjectLayerSetup
             $"• {CustomTags.Length} 个Tag\n" +
             "• 物理碰撞矩阵",
             "OK");
+    }
+
+    /// <summary>
+    /// 批处理入口(无弹窗) - 用法: -executeMethod ProjectLayerSetup.SetupAllFromCommandLine
+    /// </summary>
+    public static void SetupAllFromCommandLine()
+    {
+        SetupLayers();
+        SetupSortingLayers();
+        SetupTags();
+        SetupPhysicsMatrix();
+
+        AssetDatabase.SaveAssets();
+        Debug.Log("[ProjectLayerSetup] All layers, sorting layers, tags, and physics matrix configured.");
     }
 
     // ==================== Layer ====================

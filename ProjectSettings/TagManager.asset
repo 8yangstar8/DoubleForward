@@ -28,6 +28,7 @@ TagManager:
   - DeathZone
   - BossArena
   - Projectile
+  - Player
   layers:
   - Default
   - TransparentFX
@@ -52,8 +53,8 @@ TagManager:
   - Collectible
   - Hazard
   - InvisibleWall
-  - 
-  - 
+  - ShadowWall
+  - PhaseThrough
   - 
   - 
   - 

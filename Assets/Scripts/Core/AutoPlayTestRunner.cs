@@ -229,6 +229,9 @@ public class AutoPlayTestRunner : MonoBehaviour
                 }
             }
 
+            // 非对称能力链路测试(游戏核心设计支柱)
+            yield return RunAbilityChainTest(lux);
+
             // 关卡完成测试(在死亡测试前,确保玩家健康)
             var goal = Object.FindAnyObjectByType<LevelGoalTrigger>();
             if (goal != null)
@@ -280,6 +283,70 @@ public class AutoPlayTestRunner : MonoBehaviour
 
         yield return null;
         Done = true;
+    }
+
+    /// <summary>
+    /// 非对称能力链路测试 - Lux光束→光敏机关, Nox影穿→影墙
+    /// 这是"能力互补门"设计的运行时基础,此前无任何测试覆盖
+    /// </summary>
+    private IEnumerator RunAbilityChainTest(PlayerController lux)
+    {
+        // ===== 层配置: 影穿和影墙依赖的Layer必须存在 =====
+        Check("PhaseThrough layer exists (Nox shadow phase)",
+            LayerMask.NameToLayer("PhaseThrough") >= 0);
+        Check("ShadowWall layer exists", LayerMask.NameToLayer("ShadowWall") >= 0);
+
+        // ===== Lux光束 → 光敏机关 =====
+        var sensor = Object.FindAnyObjectByType<LightSensor>();
+        var luxAbilities = lux != null ? lux.GetComponent<LuxAbilities>() : null;
+        Check("Lux has LuxAbilities component", luxAbilities != null);
+
+        if (luxAbilities != null && sensor != null)
+        {
+            sensor.Reset();
+            lux.SetFrozen(true);
+            // 站到机关左侧,朝右释放光束覆盖机关
+            lux.transform.position = sensor.transform.position + Vector3.left * 2f;
+            yield return null;
+
+            luxAbilities.TryActivate();
+            yield return null;
+
+            Check("Lux light beam spawns a LightZone trigger",
+                GameObject.FindGameObjectsWithTag("LightZone").Length > 0);
+
+            // 等待LightSensor的activationDelay(0.5s)
+            yield return new WaitForSeconds(1f);
+            Check("Light beam activates LightSensor", sensor.IsActivated);
+
+            lux.SetFrozen(false);
+        }
+        else
+        {
+            Check("Scene has a LightSensor to test the light beam", sensor != null);
+        }
+
+        // ===== Nox影穿 =====
+        PlayerController nox = null;
+        foreach (var p in Object.FindObjectsByType<PlayerController>(FindObjectsSortMode.None))
+            if (p.Type == PlayerController.PlayerType.Nox) nox = p;
+
+        var noxAbilities = nox != null ? nox.GetComponent<NoxAbilities>() : null;
+        Check("Nox has NoxAbilities component", noxAbilities != null);
+
+        if (noxAbilities != null)
+        {
+            int layerBefore = nox.gameObject.layer;
+            float xBefore = nox.transform.position.x;
+
+            noxAbilities.TryActivate();
+            yield return new WaitForSeconds(0.6f); // phaseDuration 0.3s + 余量
+
+            Check($"Nox shadow phase moves Nox horizontally (dx={Mathf.Abs(nox.transform.position.x - xBefore):F2})",
+                Mathf.Abs(nox.transform.position.x - xBefore) > 0.5f);
+            Check($"Nox shadow phase restores original layer (layer={nox.gameObject.layer})",
+                nox.gameObject.layer == layerBefore);
+        }
     }
 
     private IEnumerator RunBossTest()

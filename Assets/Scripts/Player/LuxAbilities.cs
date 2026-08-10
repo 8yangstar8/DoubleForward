@@ -37,8 +37,9 @@ public class LuxAbilities : PlayerAbilityBase
         float dir = controller.IsFacingRight ? 1f : -1f;
         Vector3 spawnPos = firePoint != null ? firePoint.position : transform.position;
 
-        if (lightBeamPrefab == null) { EndAbility(); return; }
-        activeBeam = Instantiate(lightBeamPrefab, spawnPos, Quaternion.identity);
+        activeBeam = lightBeamPrefab != null
+            ? Instantiate(lightBeamPrefab, spawnPos, Quaternion.identity)
+            : CreateFallbackBeam(spawnPos);
         activeBeam.transform.SetParent(transform);
         activeBeam.transform.localScale = new Vector3(dir * beamLength, 1, 1);
 
@@ -49,6 +50,23 @@ public class LuxAbilities : PlayerAbilityBase
         activeBeam.tag = "LightZone";
 
         Invoke(nameof(DeactivateBeam), duration);
+    }
+
+    /// <summary>
+    /// lightBeamPrefab 未配置时的运行时兜底光束 - 否则技能会静默失效,
+    /// 光敏机关永远点不亮(能力互补门的基础)
+    /// </summary>
+    private static GameObject CreateFallbackBeam(Vector3 pos)
+    {
+        var beam = new GameObject("LightBeam");
+        beam.transform.position = pos;
+        var sr = beam.AddComponent<SpriteRenderer>();
+        // 轴心在左侧中点,便于按朝向用负缩放翻转
+        sr.sprite = Sprite.Create(Texture2D.whiteTexture, new Rect(0, 0, 1, 1),
+            new Vector2(0f, 0.5f), 1f);
+        sr.color = new Color(1f, 0.95f, 0.5f, 0.45f);
+        sr.sortingOrder = 4;
+        return beam;
     }
 
     private void DeactivateBeam()
