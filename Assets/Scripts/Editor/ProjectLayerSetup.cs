@@ -248,6 +248,13 @@ public static class ProjectLayerSetup
         // 确保Player和Ground层碰撞
         IgnoreCollision(player, 8, false); // Ground layer = 8
 
+        // 能力互补门: 影穿中的Nox可以穿过影墙,普通玩家不行
+        int shadowWall = 23, phaseThrough = 24;
+        IgnoreCollision(phaseThrough, shadowWall, true);
+        IgnoreCollision(player, shadowWall, false);
+        // 影穿期间仍与地面碰撞,避免掉出世界
+        IgnoreCollision(phaseThrough, 8, false);
+
         Debug.Log("[LayerSetup] Physics collision matrix configured");
     }
 

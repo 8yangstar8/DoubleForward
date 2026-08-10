@@ -342,11 +342,67 @@ public class AutoPlayTestRunner : MonoBehaviour
             noxAbilities.TryActivate();
             yield return new WaitForSeconds(0.6f); // phaseDuration 0.3s + 余量
 
-            Check($"Nox shadow phase moves Nox horizontally (dx={Mathf.Abs(nox.transform.position.x - xBefore):F2})",
-                Mathf.Abs(nox.transform.position.x - xBefore) > 0.5f);
+            // 阈值取接近phaseDistance(4): 只要求">0.5"会被batchmode的帧节奏蒙混过关
+            Check($"Nox shadow phase dashes ~phaseDistance (dx={Mathf.Abs(nox.transform.position.x - xBefore):F2})",
+                Mathf.Abs(nox.transform.position.x - xBefore) > 2f);
             Check($"Nox shadow phase restores original layer (layer={nox.gameObject.layer})",
                 nox.gameObject.layer == layerBefore);
+
+            // ===== 能力互补门: Nox影穿可过影墙, Lux过不去 =====
+            yield return RunShadowWallGateTest(lux, nox, noxAbilities);
         }
+    }
+
+    /// <summary>
+    /// 影墙门测试 - 运行时造一堵影墙,验证"只有影穿中的Nox能过"这一非对称设计
+    /// </summary>
+    private IEnumerator RunShadowWallGateTest(PlayerController lux, PlayerController nox,
+        NoxAbilities noxAbilities)
+    {
+        // 先把Nox放回出生点一带: 关卡中段有谜题门等障碍,上一次冲刺会把他顶在门上,
+        // 留在原地测穿墙等于在"已经卡死"的位置上测
+        nox.transform.position = new Vector3(-1f, nox.transform.position.y, 0f);
+        yield return null;
+
+        // 墙放在2.5单位外,留出加速距离
+        var wall = new GameObject("TestShadowWall");
+        wall.transform.position = nox.transform.position + new Vector3(2.5f, 0f, 0f);
+        wall.transform.localScale = new Vector3(0.5f, 3f, 1f);
+        wall.AddComponent<BoxCollider2D>();
+        wall.AddComponent<ShadowWall>();
+        yield return null; // 等ShadowWall.Start()设置层
+
+        Check($"ShadowWall lands on the ShadowWall layer (layer={wall.layer})",
+            wall.layer == LayerMask.NameToLayer("ShadowWall"));
+
+        // Nox朝右并等技能冷却结束
+        nox.SetMoveInput(Vector2.right);
+        yield return null;
+        while (!noxAbilities.IsReady)
+            yield return null;
+
+        noxAbilities.TryActivate();
+        yield return new WaitForSeconds(0.6f);
+        Check($"Nox phases through ShadowWall (noxX={nox.transform.position.x:F2}, wallX={wall.transform.position.x:F2})",
+            nox.transform.position.x > wall.transform.position.x + 0.3f);
+
+        // 对照组: Lux没有影穿,必须被影墙挡住(防止修复时把墙对所有人都变透明)
+        if (lux != null)
+        {
+            lux.SetFrozen(false);
+            lux.transform.position = wall.transform.position + Vector3.left * 1.2f;
+            yield return null;
+            for (int i = 0; i < 60; i++)
+            {
+                lux.SetMoveInput(Vector2.right);
+                yield return null;
+            }
+            Check($"Lux is blocked by ShadowWall (luxX={lux.transform.position.x:F2}, wallX={wall.transform.position.x:F2})",
+                lux.transform.position.x < wall.transform.position.x);
+        }
+
+        Object.Destroy(wall);
+        yield return null;
     }
 
     private IEnumerator RunBossTest()

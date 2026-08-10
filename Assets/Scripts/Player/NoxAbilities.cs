@@ -20,12 +20,22 @@ public class NoxAbilities : PlayerAbilityBase
 
     private PlayerController controller;
     private Collider2D playerCollider;
+    private Rigidbody2D rb;
+    private bool isPhasing;
+    private float phaseSpeed;
 
     void Awake()
     {
         controller = GetComponent<PlayerController>();
         playerCollider = GetComponent<Collider2D>();
+        rb = GetComponent<Rigidbody2D>();
         abilityName = "Shadow Phase";
+    }
+
+    void FixedUpdate()
+    {
+        if (isPhasing && rb != null)
+            rb.velocity = new Vector2(phaseSpeed, 0f);
     }
 
     protected override void Activate()
@@ -54,10 +64,17 @@ public class NoxAbilities : PlayerAbilityBase
         if (sr != null)
             sr.color = new Color(0.3f, 0.1f, 0.5f, 0.5f);
 
-        rb.velocity = new Vector2(dir * phaseDistance / phaseDuration, 0f);
         rb.gravityScale = 0f;
 
+        // 冲刺速度改由FixedUpdate持续施加: PlayerController.SetMoveInput每帧Update
+        // 会用移动输入覆盖水平速度,而协程的WaitForFixedUpdate在物理步之后才恢复,
+        // 只有FixedUpdate能抢在物理模拟前把速度重新写回去
+        phaseSpeed = dir * phaseDistance / phaseDuration;
+        isPhasing = true;
+
         yield return new WaitForSeconds(phaseDuration);
+
+        isPhasing = false;
 
         gameObject.layer = originalLayer;
         rb.gravityScale = 2.5f;
