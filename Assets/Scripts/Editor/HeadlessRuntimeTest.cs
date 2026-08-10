@@ -53,6 +53,7 @@ public static class HeadlessRuntimeTest
         TestManagerPrefabs();
         TestLevelScene_1_1();
         TestPuzzlePlacement();
+        TestCharacterAnimation();
         TestBuildSettings();
 
         Debug.Log($"[TEST] Results: {passedChecks}/{totalChecks} passed, {failures.Count} failed");
@@ -286,6 +287,38 @@ public static class HeadlessRuntimeTest
                 missingCount++;
         }
         Assert("BuildSettings: all enabled scenes exist", missingCount == 0);
+    }
+
+    // ==================== 角色动画 ====================
+
+    /// <summary>
+    /// 角色剪辑必须含有真正的多帧精灵曲线。原本这些 .anim 是 AnimatorFactory
+    /// 生成的占位(只做缩放脉动),没有任何精灵关键帧。
+    /// Play 测试里因为没有输入设备进不了Run状态,只能靠这里保证帧数。
+    /// </summary>
+    private static void TestCharacterAnimation()
+    {
+        var expected = new (string clip, int minFrames)[]
+        {
+            ("Lux_Idle", 2), ("Lux_Run", 4), ("Lux_Jump", 1), ("Lux_Fall", 1),
+            ("Nox_Idle", 2), ("Nox_Run", 4), ("Nox_Jump", 1), ("Nox_Fall", 1),
+        };
+
+        foreach (var (clipName, minFrames) in expected)
+        {
+            string path = $"Assets/Animations/Clips/{clipName}.anim";
+            var clip = AssetDatabase.LoadAssetAtPath<AnimationClip>(path);
+            if (clip == null) { Assert($"Anim: {clipName} exists", false); continue; }
+
+            int frames = 0;
+            foreach (var binding in AnimationUtility.GetObjectReferenceCurveBindings(clip))
+            {
+                if (binding.type != typeof(SpriteRenderer) || binding.propertyName != "m_Sprite") continue;
+                frames = AnimationUtility.GetObjectReferenceCurve(clip, binding).Length;
+            }
+            Assert($"Anim: {clipName} has >= {minFrames} sprite keyframes (got {frames})",
+                frames >= minFrames);
+        }
     }
 
     // ==================== 机关摆放 ====================

@@ -73,15 +73,23 @@ public class AutoPlayTestRunner : MonoBehaviour
 
         if (lux != null)
         {
-            // 移动测试
+            // 移动测试(顺便采样精灵,验证跑动动画真的在逐帧切换)
             Vector3 startPos = lux.transform.position;
+            var luxSr = lux.GetComponent<SpriteRenderer>();
+            var framesSeen = new HashSet<Sprite>();
             for (int i = 0; i < 60; i++)
             {
                 lux.SetMoveInput(Vector2.right);
+                if (luxSr != null && luxSr.sprite != null) framesSeen.Add(luxSr.sprite);
                 yield return null;
             }
             float moved = lux.transform.position.x - startPos.x;
             Check($"Lux moved right (dx={moved:F1})", moved > 1f);
+            // 注: 批处理里没有输入设备,HandleInput每帧用零输入把速度清零,PlayerAnimator
+            // 读到的velocity.x就是0,进不了Run状态。这里只断言"精灵确实被Animator逐帧驱动"
+            // (实际观察到的是Idle循环);Run剪辑本身的帧数由静态验证保证
+            Check($"Lux sprite is animated by the Animator (distinct frames={framesSeen.Count})",
+                framesSeen.Count >= 2);
 
             // 跳跃测试
             yield return new WaitForSeconds(0.3f);
@@ -105,6 +113,12 @@ public class AutoPlayTestRunner : MonoBehaviour
                     var enemy = sceneEnemies[0];
                     foreach (var e in sceneEnemies)
                         if (HasClearShotFrom(e.transform.position)) { enemy = e; break; }
+
+                    // 战斗测试期间关掉其余敌人: 它们会游荡进弹道、或提前蹭掉玩家的血,
+                    // 让后面"单次伤害=1滴"的断言时好时坏(实测同样代码 53/56 与 56/56 交替)
+                    var benchedEnemies = new List<GameObject>();
+                    foreach (var e in sceneEnemies)
+                        if (e != enemy) { e.gameObject.SetActive(false); benchedEnemies.Add(e.gameObject); }
 
                     var combat = lux.GetComponent<PlayerCombat>();
                     Check("Lux has PlayerCombat", combat != null);
@@ -172,6 +186,7 @@ public class AutoPlayTestRunner : MonoBehaviour
                             // 玩家站在敌人攻击范围内,冻结玩家位置
                             lux.transform.position = enemy.transform.position + Vector3.left * 0.8f;
                             lux.SetFrozen(true); // 玩家不动,让敌人攻击
+                            luxHealth.ResetHealth(); // 血量归位,否则起始血量取决于前面被蹭了多少
                             int playerHpBefore = luxHealth.CurrentHealth;
                             // 等敌人侦测→追击→首次攻击,命中即停(测单次伤害)
                             float atkWait = 0;
@@ -188,6 +203,10 @@ public class AutoPlayTestRunner : MonoBehaviour
                             lux.SetFrozen(false);
                             luxHealth.ResetHealth();
                         }
+
+                        // 战斗测试结束,把其余敌人放回来
+                        foreach (var g in benchedEnemies)
+                            if (g != null) g.SetActive(true);
                     }
                 }
                 else
@@ -562,6 +581,17 @@ public class AutoPlayTestRunner : MonoBehaviour
         }
 
         // ④ 光敏机关只有Lux能开 → 门升起
+        // 背景: 云朵存在且真的在飘
+        var cloud = GameObject.Find("BgCloud_0");
+        Check("Coop level: background clouds exist", cloud != null);
+        if (cloud != null)
+        {
+            float cloudX0 = cloud.transform.position.x;
+            yield return new WaitForSeconds(0.5f);
+            Check($"Coop level: clouds drift across the sky (dx={cloud.transform.position.x - cloudX0:F2})",
+                cloud.transform.position.x > cloudX0);
+        }
+
         var sensorObj = GameObject.Find("Coop_GateSensor");
         Check("Coop level: gate sensor exists", sensorObj != null);
         if (sensorObj != null)
