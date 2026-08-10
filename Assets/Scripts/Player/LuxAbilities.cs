@@ -61,10 +61,14 @@ public class LuxAbilities : PlayerAbilityBase
         var beam = new GameObject("LightBeam");
         beam.transform.position = pos;
         var sr = beam.AddComponent<SpriteRenderer>();
-        // 轴心在左侧中点,便于按朝向用负缩放翻转
-        sr.sprite = Sprite.Create(Texture2D.whiteTexture, new Rect(0, 0, 1, 1),
-            new Vector2(0f, 0.5f), 1f);
-        sr.color = new Color(1f, 0.95f, 0.5f, 0.45f);
+        // 生成的美术资源轴心已设为左侧中点,便于按朝向用负缩放翻转
+        sr.sprite = Resources.Load<Sprite>("Art/LightBeam");
+        if (sr.sprite == null)
+        {
+            sr.sprite = Sprite.Create(Texture2D.whiteTexture, new Rect(0, 0, 1, 1),
+                new Vector2(0f, 0.5f), 1f);
+            sr.color = new Color(1f, 0.95f, 0.5f, 0.45f);
+        }
         sr.sortingOrder = 4;
         return beam;
     }
@@ -91,9 +95,13 @@ public class LuxAbilities : PlayerAbilityBase
         if (groundLayer >= 0) bridge.layer = groundLayer;
 
         var sr = bridge.AddComponent<SpriteRenderer>();
-        sr.sprite = Sprite.Create(Texture2D.whiteTexture, new Rect(0, 0, 1, 1),
-            new Vector2(0.5f, 0.5f), 1f);
-        sr.color = new Color(1f, 0.95f, 0.6f, 0.7f);
+        sr.sprite = Resources.Load<Sprite>("Art/LightBridge");
+        if (sr.sprite == null)
+        {
+            sr.sprite = Sprite.Create(Texture2D.whiteTexture, new Rect(0, 0, 1, 1),
+                new Vector2(0.5f, 0.5f), 1f);
+            sr.color = new Color(1f, 0.95f, 0.6f, 0.7f);
+        }
         sr.sortingOrder = 3;
 
         bridge.AddComponent<BoxCollider2D>();

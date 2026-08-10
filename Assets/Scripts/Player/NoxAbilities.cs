@@ -121,9 +121,13 @@ public class NoxAbilities : PlayerAbilityBase
         var zone = new GameObject("ShadowZone");
         zone.transform.position = pos;
         var sr = zone.AddComponent<SpriteRenderer>();
-        sr.sprite = Sprite.Create(Texture2D.whiteTexture, new Rect(0, 0, 1, 1),
-            new Vector2(0.5f, 0.5f), 1f);
-        sr.color = new Color(0.15f, 0.05f, 0.3f, 0.45f);
+        sr.sprite = Resources.Load<Sprite>("Art/ShadowZone");
+        if (sr.sprite == null)
+        {
+            sr.sprite = Sprite.Create(Texture2D.whiteTexture, new Rect(0, 0, 1, 1),
+                new Vector2(0.5f, 0.5f), 1f);
+            sr.color = new Color(0.15f, 0.05f, 0.3f, 0.45f);
+        }
         sr.sortingOrder = 3;
         return zone;
     }

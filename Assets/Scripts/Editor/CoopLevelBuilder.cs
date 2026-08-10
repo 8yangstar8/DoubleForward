@@ -14,7 +14,7 @@ public static class CoopLevelBuilder
 {
     private const string ScenePath = "Assets/Scenes/Chapter1/Level_1_2.unity";
     private const string Prefix = "Coop_";
-    private const string SpriteDir = "Assets/Art/Placeholders/Puzzles/";
+    private const string SpriteDir = "Assets/Resources/Art/";
 
     [MenuItem("DoubleForward/Build Co-op Level 1-2", false, 10)]
     public static void BuildLevel12()
@@ -50,8 +50,8 @@ public static class CoopLevelBuilder
         Transform p = parent != null ? parent.transform : null;
 
         // ① 影墙 - 只有影穿中的Nox能过
-        var wall = CreateBlock("Coop_ShadowWall", new Vector3(wallX, groundTopY + 1.5f, 0f),
-            new Vector3(0.6f, 3f, 1f), new Color(0.35f, 0.15f, 0.5f, 0.9f), "ShadowWall", p, false);
+        var wall = CreateBlock("Coop_ShadowWall", new Vector3(wallX, groundTopY + 2f, 0f),
+            Vector3.one, Color.white, "ShadowWallTile", p, false);
         wall.AddComponent<ShadowWall>();
         // 必须在编辑期就写好层: 场景加载时碰撞体就以该层注册,等ShadowWall.Start()
         // 运行时再改层,层过滤对已注册的碰撞体不会生效(LevelBuilderWindow同样这么做)
@@ -60,12 +60,12 @@ public static class CoopLevelBuilder
 
         // ② 压力板 - Nox踩住后影墙消失
         var plateGO = CreateBlock("Coop_Plate", new Vector3(plateX, groundTopY + 0.15f, 0f),
-            new Vector3(1.6f, 0.3f, 1f), new Color(0.8f, 0.3f, 0.3f), "PressurePlate", p, false);
+            Vector3.one, Color.white, "PressurePlateArt", p, false);
         var plate = plateGO.AddComponent<PressurePlate>();
 
         // ③ 光敏机关 - 放在玩家站立高度,Lux走过来平射即可命中
         var sensorGO = CreateBlock("Coop_GateSensor", new Vector3(sensorX, standY, 0f),
-            new Vector3(0.9f, 0.9f, 1f), new Color(0.6f, 0.6f, 0.6f), "LightSensor", p, true);
+            Vector3.one, Color.white, "LightSensorArt", p, true);
         var sensor = sensorGO.AddComponent<LightSensor>();
         // 锁存: 光束只持续3秒,不锁存的话门会立刻落回去
         var sensorSO = new SerializedObject(sensor);
@@ -75,8 +75,8 @@ public static class CoopLevelBuilder
         sensorSO.ApplyModifiedProperties();
 
         // ④ 大门 - 机关激活后升起
-        var door = CreateBlock("Coop_GateDoor", new Vector3(doorX, groundTopY + 1.5f, 0f),
-            new Vector3(0.8f, 3f, 1f), new Color(0.55f, 0.45f, 0.25f), "Switch", p, false);
+        var door = CreateBlock("Coop_GateDoor", new Vector3(doorX, groundTopY + 2f, 0f),
+            Vector3.one, Color.white, "GateDoorArt", p, false);
         int groundLayer = LayerMask.NameToLayer("Ground");
         if (groundLayer >= 0) door.layer = groundLayer; // 门要挡住玩家
 
@@ -87,7 +87,15 @@ public static class CoopLevelBuilder
 
         var doorLink = new GameObject("Coop_Link_Door");
         if (p != null) doorLink.transform.SetParent(p);
-        doorLink.AddComponent<PuzzleLink>().Configure(sensor, door, Vector3.up * 4f);
+        doorLink.AddComponent<PuzzleLink>().Configure(sensor, door, Vector3.up * 4.5f);
+
+        // 地面贴上生成的草地/泥土材质
+        var groundSr = ground.GetComponent<SpriteRenderer>();
+        if (groundSr != null)
+        {
+            var tile = AssetDatabase.LoadAssetAtPath<Sprite>(SpriteDir + "GroundTile.png");
+            if (tile != null) { groundSr.sprite = tile; groundSr.color = Color.white; }
+        }
 
         // 终点挪到最后一道门之后
         goal.transform.position = new Vector3(goalX, goal.transform.position.y, 0f);
