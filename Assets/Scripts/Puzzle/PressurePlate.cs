@@ -69,7 +69,12 @@ public class PressurePlate : MonoBehaviour
             : originalPosition;
     }
 
-    public void Reset()
+    /// <summary>
+    /// 复位压力板。不能叫 Reset(): 那是Unity的魔法回调,编辑器在AddComponent时会自动
+    /// 调用它,而那时 originalPosition 还是 Vector3.zero,会把对象瞬移到世界原点
+    /// (项目里20多个场景的PressurePlate_1都是这样被拽到(0,0)的)
+    /// </summary>
+    public void ResetPlate()
     {
         IsPressed = false;
         playersOnPlate = 0;

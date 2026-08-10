@@ -278,6 +278,9 @@ public class AutoPlayTestRunner : MonoBehaviour
             }
         }
 
+        // ===== 合作关卡测试(Level_1_2 双向前行) =====
+        yield return RunCoopLevelTest();
+
         // ===== Boss战测试(加载Boss关Level_1_4) =====
         yield return RunBossTest();
 
@@ -469,6 +472,92 @@ public class AutoPlayTestRunner : MonoBehaviour
 
         lux.SetFrozen(false);
         yield return null;
+    }
+
+    /// <summary>
+    /// 合作关卡测试(Level_1_2) - 验证两道"能力互补门"互为前置:
+    /// ①影墙只有Nox能过 → ②Nox踩板让影墙消失放Lux进来 → ③光敏机关只有Lux能开 → ④门打开
+    /// </summary>
+    private IEnumerator RunCoopLevelTest()
+    {
+        if (GameManager.Instance == null) yield break;
+        GameManager.Instance.LoadLevel(1, 2);
+
+        yield return new WaitForSecondsRealtime(3f);
+
+        var shadowWall = GameObject.Find("Coop_ShadowWall");
+        Check("Coop level: shadow wall gate exists", shadowWall != null);
+        var door = GameObject.Find("Coop_GateDoor");
+        Check("Coop level: gate door exists", door != null);
+        if (shadowWall == null || door == null) yield break;
+
+        PlayerController lux = null, nox = null;
+        foreach (var p in Object.FindObjectsByType<PlayerController>(FindObjectsSortMode.None))
+        {
+            if (p.Type == PlayerController.PlayerType.Lux) lux = p;
+            else nox = p;
+        }
+        if (lux == null || nox == null) yield break;
+
+        float wallX = shadowWall.transform.position.x;
+
+        // ① Lux被影墙挡住
+        lux.SetFrozen(false);
+        lux.transform.position = new Vector3(wallX - 2f, lux.transform.position.y, 0f);
+        yield return null;
+        for (int i = 0; i < 60; i++)
+        {
+            lux.SetMoveInput(Vector2.right);
+            yield return null;
+        }
+        Check($"Coop level: Lux is blocked by the shadow wall (luxX={lux.transform.position.x:F2}, wallX={wallX:F2})",
+            lux.transform.position.x < wallX);
+
+        // ② Nox影穿过墙
+        var noxAbilities = nox.GetComponent<NoxAbilities>();
+        nox.SetFrozen(false);
+        nox.transform.position = new Vector3(wallX - 2.5f, nox.transform.position.y, 0f);
+        nox.SetMoveInput(Vector2.right);
+        yield return null;
+        while (!noxAbilities.IsReady) yield return null;
+        noxAbilities.TryActivate();
+        yield return new WaitForSeconds(0.1f);
+        yield return new WaitForSeconds(0.6f);
+        Check($"Coop level: Nox phases through the shadow wall (noxX={nox.transform.position.x:F2}, wallX={wallX:F2})",
+            nox.transform.position.x > wallX);
+
+        // ③ Nox踩压力板 → 影墙消失,Lux可以过
+        var plate = GameObject.Find("Coop_Plate");
+        Check("Coop level: co-op plate exists", plate != null);
+        if (plate != null)
+        {
+            // 防回归: PressurePlate 曾因撞上Unity魔法回调Reset()被瞬移到世界原点
+            Check($"Coop level: plate stays where it was authored (x={plate.transform.position.x:F1}, wallX={wallX:F1})",
+                plate.transform.position.x > wallX);
+
+            nox.transform.position = plate.transform.position + Vector3.up * 0.3f;
+            yield return new WaitForSeconds(0.5f);
+            Check("Coop level: Nox on the plate removes the shadow wall for Lux",
+                !shadowWall.activeSelf);
+        }
+
+        // ④ 光敏机关只有Lux能开 → 门升起
+        var sensorObj = GameObject.Find("Coop_GateSensor");
+        Check("Coop level: gate sensor exists", sensorObj != null);
+        if (sensorObj != null)
+        {
+            float doorYClosed = door.transform.position.y;
+            var luxAbilities = lux.GetComponent<LuxAbilities>();
+            // Lux站到机关左侧,朝右打光束
+            lux.transform.position = sensorObj.transform.position + Vector3.left * 2f;
+            lux.SetMoveInput(Vector2.right);
+            yield return null;
+            while (!luxAbilities.IsReady) yield return null;
+            luxAbilities.TryActivate();
+            yield return new WaitForSeconds(1.5f);
+            Check($"Coop level: Lux beam opens the gate door (y {doorYClosed:F1}->{door.transform.position.y:F1})",
+                door.transform.position.y > doorYClosed + 0.5f);
+        }
     }
 
     private IEnumerator RunBossTest()

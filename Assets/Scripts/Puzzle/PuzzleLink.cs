@@ -75,4 +75,23 @@ public class PuzzleLink : MonoBehaviour
         targetObject = target;
         openOffset = offset;
     }
+
+    /// <summary>编辑器配置用: 光敏机关激活时打开目标门</summary>
+    public void Configure(LightSensor sensor, GameObject target, Vector3 offset)
+    {
+        sourceType = SourceType.LightSensor;
+        lightSensor = sensor;
+        action = TargetAction.OpenDoor;
+        targetObject = target;
+        openOffset = offset;
+    }
+
+    /// <summary>编辑器配置用: 压力板踩下时移除目标障碍(如影墙)</summary>
+    public void ConfigureDisable(PressurePlate plate, GameObject target)
+    {
+        sourceType = SourceType.PressurePlate;
+        pressurePlate = plate;
+        action = TargetAction.DisableObject;
+        targetObject = target;
+    }
 }

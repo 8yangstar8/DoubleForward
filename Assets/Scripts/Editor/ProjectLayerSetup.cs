@@ -254,6 +254,9 @@ public static class ProjectLayerSetup
         IgnoreCollision(player, shadowWall, false);
         // 影穿期间仍与地面碰撞,避免掉出世界
         IgnoreCollision(phaseThrough, 8, false);
+        // 影穿期间也要能穿过队友: Player x Player 已在PlayerController里设为互相穿过,
+        // 但影穿时Nox在PhaseThrough层,不补这条的话冲刺会被队友挡停
+        IgnoreCollision(phaseThrough, player, true);
 
         Debug.Log("[LayerSetup] Physics collision matrix configured");
     }

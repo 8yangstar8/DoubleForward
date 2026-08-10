@@ -1,0 +1,192 @@
+using UnityEngine;
+using UnityEditor;
+using UnityEditor.SceneManagement;
+
+/// <summary>
+/// 合作关卡构建器 - 在 Level_1_2 里搭出两道"能力互补门",互为前置:
+///   ① 影墙: 只有Nox能影穿通过, Lux被挡在外面
+///   ② 压力板: Nox踩住后影墙消失, 放Lux进来
+///   ③ 光敏机关: 只有Lux的光束能激活(玩家踩不亮)
+///   ④ 大门: 机关锁存激活后升起, 两人一同前往终点
+/// 用法: -executeMethod CoopLevelBuilder.BuildLevel12
+/// </summary>
+public static class CoopLevelBuilder
+{
+    private const string ScenePath = "Assets/Scenes/Chapter1/Level_1_2.unity";
+    private const string Prefix = "Coop_";
+    private const string SpriteDir = "Assets/Art/Placeholders/Puzzles/";
+
+    [MenuItem("DoubleForward/Build Co-op Level 1-2", false, 10)]
+    public static void BuildLevel12()
+    {
+        EditorSceneManager.OpenScene(ScenePath);
+
+        var ground = GameObject.Find("Ground");
+        var luxSpawn = GameObject.Find("LuxSpawnPoint");
+        var goal = Object.FindAnyObjectByType<LevelGoalTrigger>();
+        if (ground == null || luxSpawn == null || goal == null)
+        {
+            Debug.LogError("[CoopLevel] Ground / LuxSpawnPoint / LevelGoal missing, aborting");
+            return;
+        }
+
+        ClearPreviousBuild();
+        RemoveBrokenLegacyPuzzle();
+
+        float startX = luxSpawn.transform.position.x;
+        float standY = luxSpawn.transform.position.y;                       // 玩家站立时的中心高度
+        float groundTopY = ground.transform.position.y + ground.transform.localScale.y * 0.5f;
+
+        float wallX = startX + 6f;
+        float plateX = startX + 10f;
+        float sensorX = startX + 16f;
+        float doorX = startX + 20f;
+        float goalX = startX + 25f;
+
+        EnsureGroundSpans(ground, startX - 3f, goalX + 3f);
+        ClearCorridor(startX, goalX, groundTopY);
+
+        var parent = GameObject.Find("--- PUZZLES ---");
+        Transform p = parent != null ? parent.transform : null;
+
+        // ① 影墙 - 只有影穿中的Nox能过
+        var wall = CreateBlock("Coop_ShadowWall", new Vector3(wallX, groundTopY + 1.5f, 0f),
+            new Vector3(0.6f, 3f, 1f), new Color(0.35f, 0.15f, 0.5f, 0.9f), "ShadowWall", p, false);
+        wall.AddComponent<ShadowWall>();
+        // 必须在编辑期就写好层: 场景加载时碰撞体就以该层注册,等ShadowWall.Start()
+        // 运行时再改层,层过滤对已注册的碰撞体不会生效(LevelBuilderWindow同样这么做)
+        int shadowWallLayer = LayerMask.NameToLayer("ShadowWall");
+        if (shadowWallLayer >= 0) wall.layer = shadowWallLayer;
+
+        // ② 压力板 - Nox踩住后影墙消失
+        var plateGO = CreateBlock("Coop_Plate", new Vector3(plateX, groundTopY + 0.15f, 0f),
+            new Vector3(1.6f, 0.3f, 1f), new Color(0.8f, 0.3f, 0.3f), "PressurePlate", p, false);
+        var plate = plateGO.AddComponent<PressurePlate>();
+
+        // ③ 光敏机关 - 放在玩家站立高度,Lux走过来平射即可命中
+        var sensorGO = CreateBlock("Coop_GateSensor", new Vector3(sensorX, standY, 0f),
+            new Vector3(0.9f, 0.9f, 1f), new Color(0.6f, 0.6f, 0.6f), "LightSensor", p, true);
+        var sensor = sensorGO.AddComponent<LightSensor>();
+        // 锁存: 光束只持续3秒,不锁存的话门会立刻落回去
+        var sensorSO = new SerializedObject(sensor);
+        sensorSO.FindProperty("stayActivated").boolValue = true;
+        sensorSO.FindProperty("sensorRenderer").objectReferenceValue =
+            sensorGO.GetComponent<SpriteRenderer>();
+        sensorSO.ApplyModifiedProperties();
+
+        // ④ 大门 - 机关激活后升起
+        var door = CreateBlock("Coop_GateDoor", new Vector3(doorX, groundTopY + 1.5f, 0f),
+            new Vector3(0.8f, 3f, 1f), new Color(0.55f, 0.45f, 0.25f), "Switch", p, false);
+        int groundLayer = LayerMask.NameToLayer("Ground");
+        if (groundLayer >= 0) door.layer = groundLayer; // 门要挡住玩家
+
+        // 接线
+        var wallLink = new GameObject("Coop_Link_Wall");
+        if (p != null) wallLink.transform.SetParent(p);
+        wallLink.AddComponent<PuzzleLink>().ConfigureDisable(plate, wall);
+
+        var doorLink = new GameObject("Coop_Link_Door");
+        if (p != null) doorLink.transform.SetParent(p);
+        doorLink.AddComponent<PuzzleLink>().Configure(sensor, door, Vector3.up * 4f);
+
+        // 终点挪到最后一道门之后
+        goal.transform.position = new Vector3(goalX, goal.transform.position.y, 0f);
+
+        EditorSceneManager.MarkSceneDirty(EditorSceneManager.GetActiveScene());
+        EditorSceneManager.SaveScene(EditorSceneManager.GetActiveScene());
+        Debug.Log($"[CoopLevel] Level_1_2 built: wall={wallX:F1} plate={plateX:F1} " +
+            $"sensor={sensorX:F1} door={doorX:F1} goal={goalX:F1}");
+    }
+
+    /// <summary>
+    /// 移除模板遗留的坏掉的谜题: PressurePlate_1 被Unity的Reset()回调拽到了世界原点
+    /// (玩家出生点上),开局就一直处于踩下状态,它的PuzzleDoor因此永远敞开、且正好
+    /// 压在本关影墙的位置上。本关的谜题内容由下面的合作链路承担,这一对直接删掉。
+    /// </summary>
+    private static void RemoveBrokenLegacyPuzzle()
+    {
+        foreach (var name in new[] { "PressurePlate_1", "PuzzleDoor" })
+        {
+            var go = GameObject.Find(name);
+            if (go != null)
+            {
+                Object.DestroyImmediate(go);
+                Debug.Log($"[CoopLevel] Removed broken legacy object '{name}'");
+            }
+        }
+    }
+
+    /// <summary>
+    /// 清理走廊 - 模板场景会在地面上随机撒平台,其中贴地的那些正好横在合作链路上,
+    /// 会把影穿中的Nox顶住(它们在Ground层,而影穿只穿影墙不穿地面)。
+    /// 只删和玩家身体等高的那些,头顶上方的平台保留。
+    /// </summary>
+    private static void ClearCorridor(float minX, float maxX, float floorY)
+    {
+        const float bodyHeight = 2.2f;
+        int removed = 0;
+        foreach (var col in Object.FindObjectsByType<Collider2D>(FindObjectsSortMode.None))
+        {
+            if (col == null || !col.gameObject.name.StartsWith("Platform_")) continue;
+
+            var b = col.bounds;
+            bool inCorridor = b.max.x > minX && b.min.x < maxX
+                && b.max.y > floorY && b.min.y < floorY + bodyHeight;
+            if (inCorridor)
+            {
+                Debug.Log($"[CoopLevel] Removed corridor blocker '{col.gameObject.name}' at {b.center}");
+                Object.DestroyImmediate(col.gameObject);
+                removed++;
+            }
+        }
+        if (removed > 0) Debug.Log($"[CoopLevel] Cleared {removed} blockers from the co-op corridor");
+    }
+
+    /// <summary>重复运行时先清掉上一次生成的对象,保证幂等</summary>
+    private static void ClearPreviousBuild()
+    {
+        int removed = 0;
+        foreach (var go in Object.FindObjectsByType<GameObject>(FindObjectsSortMode.None))
+        {
+            if (go != null && go.name.StartsWith(Prefix))
+            {
+                Object.DestroyImmediate(go);
+                removed++;
+            }
+        }
+        if (removed > 0) Debug.Log($"[CoopLevel] Removed {removed} objects from previous build");
+    }
+
+    /// <summary>地面不够长就拉长,否则关卡后半段没有立足点</summary>
+    private static void EnsureGroundSpans(GameObject ground, float minX, float maxX)
+    {
+        float halfW = ground.transform.localScale.x * 0.5f;
+        float left = Mathf.Min(ground.transform.position.x - halfW, minX);
+        float right = Mathf.Max(ground.transform.position.x + halfW, maxX);
+
+        var scale = ground.transform.localScale;
+        scale.x = right - left;
+        ground.transform.localScale = scale;
+        ground.transform.position = new Vector3((left + right) * 0.5f,
+            ground.transform.position.y, ground.transform.position.z);
+    }
+
+    private static GameObject CreateBlock(string name, Vector3 pos, Vector3 scale, Color color,
+        string spriteName, Transform parent, bool circleCollider)
+    {
+        var go = new GameObject(name);
+        go.transform.position = pos;
+        go.transform.localScale = scale;
+        if (parent != null) go.transform.SetParent(parent, true);
+
+        var sr = go.AddComponent<SpriteRenderer>();
+        sr.color = color;
+        sr.sortingOrder = 2;
+        var sprite = AssetDatabase.LoadAssetAtPath<Sprite>(SpriteDir + spriteName + ".png");
+        if (sprite != null) sr.sprite = sprite;
+
+        if (circleCollider) go.AddComponent<CircleCollider2D>();
+        else go.AddComponent<BoxCollider2D>();
+        return go;
+    }
+}
