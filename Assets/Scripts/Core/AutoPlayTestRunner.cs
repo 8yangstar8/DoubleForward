@@ -100,7 +100,12 @@ public class AutoPlayTestRunner : MonoBehaviour
                 var sceneEnemies = Object.FindObjectsByType<EnemyBase>(FindObjectsSortMode.None);
                 if (sceneEnemies.Length > 0)
                 {
+                    // 挑一个左侧4格弹道通畅的敌人: 关卡里的门/平台会挡住光弹,
+                    // 而这几项测试要验证的是战斗本身,不该受关卡摆放影响
                     var enemy = sceneEnemies[0];
+                    foreach (var e in sceneEnemies)
+                        if (HasClearShotFrom(e.transform.position)) { enemy = e; break; }
+
                     var combat = lux.GetComponent<PlayerCombat>();
                     Check("Lux has PlayerCombat", combat != null);
 
@@ -286,6 +291,21 @@ public class AutoPlayTestRunner : MonoBehaviour
 
         yield return null;
         Done = true;
+    }
+
+    /// <summary>敌人左侧4格内没有实体障碍(玩家/敌人自身不算),光弹能打到它</summary>
+    private static bool HasClearShotFrom(Vector3 enemyPos)
+    {
+        foreach (var h in Physics2D.RaycastAll(
+                     new Vector2(enemyPos.x - 4f, enemyPos.y), Vector2.right, 4f))
+        {
+            var c = h.collider;
+            if (c == null || c.isTrigger) continue;
+            if (c.GetComponent<PlayerController>() != null) continue;
+            if (c.GetComponent<EnemyBase>() != null) continue;
+            return false;
+        }
+        return true;
     }
 
     /// <summary>

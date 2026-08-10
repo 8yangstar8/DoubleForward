@@ -52,6 +52,7 @@ public static class HeadlessRuntimeTest
         TestPlayerPrefabs();
         TestManagerPrefabs();
         TestLevelScene_1_1();
+        TestPuzzlePlacement();
         TestBuildSettings();
 
         Debug.Log($"[TEST] Results: {passedChecks}/{totalChecks} passed, {failures.Count} failed");
@@ -285,6 +286,33 @@ public static class HeadlessRuntimeTest
                 missingCount++;
         }
         Assert("BuildSettings: all enabled scenes exist", missingCount == 0);
+    }
+
+    // ==================== 机关摆放 ====================
+
+    /// <summary>
+    /// 全关卡扫一遍: 压力板不能停在世界原点。
+    /// PressurePlate 曾定义 public void Reset() 撞上Unity的魔法回调,编辑器
+    /// AddComponent时自动调用,把每个板都瞬移到了(0,0) —— 那里正好是出生点,
+    /// 于是开局就被踩下,联动的门永远敞开,谜题形同虚设。
+    /// </summary>
+    private static void TestPuzzlePlacement()
+    {
+        foreach (var entry in EditorBuildSettings.scenes)
+        {
+            if (!entry.enabled || !entry.path.Contains("/Chapter")) continue;
+            if (!File.Exists(entry.path)) continue;
+
+            EditorSceneManager.OpenScene(entry.path);
+            string sceneName = Path.GetFileNameWithoutExtension(entry.path);
+
+            foreach (var plate in Object.FindObjectsByType<PressurePlate>(FindObjectsSortMode.None))
+            {
+                var p = plate.transform.position;
+                Assert($"{sceneName}: '{plate.name}' not stranded at world origin ({p.x:F1},{p.y:F1})",
+                    new Vector2(p.x, p.y).magnitude > 1f);
+            }
+        }
     }
 
     // ==================== Assert ====================
