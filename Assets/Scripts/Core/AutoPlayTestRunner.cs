@@ -426,6 +426,49 @@ public class AutoPlayTestRunner : MonoBehaviour
 
         Object.Destroy(box);
         yield return null;
+
+        // ===== 光桥: 必须是队友能站上去的实体平台,不只是"生成了个物体" =====
+        yield return RunLightBridgeTest(lux, nox);
+    }
+
+    /// <summary>
+    /// 光桥测试 - 把Lux抬到半空造桥,再把Nox从桥上方扔下来,
+    /// 验证Nox落在桥上而不是穿桥掉回地面
+    /// </summary>
+    private IEnumerator RunLightBridgeTest(PlayerController lux, PlayerController nox)
+    {
+        var luxAbilities = lux != null ? lux.GetComponent<LuxAbilities>() : null;
+        if (luxAbilities == null || nox == null) yield break;
+
+        float groundY = lux.transform.position.y; // Lux此时站在地面上
+        lux.SetFrozen(true);                      // 冻结以免造桥前先掉下去
+        lux.transform.position = new Vector3(lux.transform.position.x, groundY + 6f, 0f);
+        yield return null;
+
+        luxAbilities.CreateLightBridge();
+        yield return null;
+
+        var bridge = GameObject.Find("LightBridge");
+        Check("Lux light bridge is created", bridge != null);
+
+        if (bridge != null)
+        {
+            var bridgeCol = bridge.GetComponent<Collider2D>();
+            Check("Light bridge has a solid (non-trigger) collider",
+                bridgeCol != null && !bridgeCol.isTrigger);
+
+            // 把Nox从桥正上方扔下来
+            var noxRb = nox.GetComponent<Rigidbody2D>();
+            nox.transform.position = bridge.transform.position + Vector3.up * 2f;
+            noxRb.velocity = Vector2.zero;
+            yield return new WaitForSeconds(1.2f);
+
+            Check($"Partner lands on the light bridge (noxY={nox.transform.position.y:F2}, groundY={groundY:F2})",
+                nox.transform.position.y > groundY + 3f);
+        }
+
+        lux.SetFrozen(false);
+        yield return null;
     }
 
     private IEnumerator RunBossTest()

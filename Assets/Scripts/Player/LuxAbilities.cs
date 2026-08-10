@@ -77,14 +77,38 @@ public class LuxAbilities : PlayerAbilityBase
         EndAbility();
     }
 
+    /// <summary>
+    /// lightBridgePrefab 未配置时的运行时兜底光桥 - 必须是实体平台(非触发器、
+    /// 且在玩家会碰撞的Ground层),否则队友站不上去,光桥就失去意义
+    /// </summary>
+    private static GameObject CreateFallbackBridge(Vector3 pos)
+    {
+        var bridge = new GameObject("LightBridge");
+        bridge.transform.position = pos;
+        bridge.transform.localScale = new Vector3(3f, 0.3f, 1f);
+
+        int groundLayer = LayerMask.NameToLayer("Ground");
+        if (groundLayer >= 0) bridge.layer = groundLayer;
+
+        var sr = bridge.AddComponent<SpriteRenderer>();
+        sr.sprite = Sprite.Create(Texture2D.whiteTexture, new Rect(0, 0, 1, 1),
+            new Vector2(0.5f, 0.5f), 1f);
+        sr.color = new Color(1f, 0.95f, 0.6f, 0.7f);
+        sr.sortingOrder = 3;
+
+        bridge.AddComponent<BoxCollider2D>();
+        return bridge;
+    }
+
     public void CreateLightBridge()
     {
-        if (lightBridgePrefab == null) return;
-
         float dir = controller.IsFacingRight ? 1f : -1f;
         Vector3 bridgePos = transform.position + new Vector3(dir * 1.5f, -0.5f, 0);
 
-        var bridge = Instantiate(lightBridgePrefab, bridgePos, Quaternion.identity);
+        var bridge = lightBridgePrefab != null
+            ? Instantiate(lightBridgePrefab, bridgePos, Quaternion.identity)
+            : CreateFallbackBridge(bridgePos);
+        bridge.name = "LightBridge"; // 统一命名,预制体实例化会带"(Clone)"后缀
         bridge.tag = "LightZone";
         Destroy(bridge, bridgeDuration);
 
