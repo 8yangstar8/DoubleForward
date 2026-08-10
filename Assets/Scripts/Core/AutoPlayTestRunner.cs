@@ -403,6 +403,29 @@ public class AutoPlayTestRunner : MonoBehaviour
 
         Object.Destroy(wall);
         yield return null;
+
+        // ===== 影区 / 影推 =====
+        noxAbilities.CreateShadowZone();
+        yield return null;
+        Check("Nox shadow zone spawns a ShadowZone trigger",
+            GameObject.FindGameObjectsWithTag("ShadowZone").Length > 0);
+
+        // 造一个可推动物体放在Nox前方(关重力,只看水平推动)
+        var box = new GameObject("TestPushable");
+        box.transform.position = nox.transform.position + new Vector3(1f, 0f, 0f);
+        box.AddComponent<BoxCollider2D>();
+        var boxRb = box.AddComponent<Rigidbody2D>();
+        boxRb.gravityScale = 0f;
+        yield return null;
+
+        float boxX0 = box.transform.position.x;
+        noxAbilities.ShadowPush();
+        yield return new WaitForSeconds(0.4f);
+        Check($"Nox shadow push moves a pushable object (dx={box.transform.position.x - boxX0:F2})",
+            box.transform.position.x > boxX0 + 0.1f);
+
+        Object.Destroy(box);
+        yield return null;
     }
 
     private IEnumerator RunBossTest()

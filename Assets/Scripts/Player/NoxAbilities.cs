@@ -87,9 +87,9 @@ public class NoxAbilities : PlayerAbilityBase
 
     public void CreateShadowZone()
     {
-        if (shadowZonePrefab == null) return;
-
-        var zone = Instantiate(shadowZonePrefab, transform.position, Quaternion.identity);
+        var zone = shadowZonePrefab != null
+            ? Instantiate(shadowZonePrefab, transform.position, Quaternion.identity)
+            : CreateFallbackZone(transform.position);
         zone.transform.localScale = Vector3.one * zoneRadius;
         zone.tag = "ShadowZone";
 
@@ -113,11 +113,30 @@ public class NoxAbilities : PlayerAbilityBase
         });
     }
 
+    /// <summary>
+    /// shadowZonePrefab 未配置时的运行时兜底阴影区 - 否则技能静默失效
+    /// </summary>
+    private static GameObject CreateFallbackZone(Vector3 pos)
+    {
+        var zone = new GameObject("ShadowZone");
+        zone.transform.position = pos;
+        var sr = zone.AddComponent<SpriteRenderer>();
+        sr.sprite = Sprite.Create(Texture2D.whiteTexture, new Rect(0, 0, 1, 1),
+            new Vector2(0.5f, 0.5f), 1f);
+        sr.color = new Color(0.15f, 0.05f, 0.3f, 0.45f);
+        sr.sortingOrder = 3;
+        return zone;
+    }
+
     public void ShadowPush()
     {
         float dir = controller.IsFacingRight ? 1f : -1f;
         Vector2 pushOrigin = (Vector2)transform.position + new Vector2(dir * 0.5f, 0);
-        var hits = Physics2D.OverlapCircleAll(pushOrigin, pushRange, pushableLayer);
+        // pushableLayer 未配置(m_Bits=0)时会匹配不到任何东西,退回到可推动物体所在的层
+        int mask = pushableLayer.value != 0
+            ? pushableLayer.value
+            : LayerMask.GetMask("Default", "Puzzle", "Interactable");
+        var hits = Physics2D.OverlapCircleAll(pushOrigin, pushRange, mask);
 
         foreach (var hit in hits)
         {
