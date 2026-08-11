@@ -107,6 +107,103 @@ public static class CoopLevelBuilder
     }
 
     /// <summary>
+    /// Level_1_3 - 用上1_2没用到的两个能力:
+    ///   ① Nox影推箱子压住压板 → A门永久开启(箱子替人站着,队友不必一直踩着)
+    ///   ② 高处光敏机关地面平射够不到 → Lux造光桥站上去才能打亮 → B门开
+    /// </summary>
+    [MenuItem("DoubleForward/Build Co-op Level 1-3", false, 12)]
+    public static void BuildLevel13()
+    {
+        const string scene13 = "Assets/Scenes/Chapter1/Level_1_3.unity";
+        EditorSceneManager.OpenScene(scene13);
+
+        var ground = GameObject.Find("Ground");
+        var luxSpawn = GameObject.Find("LuxSpawnPoint");
+        var goal = Object.FindAnyObjectByType<LevelGoalTrigger>();
+        if (ground == null || luxSpawn == null || goal == null)
+        {
+            Debug.LogError("[CoopLevel] 1-3: Ground / LuxSpawnPoint / LevelGoal missing");
+            return;
+        }
+
+        foreach (var go in Object.FindObjectsByType<GameObject>(FindObjectsSortMode.None))
+            if (go != null && go.name.StartsWith("Coop3_")) Object.DestroyImmediate(go);
+
+        float startX = luxSpawn.transform.position.x;
+        float standY = luxSpawn.transform.position.y;
+        float groundTopY = ground.transform.position.y + ground.transform.localScale.y * 0.5f;
+
+        float plateX = startX + 9f;
+        float crateX = plateX - 2.5f;   // 推一两下就到位,不要让玩家一路推4格
+        float doorAX = startX + 12f;
+        float sensorX = startX + 18f;
+        float doorBX = startX + 21f;
+        float goalX = startX + 26f;
+
+        EnsureGroundSpans(ground, startX - 3f, goalX + 3f);
+        ClearCorridor(startX, goalX, groundTopY);
+        // 推箱走廊里不能有巡逻敌人: 它们会晃过来把箱子顶回去,谜题就没法完成了
+        ClearEnemies(crateX - 2f, doorAX + 2f);
+
+        var parent = GameObject.Find("--- PUZZLES ---");
+        Transform p = parent != null ? parent.transform : null;
+
+        // ① 可推箱子 - 只有Nox的影推能挪动它
+        var crate = CreateBlock("Coop3_Crate", new Vector3(crateX, groundTopY + 0.5f, 0f),
+            Vector3.one, Color.white, "CrateArt", p, false);
+        crate.tag = "Pushable";
+        var crateRb = crate.AddComponent<Rigidbody2D>();
+        crateRb.gravityScale = 2.5f;
+        crateRb.constraints = RigidbodyConstraints2D.FreezeRotation;
+        crateRb.mass = 1.2f;
+        crateRb.drag = 2.5f;   // 阻尼大一些,推一下走一段就停,便于对准压板
+
+        var plateGO = CreateBlock("Coop3_Plate", new Vector3(plateX, groundTopY + 0.15f, 0f),
+            Vector3.one, Color.white, "PressurePlateArt", p, false);
+        var plate = plateGO.AddComponent<PressurePlate>();
+
+        var doorA = CreateBlock("Coop3_DoorA", new Vector3(doorAX, groundTopY + 2f, 0f),
+            Vector3.one, Color.white, "GateDoorArt", p, false);
+        int groundLayer = LayerMask.NameToLayer("Ground");
+        if (groundLayer >= 0) doorA.layer = groundLayer;
+
+        // ② 高处光敏机关 - 抬到地面平射够不到的高度
+        var sensorGO = CreateBlock("Coop3_HighSensor", new Vector3(sensorX, standY + 3f, 0f),
+            Vector3.one, Color.white, "LightSensorArt", p, true);
+        var sensor = sensorGO.AddComponent<LightSensor>();
+        var so = new SerializedObject(sensor);
+        so.FindProperty("stayActivated").boolValue = true;
+        so.FindProperty("sensorRenderer").objectReferenceValue = sensorGO.GetComponent<SpriteRenderer>();
+        so.ApplyModifiedProperties();
+
+        var doorB = CreateBlock("Coop3_DoorB", new Vector3(doorBX, groundTopY + 2f, 0f),
+            Vector3.one, Color.white, "GateDoorArt", p, false);
+        if (groundLayer >= 0) doorB.layer = groundLayer;
+
+        var linkA = new GameObject("Coop3_Link_DoorA");
+        if (p != null) linkA.transform.SetParent(p);
+        linkA.AddComponent<PuzzleLink>().Configure(plate, doorA, Vector3.up * 4.5f);
+
+        var linkB = new GameObject("Coop3_Link_DoorB");
+        if (p != null) linkB.transform.SetParent(p);
+        linkB.AddComponent<PuzzleLink>().Configure(sensor, doorB, Vector3.up * 4.5f);
+
+        goal.transform.position = new Vector3(goalX, goal.transform.position.y, 0f);
+
+        var groundSr = ground.GetComponent<SpriteRenderer>();
+        if (groundSr != null)
+        {
+            var tile = AssetDatabase.LoadAssetAtPath<Sprite>(SpriteDir + "GroundTile.png");
+            if (tile != null) { groundSr.sprite = tile; groundSr.color = Color.white; }
+        }
+
+        EditorSceneManager.MarkSceneDirty(EditorSceneManager.GetActiveScene());
+        EditorSceneManager.SaveScene(EditorSceneManager.GetActiveScene());
+        Debug.Log($"[CoopLevel] Level_1_3 built: crate={crateX:F1} plate={plateX:F1} " +
+            $"doorA={doorAX:F1} sensor={sensorX:F1}@y+3 doorB={doorBX:F1} goal={goalX:F1}");
+    }
+
+    /// <summary>
     /// 移除模板遗留的坏掉的谜题: PressurePlate_1 被Unity的Reset()回调拽到了世界原点
     /// (玩家出生点上),开局就一直处于踩下状态,它的PuzzleDoor因此永远敞开、且正好
     /// 压在本关影墙的位置上。本关的谜题内容由下面的合作链路承担,这一对直接删掉。
@@ -148,6 +245,22 @@ public static class CoopLevelBuilder
             }
         }
         if (removed > 0) Debug.Log($"[CoopLevel] Cleared {removed} blockers from the co-op corridor");
+    }
+
+    /// <summary>清掉指定x区间内的模板敌人(推箱谜题的走廊里不能有会动的东西)</summary>
+    private static void ClearEnemies(float minX, float maxX)
+    {
+        int removed = 0;
+        foreach (var e in Object.FindObjectsByType<EnemyBase>(FindObjectsSortMode.None))
+        {
+            if (e == null) continue;
+            float x = e.transform.position.x;
+            if (x < minX || x > maxX) continue;
+            Debug.Log($"[CoopLevel] Removed enemy '{e.name}' at x={x:F1} from the puzzle lane");
+            Object.DestroyImmediate(e.gameObject);
+            removed++;
+        }
+        if (removed > 0) Debug.Log($"[CoopLevel] Cleared {removed} enemies from the puzzle lane");
     }
 
     /// <summary>重复运行时先清掉上一次生成的对象,保证幂等</summary>

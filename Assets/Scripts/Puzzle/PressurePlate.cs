@@ -27,15 +27,25 @@ public class PressurePlate : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.GetComponent<PlayerController>() == null) return;
+        if (!CanPress(other)) return;
 
         playersOnPlate++;
         CheckState();
     }
 
+    /// <summary>
+    /// 玩家或可推物体都能压住板。用箱子压住可以让机关保持开启,
+    /// 队友不必一直站在上面(TagManager里的Pushable标签本就是为此准备的)
+    /// </summary>
+    private static bool CanPress(Collider2D other)
+    {
+        if (other.GetComponent<PlayerController>() != null) return true;
+        return other.CompareTag("Pushable");
+    }
+
     void OnTriggerExit2D(Collider2D other)
     {
-        if (other.GetComponent<PlayerController>() == null) return;
+        if (!CanPress(other)) return;
 
         playersOnPlate = Mathf.Max(0, playersOnPlate - 1);
         CheckState();

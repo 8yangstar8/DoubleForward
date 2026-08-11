@@ -27,11 +27,13 @@ public static class GameArtGenerator
         Create("LightSensorArt", 36, 36, 40, SpriteAlignment.Center, DrawLightSensor);   // 0.9 x 0.9
         Create("GateDoorArt", 32, 160, 40, SpriteAlignment.Center, DrawGateDoor);        // 0.8 x 4
 
+        Create("CrateArt", 40, 40, 40, SpriteAlignment.Center, DrawCrate);        // 1 x 1
+
         // ===== 地形 =====
         Create("GroundTile", 32, 32, 16, SpriteAlignment.Center, DrawGroundTile);        // 2 x 2
 
         AssetDatabase.Refresh();
-        Debug.Log("[GameArt] Generated 8 shaded sprites into " + ArtDir);
+        Debug.Log("[GameArt] Generated shaded sprites into " + ArtDir);
     }
 
     // ==================== 绘制 ====================
@@ -180,6 +182,36 @@ public static class GameArtGenerator
                 for (int dy = -1; dy <= 1; dy++)
                     t.SetPixel(w / 2 + dx, y + dy, new Color(0.80f, 0.72f, 0.45f));
         Outline(t, new Color(0.20f, 0.15f, 0.08f, 1f));
+        t.Apply();
+    }
+
+    /// <summary>木箱: 板材纹理 + 对角加固条 + 描边</summary>
+    private static void DrawCrate(Texture2D t)
+    {
+        int w = t.width, h = t.height;
+        var wood = new Color(0.52f, 0.36f, 0.19f);
+        var plank = new Color(0.40f, 0.27f, 0.14f);
+        var brace = new Color(0.63f, 0.45f, 0.24f);
+
+        for (int y = 0; y < h; y++)
+            for (int x = 0; x < w; x++)
+            {
+                var c = (y % 10 < 1) ? plank : wood;              // 板缝
+                c = Color.Lerp(c * 1.25f, c * 0.72f, (float)x / (w - 1)); // 左侧受光
+                t.SetPixel(x, y, new Color(c.r, c.g, c.b, 1f));
+            }
+        // 对角加固条
+        for (int i = 0; i < w; i++)
+        {
+            for (int d = -1; d <= 1; d++)
+            {
+                int y1 = Mathf.Clamp(i + d, 0, h - 1);
+                int y2 = Mathf.Clamp(h - 1 - i + d, 0, h - 1);
+                t.SetPixel(i, y1, brace);
+                t.SetPixel(i, y2, brace);
+            }
+        }
+        Outline(t, new Color(0.20f, 0.13f, 0.06f, 1f));
         t.Apply();
     }
 

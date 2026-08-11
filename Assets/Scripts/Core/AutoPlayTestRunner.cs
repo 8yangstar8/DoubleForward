@@ -163,9 +163,10 @@ public class AutoPlayTestRunner : MonoBehaviour
                         float waited = 0;
                         float fireTimer = 0;
                         combat.RangedAttack();
+                        // 不要在弹丸飞行途中每帧把敌人teleport回原位: 它已被FreezeAll锁死
+                        // 不会动,每帧重置位置反而会打断连续碰撞检测,导致命中时好时坏
                         while (waited < 2.5f && enemy.CurrentHealth >= hpBeforeRanged)
                         {
-                            enemy.transform.position = fixedEnemyPos; // 保持静止
                             fireTimer += Time.deltaTime;
                             if (fireTimer >= 0.6f) { fireTimer = 0; combat.RangedAttack(); }
                             waited += Time.deltaTime;
@@ -304,6 +305,9 @@ public class AutoPlayTestRunner : MonoBehaviour
 
         // ===== 合作关卡测试(Level_1_2 双向前行) =====
         yield return RunCoopLevelTest();
+
+        // ===== 合作关卡测试(Level_1_3 影推+光桥) =====
+        yield return RunCoopLevel13Test();
 
         // ===== Boss战测试(加载Boss关Level_1_4) =====
         yield return RunBossTest();
@@ -608,6 +612,106 @@ public class AutoPlayTestRunner : MonoBehaviour
             Check($"Coop level: Lux beam opens the gate door (y {doorYClosed:F1}->{door.transform.position.y:F1})",
                 door.transform.position.y > doorYClosed + 0.5f);
         }
+    }
+
+    /// <summary>
+    /// 合作关卡测试(Level_1_3) - 用上1_2没用到的两个能力:
+    /// ①Nox影推箱子压住压板 → A门永久开启(箱子替人站着)
+    /// ②高处光敏机关地面够不到 → Lux造光桥站上去才能打亮 → B门开
+    /// </summary>
+    private IEnumerator RunCoopLevel13Test()
+    {
+        if (GameManager.Instance == null) yield break;
+        GameManager.Instance.LoadLevel(1, 3);
+        yield return new WaitForSecondsRealtime(3f);
+
+        var crate = GameObject.Find("Coop3_Crate");
+        var plateGO = GameObject.Find("Coop3_Plate");
+        var doorA = GameObject.Find("Coop3_DoorA");
+        var sensorGO = GameObject.Find("Coop3_HighSensor");
+        var doorB = GameObject.Find("Coop3_DoorB");
+        Check("Coop 1-3: crate exists", crate != null);
+        Check("Coop 1-3: plate exists", plateGO != null);
+        Check("Coop 1-3: door A exists", doorA != null);
+        Check("Coop 1-3: high sensor exists", sensorGO != null);
+        Check("Coop 1-3: door B exists", doorB != null);
+        if (crate == null || plateGO == null || doorA == null || sensorGO == null || doorB == null)
+            yield break;
+
+        PlayerController lux = null, nox = null;
+        foreach (var p in Object.FindObjectsByType<PlayerController>(FindObjectsSortMode.None))
+        {
+            if (p.Type == PlayerController.PlayerType.Lux) lux = p;
+            else nox = p;
+        }
+        if (lux == null || nox == null) yield break;
+
+        var plate = plateGO.GetComponent<PressurePlate>();
+        Check("Coop 1-3: plate starts unpressed", plate != null && !plate.IsPressed);
+
+        // ===== ① Nox影推箱子上压板 =====
+        float doorAClosedY = doorA.transform.position.y;
+        nox.SetFrozen(false);
+        // 站到箱子左侧,朝右推
+        nox.transform.position = new Vector3(crate.transform.position.x - 1.2f,
+            nox.transform.position.y, 0f);
+        nox.SetMoveInput(Vector2.right);
+        yield return null;
+
+        var noxAbilities = nox.GetComponent<NoxAbilities>();
+        float pushWait = 0f;
+        while (pushWait < 3f && (plate == null || !plate.IsPressed))
+        {
+            Debug.Log($"[L13DIAG] noxX={nox.transform.position.x:F2} facingR={nox.IsFacingRight} " +
+                $"crateX={crate.transform.position.x:F2} crateY={crate.transform.position.y:F2} " +
+                $"crateLayer={crate.layer} tag={crate.tag}");
+            noxAbilities.ShadowPush();
+            pushWait += 0.25f;
+            yield return new WaitForSeconds(0.25f);
+        }
+        Check($"Coop 1-3: Nox pushes the crate onto the plate (crateX={crate.transform.position.x:F1}, plateX={plateGO.transform.position.x:F1})",
+            plate != null && plate.IsPressed);
+
+        yield return new WaitForSeconds(0.8f);
+        Check($"Coop 1-3: weighted plate opens door A (y {doorAClosedY:F1}->{doorA.transform.position.y:F1})",
+            doorA.transform.position.y > doorAClosedY + 0.5f);
+
+        // ===== ② 高处机关: 先证明地面打不亮 =====
+        var sensor = sensorGO.GetComponent<LightSensor>();
+        var luxAbilities = lux.GetComponent<LuxAbilities>();
+        lux.SetFrozen(false);
+        lux.transform.position = new Vector3(sensorGO.transform.position.x - 2f,
+            lux.transform.position.y, 0f);
+        lux.SetMoveInput(Vector2.right);
+        yield return null;
+        while (!luxAbilities.IsReady) yield return null;
+        luxAbilities.TryActivate();
+        yield return new WaitForSeconds(1.2f);
+        Check("Coop 1-3: ground-level beam cannot reach the high sensor (gate is real)",
+            sensor != null && !sensor.IsActivated);
+
+        // ===== ② 造光桥站上去再打 =====
+        float doorBClosedY = doorB.transform.position.y;
+        lux.SetFrozen(true);
+        lux.transform.position = new Vector3(sensorGO.transform.position.x - 2f,
+            sensorGO.transform.position.y, 0f);
+        yield return null;
+        luxAbilities.CreateLightBridge();
+        yield return null;
+        Check("Coop 1-3: Lux can build a bridge at sensor height",
+            GameObject.Find("LightBridge") != null);
+
+        while (!luxAbilities.IsReady) yield return null;
+        luxAbilities.TryActivate();
+        yield return new WaitForSeconds(1.2f);
+        Check("Coop 1-3: beam from bridge height activates the high sensor",
+            sensor != null && sensor.IsActivated);
+
+        yield return new WaitForSeconds(0.8f);
+        Check($"Coop 1-3: high sensor opens door B (y {doorBClosedY:F1}->{doorB.transform.position.y:F1})",
+            doorB.transform.position.y > doorBClosedY + 0.5f);
+
+        lux.SetFrozen(false);
     }
 
     private IEnumerator RunBossTest()
