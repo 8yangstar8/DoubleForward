@@ -12,6 +12,9 @@ public class HintSystem : MonoBehaviour
 {
     public static HintSystem Instance { get; private set; }
 
+    /// <summary>当前是否正在显示提示(供关卡验证用)</summary>
+    public bool IsShowingHint => isShowingHint;
+
     [System.Serializable]
     public class HintData
     {

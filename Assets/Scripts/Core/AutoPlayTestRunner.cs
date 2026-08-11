@@ -585,6 +585,19 @@ public class AutoPlayTestRunner : MonoBehaviour
         }
 
         // ④ 光敏机关只有Lux能开 → 门升起
+        // 教学提示: 系统接活了,且走进触发区真的会弹出来
+        Check("Coop level: hint system is instantiated and wired", HintSystem.Instance != null);
+        var hintZone = Object.FindAnyObjectByType<LevelHintZone>();
+        Check("Coop level: hint zones are placed", hintZone != null);
+        if (HintSystem.Instance != null && hintZone != null)
+        {
+            lux.SetFrozen(false);
+            lux.transform.position = hintZone.transform.position;
+            yield return new WaitForSeconds(0.4f);
+            Check($"Coop level: walking into a hint zone shows the hint ('{hintZone.HintText}')",
+                HintSystem.Instance.IsShowingHint);
+        }
+
         // 背景: 云朵存在且真的在飘
         var cloud = GameObject.Find("BgCloud_0");
         Check("Coop level: background clouds exist", cloud != null);
