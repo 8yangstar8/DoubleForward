@@ -34,9 +34,10 @@ public class LevelHintZone : MonoBehaviour
     }
 
     /// <summary>编辑器配置用</summary>
-    public void Configure(string text, float duration)
+    public void Configure(string text, float duration, bool once = true)
     {
         hintText = text;
         displayDuration = duration;
+        triggerOnce = once;
     }
 }

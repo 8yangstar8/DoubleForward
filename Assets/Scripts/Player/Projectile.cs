@@ -32,6 +32,24 @@ public class Projectile : MonoBehaviour
 
     void Update()
     {
+        float step = speed * Time.deltaTime;
+
+        // 扫掠检测: 只靠Translate+OnTriggerEnter2D,低帧率下一帧位移好几个单位就会
+        // 直接穿过目标(批处理里实测一帧可长达0.3秒,中端安卓掉帧时同理)。
+        // 先沿本帧位移扫一遍,命中就在命中点结算
+        if (step > 0f)
+        {
+            foreach (var hit in Physics2D.RaycastAll(transform.position, Vector2.right * direction, step))
+            {
+                if (hit.collider == null || hit.collider.gameObject == gameObject) continue;
+                // 扫掠必须遵守层碰撞矩阵,否则会打到触发器路径本来会忽略的东西
+                // (例如射手自己 —— Player x PlayerBullet 是设为忽略的)
+                if (Physics2D.GetIgnoreLayerCollision(gameObject.layer, hit.collider.gameObject.layer))
+                    continue;
+                if (TryHandleHit(hit.collider)) return;
+            }
+        }
+
         transform.Translate(Vector3.right * direction * speed * Time.deltaTime);
 
         timer -= Time.deltaTime;
@@ -40,6 +58,12 @@ public class Projectile : MonoBehaviour
     }
 
     void OnTriggerEnter2D(Collider2D other)
+    {
+        TryHandleHit(other);
+    }
+
+    /// <summary>命中结算。返回true表示这一发已消耗掉</summary>
+    private bool TryHandleHit(Collider2D other)
     {
         // 检查是否命中敌人
         var enemy = other.GetComponent<EnemyBase>();
@@ -59,7 +83,7 @@ public class Projectile : MonoBehaviour
 
             SpawnHitEffect();
             DestroyProjectile();
-            return;
+            return true;
         }
 
         // 可破坏物
@@ -69,7 +93,7 @@ public class Projectile : MonoBehaviour
             breakable.TakeDamage(damage, "");
             SpawnHitEffect();
             DestroyProjectile();
-            return;
+            return true;
         }
 
         // 撞墙
@@ -77,7 +101,10 @@ public class Projectile : MonoBehaviour
         {
             SpawnHitEffect();
             DestroyProjectile();
+            return true;
         }
+
+        return false;
     }
 
     private void SpawnHitEffect()

@@ -44,7 +44,9 @@ public static class TutorialHintBuilder
         foreach (var go in Object.FindObjectsByType<GameObject>(FindObjectsSortMode.None))
             if (go != null && go.name.StartsWith(Prefix)) Object.DestroyImmediate(go);
 
-        var hintSystem = CreateHintUI();
+        var texts = new string[hints.Length];
+        for (int i = 0; i < hints.Length; i++) texts[i] = hints[i].text;
+        var hintSystem = CreateHintUI(System.IO.Path.GetFileNameWithoutExtension(scenePath), texts);
 
         int built = 0;
         foreach (var (anchorName, text) in hints)
@@ -62,7 +64,8 @@ public static class TutorialHintBuilder
             var col = zone.AddComponent<BoxCollider2D>();
             col.size = new Vector2(3f, 4f);
             col.isTrigger = true;
-            zone.AddComponent<LevelHintZone>().Configure(text, 5f);
+            // 可重复触发: 玩家没看清可以退回去再走一次
+            zone.AddComponent<LevelHintZone>().Configure(text, 5f, false);
             built++;
         }
 
@@ -73,7 +76,7 @@ public static class TutorialHintBuilder
     }
 
     /// <summary>建一套自带Canvas的提示UI,并把引用接到 HintSystem 上</summary>
-    private static HintSystem CreateHintUI()
+    private static HintSystem CreateHintUI(string levelId, string[] progressiveHints)
     {
         var canvasGO = new GameObject($"{Prefix}Canvas");
         var canvas = canvasGO.AddComponent<Canvas>();
@@ -115,13 +118,55 @@ public static class TutorialHintBuilder
 
         panel.SetActive(false);   // 初始隐藏,由 HintSystem 控制
 
+        // 右下角"提示"按钮: 玩家卡住时主动再看一次(HintSystem在Awake里自动绑定onClick)
+        var btnGO = new GameObject("HintButton");
+        btnGO.transform.SetParent(canvasGO.transform, false);
+        var btnRect = btnGO.AddComponent<RectTransform>();
+        btnRect.anchorMin = new Vector2(1f, 0f);
+        btnRect.anchorMax = new Vector2(1f, 0f);
+        btnRect.pivot = new Vector2(1f, 0f);
+        btnRect.anchoredPosition = new Vector2(-40f, 40f);
+        btnRect.sizeDelta = new Vector2(160f, 70f);
+        var btnImg = btnGO.AddComponent<Image>();
+        btnImg.color = new Color(0.22f, 0.20f, 0.34f, 0.90f);
+        var button = btnGO.AddComponent<Button>();
+
+        var btnTextGO = new GameObject("Label");
+        btnTextGO.transform.SetParent(btnGO.transform, false);
+        var btnTextRect = btnTextGO.AddComponent<RectTransform>();
+        btnTextRect.anchorMin = Vector2.zero;
+        btnTextRect.anchorMax = Vector2.one;
+        btnTextRect.offsetMin = Vector2.zero;
+        btnTextRect.offsetMax = Vector2.zero;
+        var btnTmp = btnTextGO.AddComponent<TextMeshProUGUI>();
+        btnTmp.text = "提示";
+        btnTmp.fontSize = 34f;
+        btnTmp.alignment = TextAlignmentOptions.Center;
+        btnTmp.color = new Color(1f, 0.95f, 0.80f);
+        var font2 = AssetDatabase.LoadAssetAtPath<TMP_FontAsset>(FontPath);
+        if (font2 != null) btnTmp.font = font2;
+
         var systemGO = new GameObject($"{Prefix}System");
         var hintSystem = systemGO.AddComponent<HintSystem>();
         var so = new SerializedObject(hintSystem);
         so.FindProperty("hintPanel").objectReferenceValue = panel;
         so.FindProperty("hintText").objectReferenceValue = tmp;
         so.FindProperty("hintCanvasGroup").objectReferenceValue = group;
+        so.FindProperty("hintButton").objectReferenceValue = button;
         so.FindProperty("autoHintEnabled").boolValue = false;  // 关掉90秒卡关自动提示,免得干扰测试
+
+        // 关卡提示数据: RequestHint() 在 currentLevelHints 为空时同样静默返回,
+        // 不填的话"提示"按钮按了没反应。按顺序填进渐进提示,越按越往后
+        var listProp = so.FindProperty("currentLevelHints");
+        listProp.arraySize = 1;
+        var entry = listProp.GetArrayElementAtIndex(0);
+        entry.FindPropertyRelative("hintId").stringValue = levelId;
+        entry.FindPropertyRelative("stuckTimeThreshold").floatValue = 60f;
+        var arrProp = entry.FindPropertyRelative("progressiveHints");
+        arrProp.arraySize = progressiveHints.Length;
+        for (int i = 0; i < progressiveHints.Length; i++)
+            arrProp.GetArrayElementAtIndex(i).stringValue = progressiveHints[i];
+
         so.ApplyModifiedProperties();
 
         return hintSystem;

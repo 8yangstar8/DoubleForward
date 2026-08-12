@@ -153,8 +153,9 @@ public class AutoPlayTestRunner : MonoBehaviour
                             enemyRb.constraints = RigidbodyConstraints2D.FreezeAll;
                         }
                         enemy.transform.position = fixedEnemyPos;
-                        // 精确对齐: 玩家Y使firePoint(局部+0.2)与敌人中心同高,光弹必经敌人
-                        lux.transform.position = fixedEnemyPos + new Vector3(-4.0f, -0.2f, 0);
+                        // 近距离射击: 这条测试要验证的是"光弹能否造成伤害",不是"能飞4格"。
+                        // 拉远会把关卡摆放和低帧率下的隧穿都掺进来,让结果时好时坏
+                        lux.transform.position = fixedEnemyPos + new Vector3(-1.5f, -0.2f, 0);
                         lux.SetMoveInput(Vector2.right);
                         yield return null;
                         enemy.transform.position = fixedEnemyPos;
@@ -596,6 +597,33 @@ public class AutoPlayTestRunner : MonoBehaviour
             yield return new WaitForSeconds(0.4f);
             Check($"Coop level: walking into a hint zone shows the hint ('{hintZone.HintText}')",
                 HintSystem.Instance.IsShowingHint);
+
+            // 验证隐藏/主动再看之前,先把所有提示区停用: 提示区是可重复触发的,
+            // 且对任何玩家都响应 —— 只挪开Lux不够,Nox游荡进去照样会重新弹出,
+            // 后面"已隐藏"的断言就会时好时坏
+            var allZones = Object.FindObjectsByType<LevelHintZone>(FindObjectsSortMode.None);
+            foreach (var z in allZones) z.enabled = false;
+            yield return null;
+
+            // "提示"按钮: 玩家没看清时能主动再看一次
+            // 轮询等淡出结束,而不是睡固定时长: FadeOutAndHide 用 unscaledDeltaTime
+            // 累加,批处理下帧长波动大,固定 WaitForSeconds 会时好时坏
+            HintSystem.Instance.HideHint();
+            float hideWait = 0f;
+            while (hideWait < 3f && HintSystem.Instance.IsShowingHint)
+            {
+                hideWait += Time.deltaTime;
+                yield return null;
+            }
+            Check($"Coop level: hint hides again (after {hideWait:F2}s)",
+                !HintSystem.Instance.IsShowingHint);
+
+            HintSystem.Instance.RequestHint();
+            yield return null;
+            Check("Coop level: the hint button re-shows a hint on demand",
+                HintSystem.Instance.IsShowingHint);
+
+            foreach (var z in allZones) if (z != null) z.enabled = true;
         }
 
         // 背景: 云朵存在且真的在飘
