@@ -252,6 +252,13 @@ public class AutoPlayTestRunner : MonoBehaviour
                     }
                     Check($"Pressed plate raises door (y {doorYClosed:F1}->{door.transform.position.y:F1})",
                         door.transform.position.y > doorYClosed + 0.5f);
+
+                    // 离开压板后门必须保持开启(锁存)。板在x=10门在x=13,不锁存的话
+                    // 单人玩家没法既站在板上又穿过门 —— 这一关实际就过不去了
+                    lux.transform.position = plate.transform.position + Vector3.left * 6f;
+                    yield return new WaitForSeconds(1.5f);
+                    Check($"Door stays open after leaving the plate (solo-passable, y={door.transform.position.y:F1})",
+                        door.transform.position.y > doorYClosed + 0.5f);
                 }
             }
 

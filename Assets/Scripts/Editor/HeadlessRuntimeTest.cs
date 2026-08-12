@@ -300,8 +300,8 @@ public static class HeadlessRuntimeTest
     {
         var expected = new (string clip, int minFrames)[]
         {
-            ("Lux_Idle", 2), ("Lux_Run", 4), ("Lux_Jump", 1), ("Lux_Fall", 1),
-            ("Nox_Idle", 2), ("Nox_Run", 4), ("Nox_Jump", 1), ("Nox_Fall", 1),
+            ("Lux_Idle", 4), ("Lux_Run", 4), ("Lux_Jump", 1), ("Lux_Fall", 1),
+            ("Nox_Idle", 4), ("Nox_Run", 4), ("Nox_Jump", 1), ("Nox_Fall", 1),
         };
 
         foreach (var (clipName, minFrames) in expected)

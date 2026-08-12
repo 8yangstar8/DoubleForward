@@ -31,22 +31,28 @@ public static class CharacterAnimationGenerator
 
     private static void Build(string name, Color body, Color rim)
     {
-        // 待机: 轻微起伏
-        var idle = new[] { Frame(name, "Idle", 0, body, rim, 0f, 0f, 0),
-                           Frame(name, "Idle", 1, body, rim, 0f, 0f, -1) };
-        // 奔跑: 四帧腿部循环, 手臂反向摆动
+        // 待机: 四帧呼吸起伏。2帧、1像素的幅度在32x48的精灵上根本看不出来
+        var idle = new List<Sprite>();
+        for (int i = 0; i < 4; i++)
+        {
+            float phase = i * Mathf.PI * 0.5f;
+            idle.Add(Frame(name, "Idle", i, body, rim,
+                0f, Mathf.Sin(phase) * 0.35f, Mathf.RoundToInt(-1.5f - Mathf.Cos(phase) * 1.5f)));
+        }
+        // 奔跑: 四帧腿部循环, 手臂反向摆动, 身体跟着起伏
         var run = new List<Sprite>();
         for (int i = 0; i < 4; i++)
         {
             float phase = i * Mathf.PI * 0.5f;
             run.Add(Frame(name, "Run", i, body, rim,
-                Mathf.Sin(phase), -Mathf.Sin(phase), (i % 2 == 0) ? 0 : -1));
+                Mathf.Sin(phase), -Mathf.Sin(phase),
+                Mathf.RoundToInt(Mathf.Abs(Mathf.Sin(phase)) * 2f)));
         }
-        var jump = new[] { Frame(name, "Jump", 0, body, rim, 0.7f, -0.9f, 1) };
-        var fall = new[] { Frame(name, "Fall", 0, body, rim, -0.6f, 0.8f, -1) };
+        var jump = new[] { Frame(name, "Jump", 0, body, rim, 0.7f, -0.9f, 2) };
+        var fall = new[] { Frame(name, "Fall", 0, body, rim, -0.6f, 0.8f, -2) };
 
-        WriteClip($"{ClipDir}/{name}_Idle.anim", idle, 0.5f, true);
-        WriteClip($"{ClipDir}/{name}_Run.anim", run.ToArray(), 0.12f, true);
+        WriteClip($"{ClipDir}/{name}_Idle.anim", idle.ToArray(), 0.28f, true);
+        WriteClip($"{ClipDir}/{name}_Run.anim", run.ToArray(), 0.11f, true);
         WriteClip($"{ClipDir}/{name}_Jump.anim", jump, 0.4f, false);
         WriteClip($"{ClipDir}/{name}_Fall.anim", fall, 0.4f, false);
     }

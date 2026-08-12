@@ -12,7 +12,6 @@ using System.IO;
 public static class BackgroundArtGenerator
 {
     private const string ArtDir = "Assets/Resources/Art";
-    private const string ScenePath = "Assets/Scenes/Chapter1/Level_1_2.unity";
     private const string CloudPrefix = "BgCloud_";
 
     [MenuItem("DoubleForward/Generate Background Art", false, 53)]
@@ -25,7 +24,25 @@ public static class BackgroundArtGenerator
         Create("BgTrees", 192, 80, 8, DrawTrees);
         Create("BgCloud", 64, 24, 12, DrawCloud);
 
-        ApplyToLevel12();
+        ApplyToAllLevels();
+    }
+
+    /// <summary>给所有章节关卡铺背景,不只是1-2</summary>
+    private static void ApplyToAllLevels()
+    {
+        int done = 0;
+        foreach (var entry in EditorBuildSettings.scenes)
+        {
+            if (!entry.enabled || !entry.path.Contains("/Chapter")) continue;
+            if (!System.IO.File.Exists(entry.path)) continue;
+
+            EditorSceneManager.OpenScene(entry.path);
+            ApplyToOpenScene();
+            EditorSceneManager.MarkSceneDirty(EditorSceneManager.GetActiveScene());
+            EditorSceneManager.SaveScene(EditorSceneManager.GetActiveScene());
+            done++;
+        }
+        Debug.Log($"[BgArt] background layers + drifting clouds applied to {done} level scenes");
     }
 
     // ==================== 绘制 ====================
@@ -145,10 +162,8 @@ public static class BackgroundArtGenerator
 
     // ==================== 接入场景 ====================
 
-    private static void ApplyToLevel12()
+    private static void ApplyToOpenScene()
     {
-        EditorSceneManager.OpenScene(ScenePath);
-
         AssignLayer("ParallaxLayer_0", "BgSky", new Color(1f, 1f, 1f), -30);
         AssignLayer("ParallaxLayer_1", "BgHills", new Color(1f, 1f, 1f), -20);
         AssignLayer("ParallaxLayer_2", "BgTrees", new Color(1f, 1f, 1f), -10);
@@ -169,10 +184,6 @@ public static class BackgroundArtGenerator
             sr.sortingOrder = -25;
             cloud.AddComponent<CloudDrift>().Configure(0.25f + i * 0.08f, 44f);
         }
-
-        EditorSceneManager.MarkSceneDirty(EditorSceneManager.GetActiveScene());
-        EditorSceneManager.SaveScene(EditorSceneManager.GetActiveScene());
-        Debug.Log("[BgArt] Level_1_2 background layers + 4 drifting clouds applied");
     }
 
     private static void AssignLayer(string objectName, string spriteName, Color tint, int order)

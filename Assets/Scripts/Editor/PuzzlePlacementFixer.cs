@@ -79,6 +79,49 @@ public static class PuzzlePlacementFixer
     }
 
     /// <summary>
+    /// 把各关自带的 PressurePlate_1 设为锁存(isToggle)。
+    ///
+    /// 这些板是瞬时的:踩住门才开,一离开门就落下。板在x=10、门在x=13,
+    /// 单人玩家不可能同时站在板上又穿过门 —— 关卡实际过不去。
+    /// (板被 Reset() 拽到原点的年代,它一直被出生点的玩家压着,门"恰好"常开,
+    ///  所以这个问题被掩盖了;把板归位反而暴露出来。)
+    /// 合作关卡里 Coop_Plate / Coop3_Plate 保持瞬时,那是设计的一部分。
+    /// </summary>
+    [MenuItem("DoubleForward/Make Legacy Plates Latching", false, 14)]
+    public static void MakeLegacyPlatesLatching()
+    {
+        int changed = 0;
+        foreach (var entry in EditorBuildSettings.scenes)
+        {
+            if (!entry.enabled || !entry.path.Contains("/Chapter")) continue;
+            if (!File.Exists(entry.path)) continue;
+
+            EditorSceneManager.OpenScene(entry.path);
+            bool dirty = false;
+
+            foreach (var plate in Object.FindObjectsByType<PressurePlate>(FindObjectsSortMode.None))
+            {
+                if (plate.name != "PressurePlate_1") continue;
+                var so = new SerializedObject(plate);
+                var prop = so.FindProperty("isToggle");
+                if (prop == null || prop.boolValue) continue;
+                prop.boolValue = true;
+                so.ApplyModifiedProperties();
+                dirty = true;
+                changed++;
+            }
+
+            if (dirty)
+            {
+                EditorSceneManager.MarkSceneDirty(EditorSceneManager.GetActiveScene());
+                EditorSceneManager.SaveScene(EditorSceneManager.GetActiveScene());
+                Debug.Log($"[PuzzleFix] {Path.GetFileNameWithoutExtension(entry.path)}: plate latching");
+            }
+        }
+        Debug.Log($"[PuzzleFix] {changed} legacy plates set to latching");
+    }
+
+    /// <summary>
     /// 找一处板和门都放得下的空位。模板场景在地面上随机撒了平台和敌人,
     /// 固定偏移会把板埋进平台里(踩不到)、把门叠在敌人身上(挡住弹道)。
     /// </summary>
