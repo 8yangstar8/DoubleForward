@@ -60,6 +60,19 @@ public class PlayerController : MonoBehaviour
         int playerLayer = LayerMask.NameToLayer("Player");
         if (playerLayer >= 0)
             Physics2D.IgnoreLayerCollision(playerLayer, playerLayer, true);
+
+        // 零摩擦碰撞体: 默认摩擦力会在玩家推向墙面/台阶侧面时把上升速度磨掉,
+        // 人被"粘"在半人高的台子前跳不上去(实测跳跃力满值10,0.4秒后vy已被清零)。
+        // 移动是直接设速度的,不依赖摩擦力刹车,所以设为0是安全的。
+        var col = GetComponent<Collider2D>();
+        if (col != null && col.sharedMaterial == null)
+        {
+            col.sharedMaterial = new PhysicsMaterial2D("PlayerFrictionless")
+            {
+                friction = 0f,
+                bounciness = 0f
+            };
+        }
     }
 
     void Update()
@@ -139,15 +152,16 @@ public class PlayerController : MonoBehaviour
         var kb = UnityEngine.InputSystem.Keyboard.current;
         if (kb != null && playerIndex == 0)
         {
+            // P1 只用 WASD: 方向键让给 P2,否则笔记本上(没有小键盘)第二个角色动不了
             float kx = 0;
-            if (kb.aKey.isPressed || kb.leftArrowKey.isPressed) kx = -1;
-            else if (kb.dKey.isPressed || kb.rightArrowKey.isPressed) kx = 1;
+            if (kb.aKey.isPressed) kx = -1;
+            else if (kb.dKey.isPressed) kx = 1;
 
             if (kx != 0)
             {
                 float ky = 0;
-                if (kb.wKey.isPressed || kb.upArrowKey.isPressed) ky = 1;
-                else if (kb.sKey.isPressed || kb.downArrowKey.isPressed) ky = -1;
+                if (kb.wKey.isPressed) ky = 1;
+                else if (kb.sKey.isPressed) ky = -1;
                 SetMoveInput(new Vector2(kx, ky));
             }
             else if (InputManager.Instance != null)
@@ -166,15 +180,16 @@ public class PlayerController : MonoBehaviour
         // P2键盘
         if (kb != null && playerIndex == 1)
         {
+            // 方向键 + 小键盘都能用: 笔记本没有小键盘,只留小键盘等于第二个角色动不了
             float kx = 0;
-            if (kb.numpad4Key.isPressed) kx = -1;
-            else if (kb.numpad6Key.isPressed) kx = 1;
+            if (kb.leftArrowKey.isPressed || kb.numpad4Key.isPressed) kx = -1;
+            else if (kb.rightArrowKey.isPressed || kb.numpad6Key.isPressed) kx = 1;
 
             if (kx != 0)
             {
                 float ky = 0;
-                if (kb.numpad8Key.isPressed) ky = 1;
-                else if (kb.numpad2Key.isPressed) ky = -1;
+                if (kb.upArrowKey.isPressed || kb.numpad8Key.isPressed) ky = 1;
+                else if (kb.downArrowKey.isPressed || kb.numpad2Key.isPressed) ky = -1;
                 SetMoveInput(new Vector2(kx, ky));
             }
             else if (InputManager.Instance != null)
@@ -182,9 +197,9 @@ public class PlayerController : MonoBehaviour
                 SetMoveInput(InputManager.Instance.GetMoveInput(playerIndex));
             }
 
-            if (kb.numpad0Key.wasPressedThisFrame) TryJump();
-            if (kb.numpad1Key.wasPressedThisFrame) TryAttack();
-            if (kb.numpad3Key.wasPressedThisFrame) TryDash();
+            if (kb.rightShiftKey.wasPressedThisFrame || kb.numpad0Key.wasPressedThisFrame) TryJump();
+            if (kb.rightCtrlKey.wasPressedThisFrame || kb.numpad1Key.wasPressedThisFrame) TryAttack();
+            if (kb.slashKey.wasPressedThisFrame || kb.numpad3Key.wasPressedThisFrame) TryDash();
             return;
         }
 
@@ -210,7 +225,7 @@ public class PlayerController : MonoBehaviour
             TrySkill2();
     }
 
-    private void TryAttack()
+    public void TryAttack()
     {
         var combat = GetComponent<PlayerCombat>();
         if (combat == null) return;

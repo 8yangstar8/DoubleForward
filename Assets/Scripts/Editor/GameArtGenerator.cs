@@ -29,6 +29,21 @@ public static class GameArtGenerator
 
         Create("CrateArt", 40, 40, 40, SpriteAlignment.Center, DrawCrate);        // 1 x 1
 
+        // ===== 单位贴图(正好1x1世界单位) =====
+        // 场景里这些物体用 transform.localScale 当世界尺寸(如平台 scale 4x0.5),
+        // 贴图必须是 1x1 世界单位,乘上缩放后才正好盖住碰撞体。
+        // 会被横向拉伸的(地面/平台)一律做成横向均匀的图案,拉开也不难看。
+        Create("UnitGround", 32, 32, 32, SpriteAlignment.Center, DrawUnitGround);
+        Create("UnitDirt", 32, 32, 32, SpriteAlignment.Center, DrawUnitDirt);
+        Create("UnitPlatform", 32, 32, 32, SpriteAlignment.Center, DrawUnitPlatform);
+        Create("UnitEnemy", 32, 32, 32, SpriteAlignment.Center, DrawUnitEnemy);
+        Create("UnitGoal", 32, 32, 32, SpriteAlignment.Center, DrawUnitGoal);
+        Create("UnitCheckpoint", 32, 32, 32, SpriteAlignment.Center, DrawUnitCheckpoint);
+        Create("UnitCollectible", 32, 32, 32, SpriteAlignment.Center, DrawUnitCollectible);
+        Create("UnitDoor", 32, 32, 32, SpriteAlignment.Center, DrawUnitDoor);
+        Create("UnitPlate", 32, 32, 32, SpriteAlignment.Center, DrawUnitPlate);
+        Create("UnitSensor", 32, 32, 32, SpriteAlignment.Center, DrawUnitSensor);
+
         // ===== 地形 =====
         Create("GroundTile", 32, 32, 16, SpriteAlignment.Center, DrawGroundTile);        // 2 x 2
 
@@ -185,6 +200,182 @@ public static class GameArtGenerator
         t.Apply();
     }
 
+    /// <summary>地面(1x1): 顶部草皮 + 下方泥土, 横向完全均匀,拉多长都不会花</summary>
+    private static void DrawUnitGround(Texture2D t)
+    {
+        int w = t.width, h = t.height;
+        for (int y = 0; y < h; y++)
+        {
+            Color c;
+            if (y >= h - 5)                       // 草皮
+                c = Color.Lerp(new Color(0.20f, 0.44f, 0.21f), new Color(0.33f, 0.63f, 0.29f),
+                    (float)(y - (h - 5)) / 5f);
+            else if (y >= h - 7)                  // 草土交界的暗线
+                c = new Color(0.17f, 0.28f, 0.15f);
+            else
+                c = Color.Lerp(new Color(0.20f, 0.14f, 0.10f), new Color(0.37f, 0.26f, 0.17f),
+                    (float)y / (h - 7));
+            for (int x = 0; x < w; x++) t.SetPixel(x, y, new Color(c.r, c.g, c.b, 1f));
+        }
+        t.Apply();
+    }
+
+    /// <summary>纯泥土(1x1): 给地面下方填充用,没有草皮,纵向拉伸也不会出现第二条草线</summary>
+    private static void DrawUnitDirt(Texture2D t)
+    {
+        int w = t.width, h = t.height;
+        for (int y = 0; y < h; y++)
+        {
+            var c = Color.Lerp(new Color(0.13f, 0.09f, 0.06f), new Color(0.30f, 0.21f, 0.14f),
+                (float)y / (h - 1));
+            for (int x = 0; x < w; x++) t.SetPixel(x, y, new Color(c.r, c.g, c.b, 1f));
+        }
+        t.Apply();
+    }
+
+    /// <summary>平台(1x1): 石板, 顶面高光 + 底面阴影, 横向均匀</summary>
+    private static void DrawUnitPlatform(Texture2D t)
+    {
+        int w = t.width, h = t.height;
+        for (int y = 0; y < h; y++)
+        {
+            float v = (float)y / (h - 1);
+            Color c;
+            if (v > 0.86f) c = new Color(0.62f, 0.60f, 0.55f);          // 受光顶面
+            else if (v < 0.16f) c = new Color(0.20f, 0.19f, 0.20f);      // 底面阴影
+            else c = Color.Lerp(new Color(0.33f, 0.31f, 0.31f), new Color(0.48f, 0.46f, 0.43f), v);
+            for (int x = 0; x < w; x++) t.SetPixel(x, y, new Color(c.r, c.g, c.b, 1f));
+        }
+        t.Apply();
+    }
+
+    /// <summary>敌人(1x1): 深紫史莱姆, 两只发光的眼睛</summary>
+    private static void DrawUnitEnemy(Texture2D t)
+    {
+        int w = t.width, h = t.height;
+        Clear(t);
+        float cx = (w - 1) * 0.5f;
+        for (int y = 0; y < h; y++)
+            for (int x = 0; x < w; x++)
+            {
+                // 下宽上圆的水滴形
+                float ny = (float)y / (h - 1);
+                float halfW = Mathf.Lerp(w * 0.46f, w * 0.20f, Mathf.Pow(ny, 1.6f));
+                if (Mathf.Abs(x - cx) > halfW || ny > 0.86f) continue;
+                var c = Color.Lerp(new Color(0.34f, 0.12f, 0.42f), new Color(0.55f, 0.24f, 0.62f), ny);
+                if (x - cx < -halfW * 0.55f) c *= 1.25f;   // 左侧受光
+                t.SetPixel(x, y, new Color(c.r, c.g, c.b, 1f));
+            }
+        // 眼睛
+        foreach (int ex in new[] { (int)cx - 5, (int)cx + 4 })
+            for (int dy = 0; dy < 3; dy++)
+                for (int dx = 0; dx < 3; dx++)
+                    t.SetPixel(ex + dx, (int)(h * 0.55f) + dy, new Color(1f, 0.85f, 0.4f));
+        t.Apply();
+    }
+
+    /// <summary>终点(1x1): 旗杆 + 金色旗面</summary>
+    private static void DrawUnitGoal(Texture2D t)
+    {
+        int w = t.width, h = t.height;
+        Clear(t);
+        for (int y = 2; y < h - 2; y++)                       // 旗杆
+            for (int x = 6; x < 9; x++)
+                t.SetPixel(x, y, new Color(0.62f, 0.60f, 0.56f));
+        for (int y = h - 20; y < h - 4; y++)                  // 旗面
+        {
+            int len = 16 - Mathf.Abs((y - (h - 12)) / 2);
+            for (int x = 9; x < 9 + len && x < w; x++)
+            {
+                float f = (float)(x - 9) / Mathf.Max(1, len);
+                var c = Color.Lerp(new Color(1f, 0.82f, 0.25f), new Color(0.95f, 0.55f, 0.10f), f);
+                t.SetPixel(x, y, new Color(c.r, c.g, c.b, 1f));
+            }
+        }
+        t.Apply();
+    }
+
+    /// <summary>检查点(1x1): 石座 + 绿色光柱</summary>
+    private static void DrawUnitCheckpoint(Texture2D t)
+    {
+        int w = t.width, h = t.height;
+        Clear(t);
+        for (int y = 0; y < 6; y++)                            // 底座
+            for (int x = 8; x < w - 8; x++)
+                t.SetPixel(x, y, new Color(0.35f, 0.34f, 0.32f));
+        for (int y = 6; y < h - 4; y++)                        // 光柱
+            for (int x = 13; x < 19; x++)
+            {
+                float a = 1f - (float)(y - 6) / (h - 10) * 0.6f;
+                t.SetPixel(x, y, new Color(0.30f, 0.85f, 0.45f, a));
+            }
+        t.Apply();
+    }
+
+    /// <summary>收集品(1x1): 菱形宝石</summary>
+    private static void DrawUnitCollectible(Texture2D t)
+    {
+        int w = t.width, h = t.height;
+        Clear(t);
+        float cx = (w - 1) * 0.5f, cy = (h - 1) * 0.5f;
+        for (int y = 0; y < h; y++)
+            for (int x = 0; x < w; x++)
+            {
+                float d = Mathf.Abs(x - cx) / (w * 0.32f) + Mathf.Abs(y - cy) / (h * 0.42f);
+                if (d > 1f) continue;
+                var c = Color.Lerp(new Color(1f, 0.98f, 0.75f), new Color(0.95f, 0.72f, 0.15f), d);
+                t.SetPixel(x, y, new Color(c.r, c.g, c.b, 1f));
+            }
+        t.Apply();
+    }
+
+    /// <summary>门(1x1): 木板 + 铆钉, 纵向拉伸也不难看</summary>
+    private static void DrawUnitDoor(Texture2D t)
+    {
+        int w = t.width, h = t.height;
+        for (int y = 0; y < h; y++)
+            for (int x = 0; x < w; x++)
+            {
+                var c = new Color(0.44f, 0.34f, 0.20f);
+                if (x % 10 < 1) c *= 0.6f;                              // 竖向板缝
+                c = Color.Lerp(c * 1.28f, c * 0.72f, (float)x / (w - 1));
+                t.SetPixel(x, y, new Color(c.r, c.g, c.b, 1f));
+            }
+        Outline(t, new Color(0.20f, 0.14f, 0.07f, 1f));
+        t.Apply();
+    }
+
+    /// <summary>压板(1x1): 金属板,上缘高光</summary>
+    private static void DrawUnitPlate(Texture2D t)
+    {
+        int w = t.width, h = t.height;
+        for (int y = 0; y < h; y++)
+        {
+            float v = (float)y / (h - 1);
+            var c = Color.Lerp(new Color(0.28f, 0.28f, 0.34f), new Color(0.74f, 0.76f, 0.84f), v);
+            for (int x = 0; x < w; x++) t.SetPixel(x, y, new Color(c.r, c.g, c.b, 1f));
+        }
+        t.Apply();
+    }
+
+    /// <summary>光敏机关(1x1): 菱形水晶</summary>
+    private static void DrawUnitSensor(Texture2D t)
+    {
+        int w = t.width, h = t.height;
+        Clear(t);
+        float cx = (w - 1) * 0.5f, cy = (h - 1) * 0.5f;
+        for (int y = 0; y < h; y++)
+            for (int x = 0; x < w; x++)
+            {
+                float d = Mathf.Abs(x - cx) / cx + Mathf.Abs(y - cy) / cy;
+                if (d > 1f) continue;
+                var c = Color.Lerp(new Color(1f, 0.98f, 0.80f), new Color(0.72f, 0.68f, 0.35f), d);
+                if (d > 0.86f) c *= 0.55f;
+                t.SetPixel(x, y, new Color(c.r, c.g, c.b, 1f));
+            }
+        t.Apply();
+    }
+
     /// <summary>木箱: 板材纹理 + 对角加固条 + 描边</summary>
     private static void DrawCrate(Texture2D t)
     {
@@ -239,6 +430,13 @@ public static class GameArtGenerator
     }
 
     // ==================== 工具 ====================
+
+    private static void Clear(Texture2D t)
+    {
+        for (int y = 0; y < t.height; y++)
+            for (int x = 0; x < t.width; x++)
+                t.SetPixel(x, y, Color.clear);
+    }
 
     /// <summary>给不透明区域描一圈边</summary>
     private static void Outline(Texture2D t, Color color)

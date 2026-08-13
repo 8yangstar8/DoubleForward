@@ -164,9 +164,11 @@ public static class BackgroundArtGenerator
 
     private static void ApplyToOpenScene()
     {
-        AssignLayer("ParallaxLayer_0", "BgSky", new Color(1f, 1f, 1f), -30);
-        AssignLayer("ParallaxLayer_1", "BgHills", new Color(1f, 1f, 1f), -20);
-        AssignLayer("ParallaxLayer_2", "BgTrees", new Color(1f, 1f, 1f), -10);
+        // 按目标世界尺寸反算缩放。场景原有的 scale=(80,15) 会把 16x12 的天空图
+        // 撑成 1280x180 单位,摄像机只看到中间极小一片渐变,结果就是一片纯色
+        AssignLayer("ParallaxLayer_0", "BgSky", -30, 170f, 34f, 2f);
+        AssignLayer("ParallaxLayer_1", "BgHills", -20, 170f, 11f, 4.5f);
+        AssignLayer("ParallaxLayer_2", "BgTrees", -10, 170f, 7f, 1.2f);  // 压低,树干藏进地面
 
         // 重复运行先清掉上一次的云
         foreach (var go in Object.FindObjectsByType<GameObject>(FindObjectsSortMode.None))
@@ -186,16 +188,28 @@ public static class BackgroundArtGenerator
         }
     }
 
-    private static void AssignLayer(string objectName, string spriteName, Color tint, int order)
+    private static void AssignLayer(string objectName, string spriteName, int order,
+        float targetWidth, float targetHeight, float centerY)
     {
         var go = GameObject.Find(objectName);
         if (go == null) { Debug.LogWarning($"[BgArt] {objectName} not found"); return; }
 
+        var sprite = AssetDatabase.LoadAssetAtPath<Sprite>($"{ArtDir}/{spriteName}.png");
+        if (sprite == null) { Debug.LogWarning($"[BgArt] sprite {spriteName} missing"); return; }
+
         var sr = go.GetComponent<SpriteRenderer>();
         if (sr == null) sr = go.AddComponent<SpriteRenderer>();
-        sr.sprite = AssetDatabase.LoadAssetAtPath<Sprite>($"{ArtDir}/{spriteName}.png");
-        sr.color = tint;
+        sr.sprite = sprite;
+        sr.color = Color.white;
         sr.sortingOrder = order;
+
+        // 精灵原生世界尺寸 = 像素 / PPU
+        var native = sprite.bounds.size;
+        if (native.x <= 0f || native.y <= 0f) return;
+        go.transform.localScale = new Vector3(targetWidth / native.x, targetHeight / native.y, 1f);
+
+        var p = go.transform.position;
+        go.transform.position = new Vector3(p.x, centerY, p.z);
     }
 
     private static void Create(string name, int width, int height, int ppu, System.Action<Texture2D> draw)

@@ -13,6 +13,99 @@ public class AutoPlayTestRunner : MonoBehaviour
     public static int Total;
     public static readonly List<string> Results = new List<string>();
 
+    /// <summary>
+    /// 从出生点真正走到终点 - 之前的通关测试是把角色瞬移过去,那证明不了
+    /// 玩家能不能走过去(路上可能有关着的门、跨不过的坑、卡人的几何)。
+    /// 这里只用"按住右 + 卡住就跳",和真人操作一致。
+    /// </summary>
+    private IEnumerator RunLevel11Walkthrough()
+    {
+        if (GameManager.Instance == null) yield break;
+        GameManager.Instance.LoadLevel(1, 1);
+        yield return new WaitForSecondsRealtime(3f);
+
+        PlayerController lux = null;
+        foreach (var p in Object.FindObjectsByType<PlayerController>(FindObjectsSortMode.None))
+            if (p.Type == PlayerController.PlayerType.Lux) lux = p;
+        var goal = Object.FindAnyObjectByType<LevelGoalTrigger>();
+        if (lux == null || goal == null) { Check("Walkthrough: level has Lux and a goal", false); yield break; }
+
+        lux.SetFrozen(false);
+        float goalX = goal.transform.position.x;
+        float startX = lux.transform.position.x;
+        float bestX = startX;
+        float stuckTimer = 0f;
+        bool jumpedWhileStuck = false;
+        float elapsed = 0f;
+        int shotIndex = 0;
+        float nextShot = 0f;
+
+        while (elapsed < 40f && Mathf.Abs(lux.transform.position.x - goalX) > 2f)
+        {
+            lux.SetMoveInput(Vector2.right);
+
+            float x = lux.transform.position.x;
+            if (x > bestX + 0.05f) { bestX = x; stuckTimer = 0f; }
+            else stuckTimer += Time.deltaTime;
+
+            // 卡住就跳,再卡就打 —— 和真人操作一致(台阶要跳,敌人挡道要打)
+            if (stuckTimer > 0.4f)
+            {
+                if (jumpedWhileStuck) { lux.TryAttack(); jumpedWhileStuck = false; }
+                else { lux.TryJump(); jumpedWhileStuck = true; }
+                stuckTimer = 0f;
+            }
+
+            if (elapsed >= nextShot)
+            {
+                yield return CaptureShot($"walk_{shotIndex++}");
+                nextShot = elapsed + 6f;
+            }
+
+            elapsed += Time.deltaTime;
+            yield return null;
+        }
+
+        float finalX = lux.transform.position.x;
+        Check($"Walkthrough: Lux walks from spawn to the goal unaided (x {startX:F1}->{finalX:F1}, goal {goalX:F1})",
+            Mathf.Abs(finalX - goalX) <= 2f);
+        yield return CaptureShot("walk_final");
+    }
+
+    /// <summary>截取当前游戏画面到 Logs/shots/,用于人工核对"玩家实际看到什么"</summary>
+    private IEnumerator CaptureShot(string label)
+    {
+        // 不能用 WaitForEndOfFrame: 批处理模式下它永不恢复,协程会卡死
+        yield return null;
+
+        var cam = Camera.main;
+        if (cam == null) { Debug.LogWarning("[SHOT] no main camera"); yield break; }
+
+        string dir = System.IO.Path.Combine(Application.dataPath, "../Logs/shots");
+        System.IO.Directory.CreateDirectory(dir);
+        string path = System.IO.Path.Combine(dir, label + ".png");
+
+        // 直接渲染摄像机到RenderTexture: ScreenCapture在批处理下不落盘
+        const int w = 960, h = 540;
+        var rt = new RenderTexture(w, h, 24);
+        var prevTarget = cam.targetTexture;
+        cam.targetTexture = rt;
+        cam.Render();
+        var prevActive = RenderTexture.active;
+        RenderTexture.active = rt;
+        var tex = new Texture2D(w, h, TextureFormat.RGB24, false);
+        tex.ReadPixels(new Rect(0, 0, w, h), 0, 0);
+        tex.Apply();
+        RenderTexture.active = prevActive;
+        cam.targetTexture = prevTarget;
+
+        System.IO.File.WriteAllBytes(path, tex.EncodeToPNG());
+        Object.DestroyImmediate(tex);
+        rt.Release();
+        Object.DestroyImmediate(rt);
+        Debug.Log($"[SHOT] {path}");
+    }
+
     private static void Check(string name, bool cond)
     {
         Total++;
@@ -62,6 +155,9 @@ public class AutoPlayTestRunner : MonoBehaviour
             GameManager.Instance.LoadLevel(1, 1);
 
         yield return new WaitForSecondsRealtime(3f);
+
+        // 截一张真实游戏画面: 日志能验证逻辑,但验证不了"玩家看到了什么"
+        yield return CaptureShot("level_1_1_start");
 
         var players = Object.FindObjectsByType<PlayerController>(FindObjectsSortMode.None);
         Check($"2 players spawned (found {players.Length})", players.Length == 2);
@@ -188,7 +284,10 @@ public class AutoPlayTestRunner : MonoBehaviour
                             // 玩家站在敌人攻击范围内,冻结玩家位置
                             lux.transform.position = enemy.transform.position + Vector3.left * 0.8f;
                             lux.SetFrozen(true); // 玩家不动,让敌人攻击
-                            luxHealth.ResetHealth(); // 血量归位,否则起始血量取决于前面被蹭了多少
+                            luxHealth.ResetHealth();
+                            // 敌人也要回血: 前面近战-2远程-1已经把4点血打到只剩1点,
+                            // 濒死的怪不会正常攻击
+                            enemy.ResetHealth(); // 血量归位,否则起始血量取决于前面被蹭了多少
                             int playerHpBefore = luxHealth.CurrentHealth;
                             // 等敌人侦测→追击→首次攻击,命中即停(测单次伤害)
                             float atkWait = 0;
@@ -319,6 +418,9 @@ public class AutoPlayTestRunner : MonoBehaviour
 
         // ===== Boss战测试(加载Boss关Level_1_4) =====
         yield return RunBossTest();
+
+        // ===== 真正走通一关(放最后,因为它会打通关卡) =====
+        yield return RunLevel11Walkthrough();
 
         yield return null;
         Done = true;
@@ -465,6 +567,7 @@ public class AutoPlayTestRunner : MonoBehaviour
             GameObject.FindGameObjectsWithTag("ShadowZone").Length > 0);
 
         // 造一个可推动物体放在Nox前方(关重力,只看水平推动)
+        nox.SetFrozen(true);   // 零摩擦后玩家会滑,滑到箱子另一侧推力方向就反了
         var box = new GameObject("TestPushable");
         box.transform.position = nox.transform.position + new Vector3(1f, 0f, 0f);
         box.AddComponent<BoxCollider2D>();
@@ -479,6 +582,7 @@ public class AutoPlayTestRunner : MonoBehaviour
             box.transform.position.x > boxX0 + 0.1f);
 
         Object.Destroy(box);
+        nox.SetFrozen(false);
         yield return null;
 
         // ===== 光桥: 必须是队友能站上去的实体平台,不只是"生成了个物体" =====
@@ -653,10 +757,12 @@ public class AutoPlayTestRunner : MonoBehaviour
             // Lux站到机关左侧,朝右打光束
             lux.transform.position = sensorObj.transform.position + Vector3.left * 2f;
             lux.SetMoveInput(Vector2.right);
+            lux.SetFrozen(true);          // 零摩擦后会滑,滑开就打不中机关了
             yield return null;
             while (!luxAbilities.IsReady) yield return null;
             luxAbilities.TryActivate();
             yield return new WaitForSeconds(1.5f);
+            lux.SetFrozen(false);
             Check($"Coop level: Lux beam opens the gate door (y {doorYClosed:F1}->{door.transform.position.y:F1})",
                 door.transform.position.y > doorYClosed + 0.5f);
         }

@@ -19,7 +19,9 @@ public abstract class EnemyBase : MonoBehaviour, IDamageable
     }
 
     [Header("基础属性")]
-    [SerializeField] protected float maxHealth = 100f;
+    // 玩家近战2点、远程1点伤害。100点血意味着打死一只小怪要50~100下,
+    // 而敌人是实心碰撞体 —— 等于路上立着一堵打不烂的墙,关卡直接走不过去
+    [SerializeField] protected float maxHealth = 4f;
     [SerializeField] protected float moveSpeed = 3f;
     [SerializeField] protected float damage = 20f;
     [SerializeField] protected float attackRange = 1.5f;
@@ -66,6 +68,9 @@ public abstract class EnemyBase : MonoBehaviour, IDamageable
     // 属性
     public float CurrentHealth => currentHealth;
     public float HealthPercent => currentHealth / maxHealth;
+
+    /// <summary>回满血(波次重置/测试用)。注意别取名Reset,那是Unity的编辑器魔法回调</summary>
+    public void ResetHealth() => currentHealth = maxHealth;
     public EnemyState State => currentState;
     public bool IsDead => currentState == EnemyState.Dead;
     public bool IsAlive => currentState != EnemyState.Dead;

@@ -40,8 +40,8 @@ public static class AutoPlayIntegrationTest
             return;
         }
 
-        // 超时保护（60秒）
-        if (EditorApplication.timeSinceStartup - startTime > 60)
+        // 超时保护(走通整关本身最多40秒,留足余量)
+        if (EditorApplication.timeSinceStartup - startTime > 180)
         {
             Debug.LogError("[AUTOPLAY] TIMEOUT");
             Finish(false);
