@@ -11,7 +11,36 @@ public class AutoPlayTestRunner : MonoBehaviour
     public static bool Done;
     public static int Passed;
     public static int Total;
+
+    /// <summary>
+    /// 只跑"走通关卡"这类真实时间的可玩性测试。
+    /// 它们要按真人节奏走完整关(每关几十秒),混在快速回归套件里会把总时长拖到
+    /// 十分钟以上,没法迭代。由 PlaythroughTest 入口置位。
+    /// </summary>
+    public static bool WalkthroughOnly;
     public static readonly List<string> Results = new List<string>();
+
+    /// <summary>可玩性套件: 只跑真实时间的走通测试</summary>
+    private IEnumerator RunWalkthroughSuite()
+    {
+        float timeout = 10f;
+        while (!GameInitializer.IsReady && timeout > 0)
+        {
+            timeout -= Time.unscaledDeltaTime;
+            yield return null;
+        }
+        float settle = 8f;
+        while (settle > 0)
+        {
+            if (GameFlowManager.Instance != null &&
+                GameFlowManager.Instance.CurrentState == GameFlowManager.FlowState.MainMenu) break;
+            settle -= Time.unscaledDeltaTime;
+            yield return null;
+        }
+
+        yield return RunLevel11Walkthrough();
+        yield return RunCoopWalkthrough();
+    }
 
     /// <summary>
     /// 从出生点真正走到终点 - 之前的通关测试是把角色瞬移过去,那证明不了
@@ -40,7 +69,7 @@ public class AutoPlayTestRunner : MonoBehaviour
         int shotIndex = 0;
         float nextShot = 0f;
 
-        while (elapsed < 40f && Mathf.Abs(lux.transform.position.x - goalX) > 2f)
+        while (elapsed < 22f && Mathf.Abs(lux.transform.position.x - goalX) > 2f)
         {
             lux.SetMoveInput(Vector2.right);
 
@@ -70,6 +99,147 @@ public class AutoPlayTestRunner : MonoBehaviour
         Check($"Walkthrough: Lux walks from spawn to the goal unaided (x {startX:F1}->{finalX:F1}, goal {goalX:F1})",
             Mathf.Abs(finalX - goalX) <= 2f);
         yield return CaptureShot("walk_final");
+    }
+
+    /// <summary>
+    /// 双人走通 Level_1_2 - 验证"两个玩家配合真的能通关"。
+    ///
+    /// 此前所有合作关测试都是把角色瞬移到位、再直接调用能力方法,那只能证明
+    /// 机关接线对,证明不了这一关能玩。这里按真人流程走一遍:
+    ///   ① 两人往右走,Lux 被影墙挡住
+    ///   ② Nox 影穿过墙,继续走到压板上
+    ///   ③ 影墙消失,Lux 跟上
+    ///   ④ Lux 走到光敏机关前打光束,大门升起
+    ///   ⑤ 两人抵达终点
+    /// </summary>
+    private IEnumerator RunCoopWalkthrough()
+    {
+        if (GameManager.Instance == null) yield break;
+        GameManager.Instance.LoadLevel(1, 2);
+        yield return new WaitForSecondsRealtime(3f);
+
+        PlayerController lux = null, nox = null;
+        foreach (var p in Object.FindObjectsByType<PlayerController>(FindObjectsSortMode.None))
+        {
+            if (p.Type == PlayerController.PlayerType.Lux) lux = p; else nox = p;
+        }
+        var wall = GameObject.Find("Coop_ShadowWall");
+        var plate = GameObject.Find("Coop_Plate");
+        var sensor = GameObject.Find("Coop_GateSensor");
+        var door = GameObject.Find("Coop_GateDoor");
+        var goal = Object.FindAnyObjectByType<LevelGoalTrigger>();
+        if (lux == null || nox == null || wall == null || plate == null
+            || sensor == null || door == null || goal == null)
+        {
+            Check("Coop walkthrough: level_1_2 has all pieces", false);
+            yield break;
+        }
+
+        float wallX = wall.transform.position.x;
+        float doorClosedY = door.transform.position.y;
+
+        // ① Lux 走到影墙前,应该被挡住
+        yield return WalkTo(lux, wallX + 3f, 0.3f, 5f, false);
+        Check($"Coop walkthrough: Lux is stopped by the shadow wall (x={lux.transform.position.x:F1}, wall={wallX:F1})",
+            lux.transform.position.x < wallX);
+        yield return CaptureShot("coop_1_lux_blocked");
+
+        // ② Nox 走到墙前再影穿过去
+        var noxAbilities = nox.GetComponent<NoxAbilities>();
+        yield return WalkTo(nox, wallX - 2.5f, 0.6f, 5f, false);
+        nox.SetMoveInput(Vector2.right);
+        yield return null;
+        while (!noxAbilities.IsReady) yield return null;
+        noxAbilities.TryActivate();
+        yield return new WaitForSeconds(0.8f);
+        Check($"Coop walkthrough: Nox phases past the wall (x={nox.transform.position.x:F1})",
+            nox.transform.position.x > wallX);
+
+        // ③ Nox 走上压板 → 影墙消失(路上可能有敌人,允许他打)
+        yield return WalkTo(nox, plate.transform.position.x, 0.5f, 8f);
+        yield return new WaitForSeconds(0.6f);
+        var plateComp = plate.GetComponent<PressurePlate>();
+        Check($"Coop walkthrough: standing on the plate removes the wall " +
+            $"(noxX={nox.transform.position.x:F1}, plateX={plate.transform.position.x:F1}, " +
+            $"pressed={(plateComp != null ? plateComp.IsPressed.ToString() : "n/a")})",
+            !wall.activeSelf);
+        yield return CaptureShot("coop_2_wall_gone");
+
+        // ④ Lux 跟上并打亮机关
+        float sensorX = sensor.transform.position.x;
+        yield return WalkTo(lux, sensorX - 2f, 0.6f, 8f, false);
+        Check($"Coop walkthrough: Lux can now pass where the wall was (x={lux.transform.position.x:F1})",
+            lux.transform.position.x > wallX);
+
+        var luxAbilities = lux.GetComponent<LuxAbilities>();
+        lux.SetMoveInput(Vector2.right);
+        lux.SetFrozen(true);
+        yield return null;
+        while (!luxAbilities.IsReady) yield return null;
+        luxAbilities.TryActivate();
+        yield return new WaitForSeconds(1.5f);
+        lux.SetFrozen(false);
+        Check($"Coop walkthrough: beam opens the gate (y {doorClosedY:F1}->{door.transform.position.y:F1})",
+            door.transform.position.y > doorClosedY + 0.5f);
+
+        // ⑤ 抵达终点
+        float goalX = goal.transform.position.x;
+        yield return WalkTo(lux, goalX, 2f, 10f);
+        if (Mathf.Abs(lux.transform.position.x - goalX) > 2.5f)
+        {
+            var cs = new Collider2D[8];
+            int n = lux.GetComponent<Rigidbody2D>().GetContacts(cs);
+            string names = "";
+            for (int i = 0; i < n; i++) names += cs[i].name + " ";
+            Debug.Log($"[COOPDIAG] Lux stopped at {lux.transform.position.x:F2}, contacts=[{names}]");
+        }
+        Check($"Coop walkthrough: Lux reaches the goal (x={lux.transform.position.x:F1}, goal={goalX:F1})",
+            Mathf.Abs(lux.transform.position.x - goalX) <= 2.5f);
+        yield return CaptureShot("coop_3_goal");
+    }
+
+    /// <summary>
+    /// 驱动一个角色朝目标X走过去,卡住就跳(必要时攻击),和真人操作一致。
+    /// 返回是否走到了。全程只用移动/跳跃/攻击输入,不瞬移 —— 瞬移证明不了可玩性。
+    /// </summary>
+    private IEnumerator WalkTo(PlayerController player, float targetX, float tolerance,
+        float maxSeconds, bool attackWhenStuck = true)
+    {
+        player.SetFrozen(false);
+        float bestProgress = -Mathf.Infinity;
+        float stuckTimer = 0f;
+        bool jumpedLast = false;
+        float elapsed = 0f;
+        // 批处理下一帧可长达0.3秒,5单位/秒的角色一帧就走1.5单位,会直接越过
+        // 目标点然后来回震荡。所以除了容差,还要检测"方向翻转=已越过"
+        float initialDir = Mathf.Sign(targetX - player.transform.position.x);
+
+        while (elapsed < maxSeconds)
+        {
+            float x = player.transform.position.x;
+            float dx = targetX - x;
+            if (Mathf.Abs(dx) <= tolerance || Mathf.Sign(dx) != initialDir)
+            {
+                player.SetMoveInput(Vector2.zero);   // 到位后停下,别继续滑
+                yield break;
+            }
+
+            player.SetMoveInput(new Vector2(Mathf.Sign(dx), 0f));
+
+            float progress = Mathf.Sign(dx) * x;   // 朝目标方向的推进量
+            if (progress > bestProgress + 0.05f) { bestProgress = progress; stuckTimer = 0f; }
+            else stuckTimer += Time.deltaTime;
+
+            if (stuckTimer > 0.4f)
+            {
+                if (jumpedLast && attackWhenStuck) { player.TryAttack(); jumpedLast = false; }
+                else { player.TryJump(); jumpedLast = true; }
+                stuckTimer = 0f;
+            }
+
+            elapsed += Time.deltaTime;
+            yield return null;
+        }
     }
 
     /// <summary>截取当前游戏画面到 Logs/shots/,用于人工核对"玩家实际看到什么"</summary>
@@ -124,6 +294,13 @@ public class AutoPlayTestRunner : MonoBehaviour
 
     private IEnumerator RunTests()
     {
+        if (WalkthroughOnly)
+        {
+            yield return RunWalkthroughSuite();
+            Done = true;
+            yield break;
+        }
+
         // 等待GameInitializer
         float timeout = 10f;
         while (!GameInitializer.IsReady && timeout > 0)
@@ -419,8 +596,7 @@ public class AutoPlayTestRunner : MonoBehaviour
         // ===== Boss战测试(加载Boss关Level_1_4) =====
         yield return RunBossTest();
 
-        // ===== 真正走通一关(放最后,因为它会打通关卡) =====
-        yield return RunLevel11Walkthrough();
+        // 走通关卡的可玩性测试放在 PlaythroughTest 入口,见 WalkthroughOnly
 
         yield return null;
         Done = true;
@@ -568,8 +744,9 @@ public class AutoPlayTestRunner : MonoBehaviour
 
         // 造一个可推动物体放在Nox前方(关重力,只看水平推动)
         nox.SetFrozen(true);   // 零摩擦后玩家会滑,滑到箱子另一侧推力方向就反了
+        // 略微抬高生成再让它落下: 贴地生成容易嵌进地面碰撞体,推不动
         var box = new GameObject("TestPushable");
-        box.transform.position = nox.transform.position + new Vector3(1f, 0f, 0f);
+        box.transform.position = nox.transform.position + new Vector3(1.2f, 0.6f, 0f);
         box.AddComponent<BoxCollider2D>();
         var boxRb = box.AddComponent<Rigidbody2D>();
         boxRb.gravityScale = 0f;
@@ -690,8 +867,13 @@ public class AutoPlayTestRunner : MonoBehaviour
             Check($"Coop level: plate stays where it was authored (x={plate.transform.position.x:F1}, wallX={wallX:F1})",
                 plate.transform.position.x > wallX);
 
-            nox.transform.position = plate.transform.position + Vector3.up * 0.3f;
-            yield return new WaitForSeconds(0.5f);
+            // 走上去,而不是瞬移到板面。瞬移的落点对不准就踩不到触发区,
+            // 而可玩性套件里"走过去"是稳定生效的,两边用同一种方式
+            nox.transform.position = new Vector3(plate.transform.position.x - 2.5f,
+                nox.transform.position.y, 0f);
+            yield return null;
+            yield return WalkTo(nox, plate.transform.position.x, 0.5f, 6f, false);
+            yield return new WaitForSeconds(0.8f);
             Check("Coop level: Nox on the plate removes the shadow wall for Lux",
                 !shadowWall.activeSelf);
         }

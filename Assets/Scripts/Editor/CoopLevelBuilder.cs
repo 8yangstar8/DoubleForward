@@ -45,6 +45,8 @@ public static class CoopLevelBuilder
 
         EnsureGroundSpans(ground, startX - 3f, goalX + 3f);
         ClearCorridor(startX, goalX, groundTopY);
+        // 谜题关不要巡逻敌人: 它们会堵在通往终点的路上,把设计好的解谜流程搅乱
+        ClearEnemies(startX, goalX + 2f);
 
         var parent = GameObject.Find("--- PUZZLES ---");
         Transform p = parent != null ? parent.transform : null;
