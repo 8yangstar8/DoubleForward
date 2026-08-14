@@ -1,0 +1,10 @@
+Kenney 16x16 tileset
+Source: https://opengameart.org/content/kenney-16x16 (mirror of kenney.nl)
+Author: Kenney (www.kenney.nl)
+License: CC0 1.0 Universal (public domain)
+  - 可商用、可修改、无需署名。此处保留出处仅出于礼貌与可追溯性。
+
+本项目中的用法:
+  - Assets/Art/Characters/ 下的 Lux_*/Nox_* 帧提取自本图集的角色行,
+    并做了调色(绿->金 / 粉->紫)以符合"光·Lux"与"影·Nox"的设定。
+  - 其余图块用于地形/机关/敌人贴图。

@@ -14,7 +14,7 @@ public static class CharacterAnimationGenerator
 {
     private const string FrameDir = "Assets/Art/Characters";
     private const string ClipDir = "Assets/Animations/Clips";
-    private const int W = 32, H = 48, PPU = 16;
+    private const int W = 32, H = 48, PPU = 20;  // 外部帧16x32 @PPU20 = 0.8x1.6单位,贴合碰撞体
 
     [MenuItem("DoubleForward/Generate Character Animation", false, 52)]
     public static void GenerateAll()
@@ -107,6 +107,59 @@ public static class CharacterAnimationGenerator
         File.WriteAllBytes(path, t.EncodeToPNG());
         Object.DestroyImmediate(t);
 
+        return ImportAsSprite(path);
+    }
+
+    /// <summary>
+    /// 从 Assets/Art/Characters 下已有的帧重建动画剪辑,不重新绘制。
+    /// 外部美术资源(CC0)导入后用这个,别用 GenerateAll —— 那个会用程序化
+    /// 占位图覆盖掉外部帧。
+    /// 用法: -executeMethod CharacterAnimationGenerator.RebuildClipsFromFrames
+    /// </summary>
+    [MenuItem("DoubleForward/Rebuild Character Clips From Frames", false, 54)]
+    public static void RebuildClipsFromFrames()
+    {
+        foreach (var name in new[] { "Lux", "Nox" })
+        {
+            var idle = LoadFrames(name, "Idle");
+            var run = LoadFrames(name, "Run");
+            var jump = LoadFrames(name, "Jump");
+            var fall = LoadFrames(name, "Fall");
+
+            if (idle.Length == 0 || run.Length == 0)
+            {
+                Debug.LogError($"[CharAnim] {name}: frames missing under {FrameDir}");
+                continue;
+            }
+
+            WriteClip($"{ClipDir}/{name}_Idle.anim", idle, 0.22f, true);
+            WriteClip($"{ClipDir}/{name}_Run.anim", run, 0.10f, true);
+            if (jump.Length > 0) WriteClip($"{ClipDir}/{name}_Jump.anim", jump, 0.4f, false);
+            if (fall.Length > 0) WriteClip($"{ClipDir}/{name}_Fall.anim", fall, 0.4f, false);
+
+            Debug.Log($"[CharAnim] {name}: idle={idle.Length} run={run.Length} " +
+                $"jump={jump.Length} fall={fall.Length}");
+        }
+        AssetDatabase.SaveAssets();
+        AssetDatabase.Refresh();
+    }
+
+    private static Sprite[] LoadFrames(string name, string clip)
+    {
+        var list = new System.Collections.Generic.List<Sprite>();
+        for (int i = 0; ; i++)
+        {
+            string path = $"{FrameDir}/{name}_{clip}_{i}.png";
+            if (!File.Exists(path)) break;
+            var sprite = ImportAsSprite(path);
+            if (sprite == null) break;
+            list.Add(sprite);
+        }
+        return list.ToArray();
+    }
+
+    private static Sprite ImportAsSprite(string path)
+    {
         AssetDatabase.ImportAsset(path);
         var imp = AssetImporter.GetAtPath(path) as TextureImporter;
         if (imp != null)
