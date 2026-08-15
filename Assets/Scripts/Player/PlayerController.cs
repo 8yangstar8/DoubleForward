@@ -333,14 +333,14 @@ public class PlayerController : MonoBehaviour
         PlayerCoopSync.Instance?.RecordAction(playerIndex, PlayerCoopSync.ActionType.Dash);
     }
 
-    private void TrySkill1()
+    public void TrySkill1()
     {
         var ability = GetComponent<PlayerAbilityBase>();
         if (ability != null)
             ability.TryActivate();
     }
 
-    private void TrySkill2()
+    public void TrySkill2()
     {
         if (playerType == PlayerType.Nox)
             TryDash();

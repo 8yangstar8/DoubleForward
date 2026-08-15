@@ -208,6 +208,54 @@ public static class CoopLevelBuilder
     }
 
     /// <summary>
+    /// Level_1_4 (第一章Boss关) - 把Boss战改成需要两人配合:
+    ///   Boss 常态带护盾免疫伤害 → Lux 光束照亮弱点 → 护盾落下5秒 → Nox 输出
+    /// 一个人打不动: 只有 Lux 有光束,而近战输出主要靠 Nox。
+    /// 用法: -executeMethod CoopLevelBuilder.BuildLevel14
+    /// </summary>
+    [MenuItem("DoubleForward/Build Co-op Boss 1-4", false, 13)]
+    public static void BuildLevel14()
+    {
+        const string scene14 = "Assets/Scenes/Chapter1/Level_1_4.unity";
+        EditorSceneManager.OpenScene(scene14);
+
+        var boss = Object.FindAnyObjectByType<BossBase>();
+        var luxSpawn = GameObject.Find("LuxSpawnPoint");
+        if (boss == null || luxSpawn == null)
+        {
+            Debug.LogError("[CoopLevel] 1-4: Boss / LuxSpawnPoint missing");
+            return;
+        }
+
+        foreach (var go in Object.FindObjectsByType<GameObject>(FindObjectsSortMode.None))
+            if (go != null && go.name.StartsWith("Coop4_")) Object.DestroyImmediate(go);
+
+        var parent = GameObject.Find("--- PUZZLES ---");
+        Transform p = parent != null ? parent.transform : null;
+
+        // 弱点放在Boss身前、玩家站立高度: Lux走到跟前平射就能照到
+        float standY = luxSpawn.transform.position.y;
+        var weakGO = CreateBlock("Coop4_WeakPoint",
+            new Vector3(boss.transform.position.x - 2f, standY, 0f),
+            Vector3.one, Color.white, "UnitSensor", p, true);
+        var weak = weakGO.AddComponent<LightSensor>();
+        var so = new SerializedObject(weak);
+        // 不锁存: 光束移开后弱点熄灭,护盾窗口由 BossCoopShield 自己计时维持
+        so.FindProperty("stayActivated").boolValue = false;
+        so.FindProperty("sensorRenderer").objectReferenceValue = weakGO.GetComponent<SpriteRenderer>();
+        so.ApplyModifiedProperties();
+
+        var shield = boss.gameObject.GetComponent<BossCoopShield>();
+        if (shield == null) shield = boss.gameObject.AddComponent<BossCoopShield>();
+        shield.Configure(boss, weak, 5f);
+
+        EditorSceneManager.MarkSceneDirty(EditorSceneManager.GetActiveScene());
+        EditorSceneManager.SaveScene(EditorSceneManager.GetActiveScene());
+        Debug.Log($"[CoopLevel] Level_1_4 boss shield wired: weakPoint at " +
+            $"x={weakGO.transform.position.x:F1} y={standY:F1}, boss={boss.name}");
+    }
+
+    /// <summary>
     /// 移除模板遗留的坏掉的谜题: PressurePlate_1 被Unity的Reset()回调拽到了世界原点
     /// (玩家出生点上),开局就一直处于踩下状态,它的PuzzleDoor因此永远敞开、且正好
     /// 压在本关影墙的位置上。本关的谜题内容由下面的合作链路承担,这一对直接删掉。

@@ -29,6 +29,13 @@ public abstract class BossBase : MonoBehaviour, IDamageable
     public int CurrentPhaseIndex { get; protected set; }
     public bool IsAlive => CurrentHealth > 0;
     public bool IsInvincible { get; protected set; }
+
+    /// <summary>
+    /// 合作护盾 - 与相位自带的 IsInvincible 分开,互不覆盖。
+    /// 由 BossCoopShield 控制: Lux 用光束照亮弱点才会落下,Nox 趁机输出。
+    /// </summary>
+    public bool ShieldUp { get; private set; }
+    public void SetShield(bool up) => ShieldUp = up;
     public bool IsBattleActive { get; protected set; }
 
     public event System.Action<int, int> OnHealthChanged; // current, max
@@ -94,7 +101,7 @@ public abstract class BossBase : MonoBehaviour, IDamageable
 
     public virtual void TakeDamage(int damage)
     {
-        if (!IsAlive || IsInvincible) return;
+        if (!IsAlive || IsInvincible || ShieldUp) return;
 
         CurrentHealth = Mathf.Max(0, CurrentHealth - damage);
         OnHealthChanged?.Invoke(CurrentHealth, maxHealth);

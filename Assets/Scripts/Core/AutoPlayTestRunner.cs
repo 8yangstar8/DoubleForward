@@ -457,6 +457,33 @@ public class AutoPlayTestRunner : MonoBehaviour
         var players = Object.FindObjectsByType<PlayerController>(FindObjectsSortMode.None);
         Check($"2 players spawned (found {players.Length})", players.Length == 2);
 
+        // 屏幕攻击按钮: 玩家反馈"不知道如何击杀敌人",因为游戏里根本没有攻击按钮
+        // (TouchControlsCanvas 嵌在 InputManager 预制体里,运行时没进场景)。
+        // 断言按钮存在,并且点下去真的打出攻击 —— 只验证"存在"没有意义
+        var attackBtn = GameObject.Find("Btn_Lux_Attack");
+        Check("On-screen attack button exists in the level", attackBtn != null);
+        if (attackBtn != null)
+        {
+            var action = attackBtn.GetComponent<PlayerActionButton>();
+            Check("Attack button is wired to a player action", action != null);
+
+            var label = attackBtn.GetComponentInChildren<TMPro.TextMeshProUGUI>();
+            bool labelNamesTheKey = label != null && label.text.Contains("J");
+            Check("Attack button tells the player which key it is (label contains 'J')",
+                labelNamesTheKey);
+
+            if (action != null)
+            {
+                int boltsBefore = Object.FindObjectsByType<Projectile>(FindObjectsSortMode.None).Length;
+                action.OnPointerDown(new UnityEngine.EventSystems.PointerEventData(
+                    UnityEngine.EventSystems.EventSystem.current));
+                yield return new WaitForSeconds(0.2f);
+                int boltsAfter = Object.FindObjectsByType<Projectile>(FindObjectsSortMode.None).Length;
+                Check($"Pressing the attack button actually attacks (bolts {boltsBefore}->{boltsAfter})",
+                    boltsAfter > boltsBefore);
+            }
+        }
+
         PlayerController lux = null;
         foreach (var p in players)
             if (p.Type == PlayerController.PlayerType.Lux) lux = p;
