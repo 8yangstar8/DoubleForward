@@ -20,6 +20,37 @@ public class AutoPlayTestRunner : MonoBehaviour
     public static bool WalkthroughOnly;
     public static readonly List<string> Results = new List<string>();
 
+    /// <summary>
+    /// 等关卡真正就绪(两个玩家都生成完),而不是固定睡3秒。
+    ///
+    /// GameFlowManager 的自动流程(Boot→MainMenu→Playing)也会加载关卡,和测试
+    /// 自己的 LoadLevel 撞车时,第二次加载会销毁第一次生成的玩家。固定等待
+    /// 就可能正好取在空窗期,表现为"2 players spawned (found 0)"并让整轮测试
+    /// 全线失败 —— 实测约1/4的运行会中招。
+    /// </summary>
+    private IEnumerator WaitForLevelReady(float timeout = 10f)
+    {
+        float waited = 0f;
+        int stableFrames = 0;
+        while (waited < timeout)
+        {
+            int n = Object.FindObjectsByType<PlayerController>(FindObjectsSortMode.None).Length;
+
+            // 光等到"有2个玩家"不够: 自动流程的加载可能发生在这之后,把玩家销毁掉。
+            // 还要等流程离开 Loading 状态,确认没有加载在路上
+            bool flowSettled = GameFlowManager.Instance == null
+                || GameFlowManager.Instance.CurrentState != GameFlowManager.FlowState.Loading;
+
+            // 收到30帧+复查反而更差(Boss关会卡住),10帧是实测最稳的折中
+            stableFrames = (n >= 2 && flowSettled) ? stableFrames + 1 : 0;
+            if (stableFrames >= 10) { yield return new WaitForSeconds(0.4f); yield break; }
+
+            waited += Time.unscaledDeltaTime;
+            yield return null;
+        }
+        Debug.LogWarning($"[AUTOPLAY] level not ready after {timeout}s");
+    }
+
     /// <summary>可玩性套件: 只跑真实时间的走通测试</summary>
     private IEnumerator RunWalkthroughSuite()
     {
@@ -51,7 +82,7 @@ public class AutoPlayTestRunner : MonoBehaviour
     {
         if (GameManager.Instance == null) yield break;
         GameManager.Instance.LoadLevel(1, 1);
-        yield return new WaitForSecondsRealtime(3f);
+        yield return WaitForLevelReady();
 
         PlayerController lux = null;
         foreach (var p in Object.FindObjectsByType<PlayerController>(FindObjectsSortMode.None))
@@ -116,7 +147,7 @@ public class AutoPlayTestRunner : MonoBehaviour
     {
         if (GameManager.Instance == null) yield break;
         GameManager.Instance.LoadLevel(1, 2);
-        yield return new WaitForSecondsRealtime(3f);
+        yield return WaitForLevelReady();
 
         PlayerController lux = null, nox = null;
         foreach (var p in Object.FindObjectsByType<PlayerController>(FindObjectsSortMode.None))
@@ -331,7 +362,7 @@ public class AutoPlayTestRunner : MonoBehaviour
         if (GameManager.Instance != null)
             GameManager.Instance.LoadLevel(1, 1);
 
-        yield return new WaitForSecondsRealtime(3f);
+        yield return WaitForLevelReady();
 
         // 截一张真实游戏画面: 日志能验证逻辑,但验证不了"玩家看到了什么"
         yield return CaptureShot("level_1_1_start");
@@ -432,6 +463,9 @@ public class AutoPlayTestRunner : MonoBehaviour
                         lux.SetMoveInput(Vector2.right);
                         yield return null;
                         enemy.transform.position = fixedEnemyPos;
+                        // 血量归位: 敌人只有4点血,近战已经打掉2点,再挨几发光弹就死了,
+                        // 死敌人既不会再受伤也不会攻击玩家,后面两项测试会跟着挂
+                        enemy.ResetHealth();
                         float hpBeforeRanged = enemy.CurrentHealth;
                         // 窗口内多次发射(冷却0.5s),提高命中确定性
                         float waited = 0;
@@ -455,6 +489,7 @@ public class AutoPlayTestRunner : MonoBehaviour
                             enemyRb.constraints = RigidbodyConstraints2D.FreezeRotation;
                             enemyRb.bodyType = RigidbodyType2D.Dynamic;
                         }
+                        enemy.ResetHealth();   // 同上: 保证它活着才能来打玩家
                         var luxHealth = lux.GetComponent<PlayerHealth>();
                         if (luxHealth != null)
                         {
@@ -815,7 +850,7 @@ public class AutoPlayTestRunner : MonoBehaviour
         if (GameManager.Instance == null) yield break;
         GameManager.Instance.LoadLevel(1, 2);
 
-        yield return new WaitForSecondsRealtime(3f);
+        yield return WaitForLevelReady();
 
         var shadowWall = GameObject.Find("Coop_ShadowWall");
         Check("Coop level: shadow wall gate exists", shadowWall != null);
@@ -959,7 +994,7 @@ public class AutoPlayTestRunner : MonoBehaviour
     {
         if (GameManager.Instance == null) yield break;
         GameManager.Instance.LoadLevel(1, 3);
-        yield return new WaitForSecondsRealtime(3f);
+        yield return WaitForLevelReady();
 
         var crate = GameObject.Find("Coop3_Crate");
         var plateGO = GameObject.Find("Coop3_Plate");
@@ -1054,7 +1089,7 @@ public class AutoPlayTestRunner : MonoBehaviour
     {
         if (GameManager.Instance == null) yield break;
         GameManager.Instance.LoadLevel(1, 4); // 第1章Boss关
-        yield return new WaitForSecondsRealtime(3f);
+        yield return WaitForLevelReady();
 
         var boss = Object.FindAnyObjectByType<BossBase>();
         Check("Boss spawned in boss level", boss != null);
