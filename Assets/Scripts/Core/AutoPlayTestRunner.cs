@@ -28,27 +28,33 @@ public class AutoPlayTestRunner : MonoBehaviour
     /// 就可能正好取在空窗期,表现为"2 players spawned (found 0)"并让整轮测试
     /// 全线失败 —— 实测约1/4的运行会中招。
     /// </summary>
-    private IEnumerator WaitForLevelReady(float timeout = 10f)
+    private IEnumerator WaitForLevelReady(string expectedScene = null, float timeout = 20f)
     {
         float waited = 0f;
         int stableFrames = 0;
         while (waited < timeout)
         {
-            int n = Object.FindObjectsByType<PlayerController>(FindObjectsSortMode.None).Length;
+            // 首先要等对场景。LoadLevel 是异步的还要过加载界面,实测关卡可能在
+            // 调用后10秒才真正加载完 —— 只等"玩家出现"会在旧场景里等到超时,
+            // 表现为 "2 players spawned (found 0)" 并让整轮结果作废
+            // 用"目标场景已加载"判断,而不是"活动场景名匹配": 关卡可能是叠加加载的,
+            // 那样活动场景仍是Boot,按活动场景判断会一直等到超时
+            bool sceneOk = string.IsNullOrEmpty(expectedScene)
+                || UnityEngine.SceneManagement.SceneManager.GetSceneByName(expectedScene).isLoaded;
 
-            // 光等到"有2个玩家"不够: 自动流程的加载可能发生在这之后,把玩家销毁掉。
-            // 还要等流程离开 Loading 状态,确认没有加载在路上
             bool flowSettled = GameFlowManager.Instance == null
                 || GameFlowManager.Instance.CurrentState != GameFlowManager.FlowState.Loading;
 
-            // 收到30帧+复查反而更差(Boss关会卡住),10帧是实测最稳的折中
-            stableFrames = (n >= 2 && flowSettled) ? stableFrames + 1 : 0;
+            int n = Object.FindObjectsByType<PlayerController>(FindObjectsSortMode.None).Length;
+
+            stableFrames = (sceneOk && flowSettled && n >= 2) ? stableFrames + 1 : 0;
             if (stableFrames >= 10) { yield return new WaitForSeconds(0.4f); yield break; }
 
             waited += Time.unscaledDeltaTime;
             yield return null;
         }
-        Debug.LogWarning($"[AUTOPLAY] level not ready after {timeout}s");
+        Debug.LogWarning($"[AUTOPLAY] level '{expectedScene}' not ready after {timeout}s " +
+            $"(active={UnityEngine.SceneManagement.SceneManager.GetActiveScene().name})");
     }
 
     /// <summary>可玩性套件: 只跑真实时间的走通测试</summary>
@@ -71,6 +77,87 @@ public class AutoPlayTestRunner : MonoBehaviour
 
         yield return RunLevel11Walkthrough();
         yield return RunCoopWalkthrough();
+        yield return RunCoop13Walkthrough();
+    }
+
+    /// <summary>
+    /// 双人走通 Level_1_3 - 这一关的谜题最脆弱(推箱要对准压板、光桥要在半空造),
+    /// 之前只验证过机关接线,从没验证过"两个玩家真能把它解开"。
+    ///   ① Nox 走到箱子左边,用影推把箱子推上压板
+    ///   ② A门升起(箱子替人压着,两人都能过)
+    ///   ③ Lux 走到高处机关下方,起跳时造光桥,站上去
+    ///   ④ 从桥上打光束点亮机关 → B门升起
+    /// </summary>
+    private IEnumerator RunCoop13Walkthrough()
+    {
+        if (GameManager.Instance == null) yield break;
+        GameManager.Instance.LoadLevel(1, 3);
+        yield return WaitForLevelReady("Level_1_3");
+
+        PlayerController lux = null, nox = null;
+        foreach (var p in Object.FindObjectsByType<PlayerController>(FindObjectsSortMode.None))
+        {
+            if (p.Type == PlayerController.PlayerType.Lux) lux = p; else nox = p;
+        }
+        var crate = GameObject.Find("Coop3_Crate");
+        var plateGO = GameObject.Find("Coop3_Plate");
+        var doorA = GameObject.Find("Coop3_DoorA");
+        var sensorGO = GameObject.Find("Coop3_HighSensor");
+        var doorB = GameObject.Find("Coop3_DoorB");
+        if (lux == null || nox == null || crate == null || plateGO == null
+            || doorA == null || sensorGO == null || doorB == null)
+        {
+            Check("Coop 1-3 walkthrough: level has all pieces", false);
+            yield break;
+        }
+
+        var plate = plateGO.GetComponent<PressurePlate>();
+        var noxAbilities = nox.GetComponent<NoxAbilities>();
+        float doorAClosedY = doorA.transform.position.y;
+        float doorBClosedY = doorB.transform.position.y;
+
+        // ① Nox 走到箱子左侧,反复影推直到箱子压住压板
+        yield return WalkTo(nox, crate.transform.position.x - 1.3f, 0.4f, 8f, false);
+        nox.SetMoveInput(Vector2.right);
+        yield return null;
+
+        float pushed = 0f;
+        while (pushed < 6f && (plate == null || !plate.IsPressed))
+        {
+            // 站到箱子后面再推,箱子被推远了就跟上去
+            if (crate.transform.position.x - nox.transform.position.x > 1.8f)
+                yield return WalkTo(nox, crate.transform.position.x - 1.3f, 0.4f, 2f, false);
+            nox.SetMoveInput(Vector2.right);
+            noxAbilities.ShadowPush();
+            pushed += 0.35f;
+            yield return new WaitForSeconds(0.35f);
+        }
+        Check($"Coop 1-3 walkthrough: Nox pushes the crate onto the plate " +
+            $"(crateX={crate.transform.position.x:F1}, plateX={plateGO.transform.position.x:F1})",
+            plate != null && plate.IsPressed);
+        yield return CaptureShot("c13_1_crate_on_plate");
+
+        yield return new WaitForSeconds(0.8f);
+        Check($"Coop 1-3 walkthrough: door A opens and stays open (y {doorAClosedY:F1}->{doorA.transform.position.y:F1})",
+            doorA.transform.position.y > doorAClosedY + 0.5f);
+
+        // ③ Lux 走到机关下方,起跳时造光桥
+        var luxAbilities = lux.GetComponent<LuxAbilities>();
+        float sensorX = sensorGO.transform.position.x;
+        yield return WalkTo(lux, sensorX - 2.5f, 0.6f, 12f);
+        Check($"Coop 1-3 walkthrough: Lux reaches the high sensor area (x={lux.transform.position.x:F1})",
+            lux.transform.position.x > doorA.transform.position.x);
+
+        // 第二道门(高处光敏机关)在这里不做走通断言。
+        //
+        // 原因: LightSensor 要求光束持续覆盖0.5秒才激活,跳跃只是掠过 —— 必须站上
+        // 光桥。而 batchmode 一帧长达0.2~0.3秒,"起跳→半空造桥→踩上桥面"这串操作
+        // 的时序在这个粒度下无法可靠复现(试过按顶点造桥和二段跳两种方式,
+        // 前者踩不上桥,后者峰值采样会被长帧跳过)。
+        //
+        // 该门的机制由快速套件里的 RunCoopLevel13Test 确定性验证(含否定断言:
+        // 地面平射必须打不亮)。这里只验证到"箱子压板→A门"这段真人可走通。
+        Debug.Log("[AUTOPLAY] 1-3 second gate: covered by RunCoopLevel13Test, not walkthrough");
     }
 
     /// <summary>
@@ -82,7 +169,7 @@ public class AutoPlayTestRunner : MonoBehaviour
     {
         if (GameManager.Instance == null) yield break;
         GameManager.Instance.LoadLevel(1, 1);
-        yield return WaitForLevelReady();
+        yield return WaitForLevelReady("Level_1_1");
 
         PlayerController lux = null;
         foreach (var p in Object.FindObjectsByType<PlayerController>(FindObjectsSortMode.None))
@@ -147,7 +234,7 @@ public class AutoPlayTestRunner : MonoBehaviour
     {
         if (GameManager.Instance == null) yield break;
         GameManager.Instance.LoadLevel(1, 2);
-        yield return WaitForLevelReady();
+        yield return WaitForLevelReady("Level_1_2");
 
         PlayerController lux = null, nox = null;
         foreach (var p in Object.FindObjectsByType<PlayerController>(FindObjectsSortMode.None))
@@ -362,7 +449,7 @@ public class AutoPlayTestRunner : MonoBehaviour
         if (GameManager.Instance != null)
             GameManager.Instance.LoadLevel(1, 1);
 
-        yield return WaitForLevelReady();
+        yield return WaitForLevelReady("Level_1_1");
 
         // 截一张真实游戏画面: 日志能验证逻辑,但验证不了"玩家看到了什么"
         yield return CaptureShot("level_1_1_start");
@@ -994,7 +1081,7 @@ public class AutoPlayTestRunner : MonoBehaviour
     {
         if (GameManager.Instance == null) yield break;
         GameManager.Instance.LoadLevel(1, 3);
-        yield return WaitForLevelReady();
+        yield return WaitForLevelReady("Level_1_3");
 
         var crate = GameObject.Find("Coop3_Crate");
         var plateGO = GameObject.Find("Coop3_Plate");
@@ -1089,7 +1176,7 @@ public class AutoPlayTestRunner : MonoBehaviour
     {
         if (GameManager.Instance == null) yield break;
         GameManager.Instance.LoadLevel(1, 4); // 第1章Boss关
-        yield return WaitForLevelReady();
+        yield return WaitForLevelReady("Level_1_4");
 
         var boss = Object.FindAnyObjectByType<BossBase>();
         Check("Boss spawned in boss level", boss != null);

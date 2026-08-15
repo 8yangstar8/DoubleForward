@@ -170,7 +170,9 @@ public static class CoopLevelBuilder
         if (groundLayer >= 0) doorA.layer = groundLayer;
 
         // ② 高处光敏机关 - 抬到地面平射够不到的高度
-        var sensorGO = CreateBlock("Coop3_HighSensor", new Vector3(sensorX, standY + 3f, 0f),
+        // 高度必须"地面打不到、站上光桥打得到"。+3 时一座桥的站立高度约2.09,
+        // 差0.56够不着(实测走通失败);+2.0 刚好在桥上够得到,地面平射仍打不着
+        var sensorGO = CreateBlock("Coop3_HighSensor", new Vector3(sensorX, standY + 2f, 0f),
             Vector3.one, Color.white, "LightSensorArt", p, true);
         var sensor = sensorGO.AddComponent<LightSensor>();
         var so = new SerializedObject(sensor);
@@ -202,7 +204,7 @@ public static class CoopLevelBuilder
         EditorSceneManager.MarkSceneDirty(EditorSceneManager.GetActiveScene());
         EditorSceneManager.SaveScene(EditorSceneManager.GetActiveScene());
         Debug.Log($"[CoopLevel] Level_1_3 built: crate={crateX:F1} plate={plateX:F1} " +
-            $"doorA={doorAX:F1} sensor={sensorX:F1}@y+3 doorB={doorBX:F1} goal={goalX:F1}");
+            $"doorA={doorAX:F1} sensor={sensorX:F1}@standY+2 doorB={doorBX:F1} goal={goalX:F1}");
     }
 
     /// <summary>
