@@ -28,7 +28,7 @@ public class AutoPlayTestRunner : MonoBehaviour
     /// 就可能正好取在空窗期,表现为"2 players spawned (found 0)"并让整轮测试
     /// 全线失败 —— 实测约1/4的运行会中招。
     /// </summary>
-    private IEnumerator WaitForLevelReady(string expectedScene = null, float timeout = 20f)
+    private IEnumerator WaitForLevelReady(string expectedScene = null, float timeout = 40f)   // 场景变大后加载更慢,实测20秒不够
     {
         float waited = 0f;
         int stableFrames = 0;
@@ -183,6 +183,7 @@ public class AutoPlayTestRunner : MonoBehaviour
         float bestX = startX;
         float stuckTimer = 0f;
         bool jumpedWhileStuck = false;
+        int stuckEvents = 0;   // 卡住的次数 —— 通关与否说明不了手感,卡的次数才说明
         float elapsed = 0f;
         int shotIndex = 0;
         float nextShot = 0f;
@@ -198,6 +199,7 @@ public class AutoPlayTestRunner : MonoBehaviour
             // 卡住就跳,再卡就打 —— 和真人操作一致(台阶要跳,敌人挡道要打)
             if (stuckTimer > 0.4f)
             {
+                stuckEvents++;
                 if (jumpedWhileStuck) { lux.TryAttack(); jumpedWhileStuck = false; }
                 else { lux.TryJump(); jumpedWhileStuck = true; }
                 stuckTimer = 0f;
@@ -216,6 +218,10 @@ public class AutoPlayTestRunner : MonoBehaviour
         float finalX = lux.transform.position.x;
         Check($"Walkthrough: Lux walks from spawn to the goal unaided (x {startX:F1}->{finalX:F1}, goal {goalX:F1})",
             Mathf.Abs(finalX - goalX) <= 2f);
+        // 光"能通关"不够: 有"卡住就跳"的兜底,再难走也能磨过去。卡的次数才反映手感。
+        // 玩家反馈过操作手感差,实测原因是模板把平台撒在腰部高度当路障
+        Check($"Level 1-1 path is smooth, not a geometry fight (got stuck {stuckEvents} times)",
+            stuckEvents <= 2);
         yield return CaptureShot("walk_final");
     }
 
