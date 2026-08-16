@@ -241,6 +241,9 @@ public class DualPlayerCamera : MonoBehaviour
     {
         if (player1 == null && player2 == null) FindPlayers();
         if (player1 == null && player2 == null) return;
+        if (Time.frameCount % 60 == 0)
+            Debug.Log($"[DPCDIAG] locked={isLocked} p1={(player1 != null ? player1.position.x.ToString("F1") : "null")} " +
+                $"camX={transform.position.x:F2} parent={(transform.parent != null ? transform.parent.name : "none")}");
 
         Vector3 targetPos;
         if (player1 != null && player2 != null)

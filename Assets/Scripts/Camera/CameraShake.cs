@@ -17,6 +17,13 @@ public class CameraShake : MonoBehaviour
     private float currentDuration;
     private float shakeTimer;
     private Vector3 originalLocalPosition;
+
+    /// <summary>
+    /// 上一帧施加的抖动偏移。抖动必须是叠加在相机跟随结果之上的偏移,
+    /// 不能每帧把位置恢复成 Awake 时记下的绝对位置 —— 那会把跟随算出来的
+    /// 位置整个盖掉,表现为"人往前走,画面不动"。
+    /// </summary>
+    private Vector3 appliedShakeOffset;
     private bool isShaking;
 
     // 持续性震动（如站在不稳定平台上）
@@ -37,6 +44,10 @@ public class CameraShake : MonoBehaviour
     void LateUpdate()
     {
         if (!enableShake) return;
+
+        // 先撤掉上一帧的抖动,回到相机跟随算出的位置
+        transform.localPosition -= appliedShakeOffset;
+        appliedShakeOffset = Vector3.zero;
 
         float totalIntensity = 0f;
 
@@ -65,11 +76,8 @@ public class CameraShake : MonoBehaviour
         {
             float x = Random.Range(-totalIntensity, totalIntensity);
             float y = Random.Range(-totalIntensity, totalIntensity);
-            transform.localPosition = originalLocalPosition + new Vector3(x, y, 0);
-        }
-        else
-        {
-            transform.localPosition = originalLocalPosition;
+            appliedShakeOffset = new Vector3(x, y, 0);
+            transform.localPosition += appliedShakeOffset;
         }
     }
 
@@ -143,7 +151,8 @@ public class CameraShake : MonoBehaviour
     {
         isShaking = false;
         continuousIntensity = 0;
-        transform.localPosition = originalLocalPosition;
+        transform.localPosition -= appliedShakeOffset;   // 只撤抖动,别动跟随位置
+        appliedShakeOffset = Vector3.zero;
     }
 
     /// <summary>
@@ -174,7 +183,9 @@ public class CameraShake : MonoBehaviour
             elapsed += Time.deltaTime;
             float decay = 1f - (elapsed / duration);
             float offset = Mathf.Sin(elapsed * 30f) * intensity * decay;
-            transform.localPosition = originalLocalPosition + (Vector3)(dir * offset);
+            transform.localPosition -= appliedShakeOffset;
+            appliedShakeOffset = (Vector3)(dir * offset);
+            transform.localPosition += appliedShakeOffset;
             yield return null;
         }
         // 不重置位置，让LateUpdate处理

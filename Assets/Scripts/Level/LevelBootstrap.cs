@@ -257,18 +257,33 @@ public class LevelBootstrap : MonoBehaviour
         if (LevelManager.Instance != null)
             LevelManager.Instance.RegisterPlayers(luxPlayer, noxPlayer);
 
-        // 设置相机跟随
+        // 设置相机跟随。
+        //
+        // 必须取"正在渲染的那台摄像机"上的组件,不能用单例: Instance 是静态字段,
+        // 跨场景保留,切关时新旧摄像机会短暂共存(DualPlayerCamera.Awake 里还会
+        // Destroy 掉后来的那个整只 GameObject)。用单例就可能把玩家引用设到一台
+        // 不负责渲染的摄像机上 —— 表现为"人往前走,画面不动"。
         if (luxPlayer != null)
         {
-            if (DualPlayerCamera.Instance != null)
+            var mainCam = Camera.main;
+            var dual = mainCam != null ? mainCam.GetComponent<DualPlayerCamera>() : null;
+            var follow = mainCam != null ? mainCam.GetComponent<CameraController>() : null;
+
+            if (dual == null) dual = DualPlayerCamera.Instance;
+            if (follow == null) follow = CameraController.Instance;
+
+            if (dual != null)
             {
-                DualPlayerCamera.Instance.SetPlayers(luxPlayer.transform,
+                dual.SetPlayers(luxPlayer.transform,
                     noxPlayer != null ? noxPlayer.transform : null);
             }
-            else if (CameraController.Instance != null)
+            else if (follow != null)
             {
-                CameraController.Instance.SetTarget(luxPlayer.transform);
+                follow.SetTarget(luxPlayer.transform);
             }
+
+            Debug.Log($"[LevelBoot] camera follow wired: dual={(dual != null)} " +
+                $"follow={(follow != null)} onMainCam={(mainCam != null && dual != null && dual.gameObject == mainCam.gameObject)}");
         }
     }
 

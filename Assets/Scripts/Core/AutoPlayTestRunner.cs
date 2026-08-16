@@ -503,6 +503,24 @@ public class AutoPlayTestRunner : MonoBehaviour
             }
             float moved = lux.transform.position.x - startPos.x;
             Check($"Lux moved right (dx={moved:F1})", moved > 1f);
+
+            // 摄像机跟随 - 玩家反馈"人往前走,但是画面不移动"。
+            // CameraController.LateUpdate 在 target 为空时直接 return(又一处静默失效),
+            // 所以必须断言"镜头真的跟着动了",不能只断言组件存在
+            var mainCam = Camera.main;
+            Debug.Log($"[CAMDIAG] mainCam={(mainCam != null ? mainCam.name : "null")} " +
+                $"CameraController.Instance={(CameraController.Instance != null)} " +
+                $"DualPlayerCamera.Instance={(DualPlayerCamera.Instance != null)}");
+            if (mainCam != null)
+            {
+                // 不要靠"让他走60帧"来测: 他可能正好被地形卡住,人不动镜头当然不动,
+                // 那样测出来的是假故障。直接把人挪远,看镜头会不会追过去
+                float camX0 = mainCam.transform.position.x;
+                lux.transform.position += new Vector3(8f, 0f, 0f);
+                yield return new WaitForSeconds(1.5f);
+                float camDx = mainCam.transform.position.x - camX0;
+                Check($"Camera follows the player (camera dx={camDx:F2})", camDx > 2f);
+            }
             // 注: 批处理里没有输入设备,HandleInput每帧用零输入把速度清零,PlayerAnimator
             // 读到的velocity.x就是0,进不了Run状态。这里只断言"精灵确实被Animator逐帧驱动"
             // (实际观察到的是Idle循环);Run剪辑本身的帧数由静态验证保证
