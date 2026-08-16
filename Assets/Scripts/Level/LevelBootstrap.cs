@@ -187,8 +187,13 @@ public class LevelBootstrap : MonoBehaviour
         var ground = GameObject.Find("Ground");
         if (ground == null) return;
 
+        // 用碰撞体范围而不是 localScale: 地面改用平铺渲染后尺寸记在
+        // SpriteRenderer.size 和碰撞体上,localScale 恒为1,按缩放算会把墙立到地面中间
+        var groundCol = ground.GetComponent<Collider2D>();
         float gx = ground.transform.position.x;
-        float halfW = ground.transform.localScale.x * 0.5f;
+        float halfW = groundCol != null
+            ? groundCol.bounds.extents.x
+            : ground.transform.localScale.x * 0.5f;
         float gy = ground.transform.position.y;
         int groundLayer = LayerMask.NameToLayer("Ground");
 

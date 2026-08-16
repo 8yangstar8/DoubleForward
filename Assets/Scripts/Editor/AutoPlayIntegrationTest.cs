@@ -44,6 +44,10 @@ public static class AutoPlayIntegrationTest
         if (EditorApplication.timeSinceStartup - startTime > 420)
         {
             Debug.LogError("[AUTOPLAY] TIMEOUT");
+            // 超时也要把已完成的断言打出来,否则一超时就完全看不到发生了什么
+            foreach (var r in AutoPlayTestRunner.Results)
+                Debug.Log($"[AUTOPLAY] {r}");
+            Debug.Log($"[AUTOPLAY] {AutoPlayTestRunner.Passed}/{AutoPlayTestRunner.Total} passed before timeout");
             Finish(false);
             return;
         }

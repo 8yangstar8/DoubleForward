@@ -35,7 +35,7 @@ public static class CoopLevelBuilder
 
         float startX = luxSpawn.transform.position.x;
         float standY = luxSpawn.transform.position.y;                       // 玩家站立时的中心高度
-        float groundTopY = ground.transform.position.y + ground.transform.localScale.y * 0.5f;
+        float groundTopY = GroundTop(ground);
 
         float wallX = startX + 6f;
         float plateX = startX + 10f;
@@ -133,7 +133,7 @@ public static class CoopLevelBuilder
 
         float startX = luxSpawn.transform.position.x;
         float standY = luxSpawn.transform.position.y;
-        float groundTopY = ground.transform.position.y + ground.transform.localScale.y * 0.5f;
+        float groundTopY = GroundTop(ground);
 
         float plateX = startX + 9f;
         float crateX = plateX - 2.5f;   // 推一两下就到位,不要让玩家一路推4格
@@ -253,6 +253,20 @@ public static class CoopLevelBuilder
         EditorSceneManager.SaveScene(EditorSceneManager.GetActiveScene());
         Debug.Log($"[CoopLevel] Level_1_4 boss shield wired: weakPoint at " +
             $"x={weakGO.transform.position.x:F1} y={standY:F1}, boss={boss.name}");
+    }
+
+
+    /// <summary>
+    /// 地面上表面高度。必须读碰撞体范围而不是 localScale —— 地面改用平铺渲染后
+    /// 尺寸记在碰撞体和 SpriteRenderer.size 上,localScale 恒为1,
+    /// 旧的 position.y + localScale.y*0.5 会算出错误的高度,机关就会悬空。
+    /// </summary>
+    private static float GroundTop(GameObject ground)
+    {
+        var col = ground.GetComponent<Collider2D>();
+        return col != null
+            ? col.bounds.max.y
+            : ground.transform.position.y + ground.transform.localScale.y * 0.5f;
     }
 
     /// <summary>

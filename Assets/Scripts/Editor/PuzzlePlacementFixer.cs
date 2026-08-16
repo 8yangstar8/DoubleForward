@@ -32,7 +32,7 @@ public static class PuzzlePlacementFixer
             var luxSpawn = GameObject.Find("LuxSpawnPoint");
             if (ground == null || luxSpawn == null) continue;
 
-            float groundTopY = ground.transform.position.y + ground.transform.localScale.y * 0.5f;
+            float groundTopY = GroundTop(ground);
             float plateX = float.NaN; // 确实有板跑偏时才去找空位
 
             bool dirty = false;
@@ -119,6 +119,20 @@ public static class PuzzlePlacementFixer
             }
         }
         Debug.Log($"[PuzzleFix] {changed} legacy plates set to latching");
+    }
+
+
+    /// <summary>
+    /// 地面上表面高度。必须读碰撞体范围而不是 localScale —— 地面改用平铺渲染后
+    /// 尺寸记在碰撞体和 SpriteRenderer.size 上,localScale 恒为1,
+    /// 旧的 position.y + localScale.y*0.5 会算出错误的高度,机关就会悬空。
+    /// </summary>
+    private static float GroundTop(GameObject ground)
+    {
+        var col = ground.GetComponent<Collider2D>();
+        return col != null
+            ? col.bounds.max.y
+            : ground.transform.position.y + ground.transform.localScale.y * 0.5f;
     }
 
     /// <summary>
