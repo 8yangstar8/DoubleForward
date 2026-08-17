@@ -1,0 +1,17 @@
+Generic Platformer Tiles
+https://opengameart.org/content/generic-platformer-tiles
+
+License: CC0 1.0 Universal (Public Domain Dedication)
+No attribution required; attribution given here as courtesy.
+
+generic_platformer_tiles.png is the unmodified source atlas.
+All other PNGs in this folder are crops/recompositions of it:
+
+  terrain_ground.png  96x64  9-slice, border L32 B0 R32 T32
+  terrain_ledge.png   96x32  3-slice, border L32 B0 R32 T0
+  terrain_wall.png    96x32  3-slice, border L32 B0 R32 T0
+  tree_big / tree_small / bush / grass_tuft / flower /
+  mushroom_small / mushroom_big / cloud   - straight crops
+
+Import settings are applied by Assets/Scripts/Editor/TerrainArtUpgrade.cs
+(32 PPU, point filter, FullRect mesh, uncompressed).

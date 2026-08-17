@@ -54,8 +54,8 @@ public static class BackgroundArtGenerator
         for (int y = 0; y < h; y++)
         {
             float v = (float)y / (h - 1);
-            var c = Color.Lerp(new Color(0.30f, 0.34f, 0.52f),   // 地平线附近
-                               new Color(0.08f, 0.10f, 0.22f), v); // 天顶
+            var c = Color.Lerp(new Color(0.78f, 0.90f, 0.99f),   // 地平线附近
+                               new Color(0.33f, 0.71f, 1.00f), v); // 天顶(取自地形图集的天空蓝)
             for (int x = 0; x < w; x++) t.SetPixel(x, y, new Color(c.r, c.g, c.b, 1f));
         }
         // 柔光(远处的光源,呼应Lux的设定)
@@ -77,8 +77,10 @@ public static class BackgroundArtGenerator
     {
         int w = t.width, h = t.height;
         Clear(t);
-        DrawRidge(t, 0.62f, 0.10f, 0.9f, new Color(0.17f, 0.21f, 0.34f));
-        DrawRidge(t, 0.44f, 0.16f, 1.7f, new Color(0.12f, 0.15f, 0.26f));
+        // 这一层会被拉到170世界单位宽,起伏频率太低的话镜头里只看得到一段直线,
+        // 远山就变成一条生硬的色带。频率要按拉伸后的宽度来定。
+        DrawRidge(t, 0.62f, 0.10f, 5f, new Color(0.66f, 0.86f, 0.84f));
+        DrawRidge(t, 0.44f, 0.16f, 9f, new Color(0.48f, 0.76f, 0.62f));
         t.Apply();
     }
 
@@ -100,13 +102,14 @@ public static class BackgroundArtGenerator
     {
         int w = t.width, h = t.height;
         Clear(t);
-        var trunk = new Color(0.10f, 0.09f, 0.13f);
-        var leaf = new Color(0.09f, 0.20f, 0.16f);
+        var trunk = new Color(0.36f, 0.46f, 0.36f);
+        var leaf = new Color(0.31f, 0.60f, 0.40f);
         var rng = new System.Random(77);
 
-        for (int i = 0; i < 14; i++)
+        const int treeCount = 44;      // 拉到170单位宽后,14棵树每棵会有12单位粗
+        for (int i = 0; i < treeCount; i++)
         {
-            int cx = 6 + i * (w - 12) / 13;
+            int cx = 3 + i * (w - 6) / (treeCount - 1);
             int th = 28 + rng.Next(0, 26);          // 树高
             int halfW = 7 + rng.Next(0, 5);
 
@@ -167,8 +170,9 @@ public static class BackgroundArtGenerator
         // 按目标世界尺寸反算缩放。场景原有的 scale=(80,15) 会把 16x12 的天空图
         // 撑成 1280x180 单位,摄像机只看到中间极小一片渐变,结果就是一片纯色
         AssignLayer("ParallaxLayer_0", "BgSky", -30, 170f, 34f, 2f);
-        AssignLayer("ParallaxLayer_1", "BgHills", -20, 170f, 11f, 4.5f);
-        AssignLayer("ParallaxLayer_2", "BgTrees", -10, 170f, 7f, 1.2f);  // 压低,树干藏进地面
+        // 山脊只填贴图下部,所以整层要压到地平线附近,否则那片实色会把蓝天全糊掉
+        AssignLayer("ParallaxLayer_1", "BgHills", -20, 170f, 11f, 0.6f);
+        AssignLayer("ParallaxLayer_2", "BgTrees", -10, 170f, 7f, 0.2f);  // 压低,树干藏进地面
 
         // 重复运行先清掉上一次的云
         foreach (var go in Object.FindObjectsByType<GameObject>(FindObjectsSortMode.None))
