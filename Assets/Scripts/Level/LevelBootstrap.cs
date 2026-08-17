@@ -216,7 +216,17 @@ public class LevelBootstrap : MonoBehaviour
     {
         var goal = FindAnyObjectByType<LevelGoalTrigger>();
         if (goal == null) return;
+        // 放大的是触发区,不是贴图 —— 碰撞体(1x1)跟着 transform 缩放,
+        // 不放大的话终点判定只有一格宽,人从旁边擦过去都算没到。
+        // 这行原本写在方法末尾、混在"加占位贴图"的分支里,方法名又叫
+        // MakeGoalVisible,于是任何一条提前 return 都会把触发区一起跳掉。
+        goal.transform.localScale = new Vector3(1.5f, 4f, 1f);
+
         if (goal.GetComponent<SpriteRenderer>() != null) return; // 已可见
+
+        // 场景里立了终点旗就不用这根占位光柱。它是拿玩家精灵拉成 1.5x4 顶上的,
+        // 画面上就是一大块糊着的半透明黄斑,比没有还难看。
+        if (GameObject.Find("GoalFlag") != null) return;
 
         var sr = goal.gameObject.AddComponent<SpriteRenderer>();
         sr.color = new Color(1f, 0.9f, 0.3f, 0.6f); // 金色光柱
@@ -228,7 +238,6 @@ public class LevelBootstrap : MonoBehaviour
             if (luxSr != null && luxSr.sprite != null)
                 sr.sprite = luxSr.sprite;
         }
-        goal.transform.localScale = new Vector3(1.5f, 4f, 1f);
     }
 
     private void SpawnPlayers()

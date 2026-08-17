@@ -718,14 +718,38 @@ public class AutoPlayTestRunner : MonoBehaviour
             var goal = Object.FindAnyObjectByType<LevelGoalTrigger>();
             if (goal != null)
             {
+                // 触发区宽度单独断言。终点碰撞体是 1x1,靠 localScale 撑开,
+                // 缩放一旦丢失就退化成一格宽 —— 玩家走过去擦不到,关卡通不了,
+                // 而且不报任何错。这条查的是"终点走得进去",不是"完成回调接没接上"。
+                var goalCol = goal.GetComponent<Collider2D>();
+                float goalWidth = goalCol != null ? goalCol.bounds.size.x : 0f;
+                Check($"Goal trigger is wide enough to walk into (w={goalWidth:F2})", goalWidth >= 1.2f);
+
+                // LevelManager 是跨场景单例,CompleteLevel 开头就 if(IsLevelComplete) return,
+                // 所以这一关只会发出一次 OnLevelComplete。前面的测试里玩家只要蹭到过
+                // 任何一个终点,这里就再也等不到那条边沿了 —— 而蹭没蹭到取决于游荡路径,
+                // 于是这条断言时过时不过。改成查状态,并把"进来时就已完成"如实标注出来。
+                var levelManager = LevelManager.Instance;
+                bool alreadyComplete = levelManager != null && levelManager.IsLevelComplete;
                 bool completed = false;
-                if (LevelManager.Instance != null)
-                    LevelManager.Instance.OnLevelComplete += () => completed = true;
+                if (levelManager != null)
+                    levelManager.OnLevelComplete += () => completed = true;
 
                 lux.SetFrozen(false);
-                lux.transform.position = goal.transform.position + Vector3.left * 1f;
-                yield return new WaitForSeconds(0.5f);
-                Check("Reaching goal completes level", completed || LevelManager.Instance == null);
+                // 放在终点正中而不是偏移1格。触发区半宽只有0.75,偏移1格其实站在
+                // 区外,过不过全看玩家碰撞体边缘蹭没蹭上。
+                lux.transform.position = goal.transform.position;
+
+                // 轮询而不是固定睡0.5秒: 批处理下单帧可能长达0.2秒
+                float goalWait = 0f;
+                while (goalWait < 3f && !completed)
+                {
+                    completed = levelManager != null && levelManager.IsLevelComplete;
+                    goalWait += Time.deltaTime;
+                    yield return null;
+                }
+                Check($"Reaching goal completes level{(alreadyComplete ? " (already complete on entry)" : "")}",
+                    completed || alreadyComplete || levelManager == null);
             }
 
             // 合作复活系统测试(双人核心机制)
