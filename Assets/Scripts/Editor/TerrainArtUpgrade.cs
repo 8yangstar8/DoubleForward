@@ -81,20 +81,58 @@ public static class TerrainArtUpgrade
         var oldStrip = GameObject.Find("GroundGrassTop");
         if (oldStrip != null) Object.DestroyImmediate(oldStrip);
 
-        // 地面下方的填充改用侧壁块,左右两边的崖壁就能和地面接上
-        var fill = GameObject.Find("GroundFill");
-        if (fill != null)
-        {
-            var fsr = fill.GetComponent<SpriteRenderer>();
-            // 地下压暗: 这一层在镜头拉远时能占到近半个屏幕,和地面同亮度会糊成一片
-            if (fsr != null) { fsr.sprite = wall; fsr.color = new Color(0.60f, 0.58f, 0.64f); }
-        }
+        BuildUnderground(wall, groundCol.bounds);
 
         foreach (var go in Object.FindObjectsByType<GameObject>(FindObjectsSortMode.None))
             if (go != null && go.name.StartsWith("Platform_")) Retile(go, ledge);
 
         ReskinClouds();
         return PlantScenery(sceneName, groundCol.bounds);
+    }
+
+    /// <summary>
+    /// 地下填充。原来是一整块 24 单位深、同一亮度的泥土,镜头拉远时能占到
+    /// 小半个屏幕,平铺出来就是一大片没有信息量的重复纹理。
+    /// 改成三段递暗,越深越暗,做出"往下是深土"的纵深。
+    /// 用侧壁块(带左右崖壁边)才能和上面的地面接上,接缝看不出来。
+    /// 纯渲染,没有碰撞体。
+    /// </summary>
+    private static void BuildUnderground(Sprite wall, Bounds ground)
+    {
+        // 镜头往下只看得到地面以下五六格,所以渐变必须集中在最上面几段,
+        // 段厚 8 格的话整个可视区都落在第一段里,等于没分层。
+        var bands = new (float depth, Color shade)[]
+        {
+            (2f,  new Color(0.86f, 0.84f, 0.88f)),
+            (3f,  new Color(0.64f, 0.62f, 0.68f)),
+            (4f,  new Color(0.48f, 0.47f, 0.54f)),
+            (15f, new Color(0.36f, 0.35f, 0.42f)),
+        };
+
+        float depthSoFar = 0f;
+        for (int i = 0; i < bands.Length; i++)
+        {
+            var (bandDepth, shade) = bands[i];
+            // 第一段沿用既有的 GroundFill,避免多留一个孤儿物件
+            string name = i == 0 ? "GroundFill" : $"GroundFill_{i}";
+            var go = GameObject.Find(name);
+            if (go == null)
+            {
+                go = new GameObject(name);
+                go.AddComponent<SpriteRenderer>();
+            }
+            var sr = go.GetComponent<SpriteRenderer>();
+            sr.sprite = wall;
+            sr.drawMode = SpriteDrawMode.Tiled;
+            sr.tileMode = SpriteTileMode.Continuous;
+            sr.size = new Vector2(ground.size.x, bandDepth);
+            sr.color = shade;
+            sr.sortingOrder = -1;
+            go.transform.localScale = Vector3.one;
+            go.transform.position = new Vector3(
+                ground.center.x, ground.min.y - depthSoFar - bandDepth * 0.5f, 0f);
+            depthSoFar += bandDepth;
+        }
     }
 
     /// <summary>只换图和边框,尺寸/碰撞体一律不动。</summary>

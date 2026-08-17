@@ -16,7 +16,13 @@ public class DualPlayerCamera : MonoBehaviour
     [Header("跟随")]
     [SerializeField] private float followSpeed = 5f;
     [SerializeField] private float lookAheadFactor = 0.5f;
-    [SerializeField] private Vector3 offset = new Vector3(0, 1, -10);
+    // 镜头略微上抬: 原来玩家在画面正中,地平线就落在中间偏下,
+    // 底下小半个屏幕全是看不出名堂的地下泥土。抬高后地面线压到约七成高度,
+    // 空出来的是玩家真正要看的东西 —— 上方的平台和跳跃落点。
+    [SerializeField] private Vector3 offset = new Vector3(0, 2.5f, -10);
+
+    /// <summary>抬升的基准缩放。offset.y 是在这个缩放下的值,其余缩放按比例换算。</summary>
+    private const float ReferenceOrthoSize = 7f;
 
     [Header("缩放")]
     [SerializeField] private float minOrthoSize = 5f;
@@ -106,7 +112,11 @@ public class DualPlayerCamera : MonoBehaviour
             targetPos = alive.position;
         }
 
-        targetPos += offset;
+        // 抬升按当前缩放等比放大。固定偏移在镜头拉远时会被稀释 ——
+        // 近景地平线压在七成半高度,一拉远又回到画面中间,底下半屏全是地下泥土。
+        Vector3 scaledOffset = offset;
+        if (cam != null) scaledOffset.y *= cam.orthographicSize / ReferenceOrthoSize;
+        targetPos += scaledOffset;
 
         // 平滑跟随
         transform.position = Vector3.SmoothDamp(transform.position, targetPos, ref velocity, 1f / followSpeed);
