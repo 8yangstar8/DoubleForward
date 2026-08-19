@@ -75,7 +75,20 @@ public static class TerrainArtUpgrade
         var groundCol = ground != null ? ground.GetComponent<Collider2D>() : null;
         if (groundCol == null) return 0;
 
-        Retile(ground, ground9);
+        // 平铺渲染要求 localScale 恒为1(尺寸记在 sr.size 上),否则贴图连同
+        // 平铺结果一起被拉伸。Level_1_2/1_3 是在地形平铺改造之后才重新生成的,
+        // 缩放停在 (31,1,1) 而 sr.size 是 (30,1),每块砖被横向拉成31单位宽,
+        // 画面上就是地面顶部一条抹开的彩色撕裂带。
+        NormalizeScale(ground);
+        foreach (var go in Object.FindObjectsByType<GameObject>(FindObjectsSortMode.None))
+            if (go != null && go.name.StartsWith("Platform_")) NormalizeScale(go);
+
+        // 九宫格要求高度至少放得下"上边框1格 + 中心1格",地面比这薄就退回
+        // 只有左右边框的三段图 —— 否则上边框那一行会被压扁
+        var groundSr = ground.GetComponent<SpriteRenderer>();
+        float groundHeight = groundSr != null ? groundSr.size.y : 0f;
+        bool fitsNineSlice = groundHeight >= 2f;
+        Retile(ground, fitsNineSlice ? ground9 : ledge);
 
         // 草皮现在画在地形图块里了,旧的独立草皮色带会盖成两层
         var oldStrip = GameObject.Find("GroundGrassTop");
@@ -133,6 +146,25 @@ public static class TerrainArtUpgrade
                 ground.center.x, ground.min.y - depthSoFar - bandDepth * 0.5f, 0f);
             depthSoFar += bandDepth;
         }
+    }
+
+    /// <summary>
+    /// 把尺寸从 localScale 搬到 sr.size 和碰撞体上,localScale 归1。世界几何不变。
+    /// </summary>
+    private static void NormalizeScale(GameObject go)
+    {
+        var scale = go.transform.localScale;
+        if (Mathf.Approximately(scale.x, 1f) && Mathf.Approximately(scale.y, 1f)) return;
+
+        var sr = go.GetComponent<SpriteRenderer>();
+        var col = go.GetComponent<BoxCollider2D>();
+        Vector2 worldSize = col != null
+            ? new Vector2(col.size.x * scale.x, col.size.y * scale.y)
+            : new Vector2((sr != null ? sr.size.x : 1f) * scale.x, (sr != null ? sr.size.y : 1f) * scale.y);
+
+        go.transform.localScale = Vector3.one;
+        if (sr != null) sr.size = worldSize;
+        if (col != null) { col.size = worldSize; col.offset = Vector2.zero; }
     }
 
     /// <summary>只换图和边框,尺寸/碰撞体一律不动。</summary>
