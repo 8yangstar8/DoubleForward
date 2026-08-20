@@ -639,15 +639,55 @@ public class AutoPlayTestRunner : MonoBehaviour
                             // 濒死的怪不会正常攻击
                             enemy.ResetHealth(); // 血量归位,否则起始血量取决于前面被蹭了多少
                             int playerHpBefore = luxHealth.CurrentHealth;
-                            // 等敌人侦测→追击→首次攻击,命中即停(测单次伤害)
+                            // 等敌人侦测→追击→首次攻击,命中即停(测单次伤害)。
+                            // 每帧把玩家贴回敌人身侧(相对位置,不是固定坐标)。
+                            // 敌人在这段测试里是 Dynamic 刚体,和玩家重叠时物理每个
+                            // FixedUpdate 都把它弹开;钉死玩家坐标的话敌人会被越推越远,
+                            // 挥击那一帧 PerformAttack 里的 dist<=attackRange 判定就落空 ——
+                            // 实测敌人挥了5次一次没打中,状态机却全程正常。
+                            // 每帧把双方按在固定的贴身位置上。
+                            // 这个敌人是 ShadowSlime,每2秒 AddForce 跳一次,而
+                            // PerformAttack 用的是含Y轴的 Vector2.Distance —— 它在空中
+                            // 挥击时纵向距离就超出 attackRange 了。攻击冷却1.5秒和跳跃
+                            // 间隔2秒相位缓慢漂移,于是时中时不中;批处理下一帧长达0.2秒,
+                            // 起跳那一帧位移1.6单位,更放大了这个偏差。
+                            // 实测症状是敌人挥满5次一次没打中,状态机全程正常、目标也正确。
+                            // 把敌人移出物理模拟。它和玩家贴身站着必然重叠,物理每个
+                            // FixedUpdate 都在把它弹开,而批处理下一帧有十几个 FixedUpdate——
+                            // 于是"我在协程里量到的 0.81"和"它挥击那一刻的实际距离"根本
+                            // 不是一回事。近战判定是纯距离计算,不依赖物理,关掉模拟不影响它。
+                            // 先单独验伤害通道: 敌人走的是 TakeDamage(float, Vector2) 重载,
+                            // 和玩家自己受伤走的 int 重载不是同一个方法体
+                            int probeBefore = luxHealth.CurrentHealth;
+                            luxHealth.TakeDamage(20f, Vector2.left);
+                            Check($"Enemy-scale damage reaches the player ({probeBefore}->{luxHealth.CurrentHealth})",
+                                luxHealth.CurrentHealth < probeBefore);
+                            luxHealth.ResetHealth();
+                            playerHpBefore = luxHealth.CurrentHealth;
+
+                            Vector3 duelSpot = enemy.transform.position;
+                            int swingsBefore = enemy.AttackCount;   // 累计值,要取窗口内增量
+                            if (enemyRb != null) enemyRb.simulated = false;
                             float atkWait = 0;
+                            bool sawInvincible = false;
                             while (atkWait < 4f && luxHealth.CurrentHealth >= playerHpBefore)
                             {
+                                enemy.transform.position = duelSpot;
+                                lux.transform.position = duelSpot + Vector3.left * 0.8f;
+                                if (luxHealth.IsInvincible) sawInvincible = true;
                                 atkWait += Time.deltaTime;
                                 yield return null;
                             }
+                            bool targetIsThisLux = enemy.Target == lux.transform;
+                            if (enemyRb != null) enemyRb.simulated = true;
                             int dmgTaken = playerHpBefore - luxHealth.CurrentHealth;
-                            Check($"Enemy attacks player ({playerHpBefore}->{luxHealth.CurrentHealth})",
+                            // 失败时把现场打出来: 只报血量看不出链路断在侦测、追击还是攻击
+                            float finalDist = Vector2.Distance(lux.transform.position, enemy.transform.position);
+                            Check($"Enemy attacks player ({playerHpBefore}->{luxHealth.CurrentHealth}, " +
+                                  $"state={enemy.State}, target={enemy.TargetName}, " +
+                                  $"swingsInWindow={enemy.AttackCount - swingsBefore}, " +
+                                  $"dist={finalDist:F2}, sameLux={targetIsThisLux}, " +
+                                  $"sawInvincible={sawInvincible}, enemyHp={enemy.CurrentHealth})",
                                 dmgTaken > 0);
                             // 平衡: 单次攻击只扣1滴血,不秒杀(玩家3滴血可承受多次)
                             Check($"Enemy single hit = 1 heart (dmg={dmgTaken})", dmgTaken == 1);
@@ -1012,7 +1052,10 @@ public class AutoPlayTestRunner : MonoBehaviour
         if (GameManager.Instance == null) yield break;
         GameManager.Instance.LoadLevel(1, 2);
 
-        yield return WaitForLevelReady();
+        // 必须带上场景名。不带的话只等"加载态结束 + 两个玩家",并不校验切到了哪一关,
+        // Level_1_2 还没换过来就往下走,GameObject.Find 全落空,
+        // 报出来是"影墙不存在"——对着场景文件看,影墙明明在。
+        yield return WaitForLevelReady("Level_1_2");
 
         var shadowWall = GameObject.Find("Coop_ShadowWall");
         Check("Coop level: shadow wall gate exists", shadowWall != null);
@@ -1271,19 +1314,64 @@ public class AutoPlayTestRunner : MonoBehaviour
         PlayerController lux = null;
         foreach (var p in players) if (p.Type == PlayerController.PlayerType.Lux) lux = p;
 
-        if (lux != null && damageable != null)
+        // ===== 双人机制: Boss 常态带盾,只有 Lux 用光束照亮弱点才打得动 =====
+        // 之前这里直接 TakeDamage 就掉血并通过,恰恰是因为 BossCoopShield
+        // 虽然写好了却从没挂到 Level_1_4 上 —— 一个人就能打完,双人设计等于不存在。
+        var coopShield = boss.GetComponent<BossCoopShield>();
+        Check("Boss coop shield is wired in the boss level", coopShield != null);
+
+        if (lux != null && damageable != null && coopShield != null)
         {
-            int bossHpBefore = boss.CurrentHealth;
-            // 直接通过IDamageable施加伤害(验证接口可用)
+            var weakPoint = coopShield.WeakPoint;
+            var luxAbilities = lux.GetComponent<LuxAbilities>();
+            Check("Boss weak point exists (Lux beam target)", weakPoint != null);
+
+            // 先把 Lux 带到弱点旁边,镜头才会跟到 Boss 身上 —— 否则截图停在出生点,
+            // 拍不到护盾
+            if (weakPoint != null)
+            {
+                lux.SetFrozen(true);
+                lux.transform.position = weakPoint.transform.position + Vector3.left * 2f;
+                yield return new WaitForSeconds(0.6f);   // 等镜头跟过去
+            }
+
+            int shieldedHp = boss.CurrentHealth;
             damageable.TakeDamage(5);
             yield return null;
-            Check($"Boss takes damage ({bossHpBefore}->{boss.CurrentHealth})",
-                boss.CurrentHealth < bossHpBefore);
+            Check($"Shielded boss takes no damage (hp {shieldedHp}->{boss.CurrentHealth}, shield={boss.ShieldUp})",
+                boss.ShieldUp && boss.CurrentHealth == shieldedHp);
+            yield return CaptureShot("boss_1_shielded");
 
-            // 验证击败流程
-            while (boss.IsAlive)
+            if (weakPoint != null && luxAbilities != null)
+            {
+                luxAbilities.TryActivate();
+
+                // 轮询等 LightSensor 的 activationDelay,不睡固定时长
+                float lit = 0f;
+                while (lit < 3f && boss.ShieldUp)
+                {
+                    lit += Time.deltaTime;
+                    yield return null;
+                }
+                Check($"Lux beam on the weak point drops the shield (after {lit:F2}s)", !boss.ShieldUp);
+                yield return CaptureShot("boss_2_exposed");
+
+                int exposedHp = boss.CurrentHealth;
+                damageable.TakeDamage(5);
+                yield return null;
+                Check($"Exposed boss takes damage ({exposedHp}->{boss.CurrentHealth})",
+                    boss.CurrentHealth < exposedHp);
+                lux.SetFrozen(false);
+            }
+
+            // 验证击败流程。TakeDamage 会被护盾挡掉,直接绕过护盾判定收尾
+            int guard = 0;
+            while (boss.IsAlive && guard++ < 200)
+            {
+                boss.SetShield(false);
                 boss.TakeDamage(50);
-            yield return new WaitForSeconds(0.2f);
+                yield return null;
+            }
             Check("Boss can be defeated", !boss.IsAlive);
         }
     }

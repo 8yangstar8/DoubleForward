@@ -12,11 +12,15 @@ public class BossCoopShield : MonoBehaviour
     [SerializeField] private BossBase boss;
     [SerializeField] private LightSensor weakPoint;
     [SerializeField] private float exposedDuration = 5f;
+    [SerializeField] private GameObject shieldVisual;
 
     private float exposedTimer;
 
     /// <summary>护盾是否已落下(可被伤害)</summary>
     public bool IsExposed => exposedTimer > 0f;
+
+    /// <summary>弱点机关。关卡里可能不止一个 LightSensor,测试要认准这一个</summary>
+    public LightSensor WeakPoint => weakPoint;
 
     void Awake()
     {
@@ -26,6 +30,7 @@ public class BossCoopShield : MonoBehaviour
     void Start()
     {
         if (boss != null) boss.SetShield(true);   // 开场带盾
+        if (shieldVisual != null) shieldVisual.SetActive(true);
     }
 
     void Update()
@@ -38,14 +43,21 @@ public class BossCoopShield : MonoBehaviour
         else if (exposedTimer > 0f)
             exposedTimer -= Time.deltaTime;
 
-        boss.SetShield(exposedTimer <= 0f);
+        bool shielded = exposedTimer <= 0f;
+        boss.SetShield(shielded);
+
+        // 护盾必须看得见。没有它,玩家看到的只是"打上去不掉血",
+        // 既不知道为什么,也不知道该做什么 —— 机制等于不存在。
+        if (shieldVisual != null && shieldVisual.activeSelf != shielded)
+            shieldVisual.SetActive(shielded);
     }
 
     /// <summary>编辑器配置用</summary>
-    public void Configure(BossBase target, LightSensor sensor, float duration)
+    public void Configure(BossBase target, LightSensor sensor, float duration, GameObject visual)
     {
         boss = target;
         weakPoint = sensor;
         exposedDuration = duration;
+        shieldVisual = visual;
     }
 }

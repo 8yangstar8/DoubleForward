@@ -247,7 +247,8 @@ public static class CoopLevelBuilder
 
         var shield = boss.gameObject.GetComponent<BossCoopShield>();
         if (shield == null) shield = boss.gameObject.AddComponent<BossCoopShield>();
-        shield.Configure(boss, weak, 5f);
+        shield.Configure(boss, weak, 5f, BuildShieldVisual(boss.gameObject));
+        EditorUtility.SetDirty(shield);
 
         EditorSceneManager.MarkSceneDirty(EditorSceneManager.GetActiveScene());
         EditorSceneManager.SaveScene(EditorSceneManager.GetActiveScene());
@@ -255,6 +256,60 @@ public static class CoopLevelBuilder
             $"x={weakGO.transform.position.x:F1} y={standY:F1}, boss={boss.name}");
     }
 
+
+    /// <summary>
+    /// Boss 身上的护盾球。没有它,玩家看到的只是"打上去不掉血",既不知道原因
+    /// 也不知道该做什么 —— 机制写了等于没写。带盾时显示,弱点被照亮后隐藏。
+    /// </summary>
+    private static GameObject BuildShieldVisual(GameObject boss)
+    {
+        const string spritePath = "Assets/Art/External/GenericPlatformer/boss_shield.png";
+        const string childName = "ShieldVisual";
+
+        AssetDatabase.ImportAsset(spritePath);
+        var imp = AssetImporter.GetAtPath(spritePath) as TextureImporter;
+        if (imp != null)
+        {
+            imp.textureType = TextureImporterType.Sprite;
+            imp.spriteImportMode = SpriteImportMode.Single;
+            imp.spritePixelsPerUnit = 32;
+            imp.filterMode = FilterMode.Point;
+            imp.alphaIsTransparency = true;
+            imp.textureCompression = TextureImporterCompression.Uncompressed;
+            imp.mipmapEnabled = false;
+            imp.SaveAndReimport();
+        }
+
+        var sprite = AssetDatabase.LoadAssetAtPath<Sprite>(spritePath);
+        if (sprite == null) { Debug.LogError("[CoopLevel] boss_shield.png missing"); return null; }
+
+        var t = boss.transform.Find(childName);
+        if (t == null)
+        {
+            t = new GameObject(childName).transform;
+            t.SetParent(boss.transform);
+        }
+
+        var sr = t.GetComponent<SpriteRenderer>();
+        if (sr == null) sr = t.gameObject.AddComponent<SpriteRenderer>();
+        sr.sprite = sprite;
+        sr.color = Color.white;
+        sr.sortingOrder = 20;                      // 盖在 Boss 之上
+
+        // 罩住整个 Boss: 按碰撞体尺寸算,再放大一点留边;
+        // 子物件要反向抵消父物件的缩放,否则 Boss 一被缩放护盾就变形
+        var col = boss.GetComponent<Collider2D>();
+        float span = col != null ? Mathf.Max(col.bounds.size.x, col.bounds.size.y) * 1.5f : 3f;
+        float native = sprite.bounds.size.x;
+        float k = native > 0f ? span / native : 1f;
+        var ps = boss.transform.lossyScale;
+        t.localScale = new Vector3(
+            Mathf.Approximately(ps.x, 0f) ? k : k / ps.x,
+            Mathf.Approximately(ps.y, 0f) ? k : k / ps.y,
+            1f);
+        t.position = col != null ? (Vector3)col.bounds.center : boss.transform.position;
+        return t.gameObject;
+    }
 
     /// <summary>
     /// 地面上表面高度。必须读碰撞体范围而不是 localScale —— 地面改用平铺渲染后

@@ -72,6 +72,12 @@ public abstract class EnemyBase : MonoBehaviour, IDamageable
     /// <summary>回满血(波次重置/测试用)。注意别取名Reset,那是Unity的编辑器魔法回调</summary>
     public void ResetHealth() => currentHealth = maxHealth;
     public EnemyState State => currentState;
+    /// <summary>当前锁定的目标名。诊断用: 锁错物件时攻击会静默落空,光看血量看不出来</summary>
+    public string TargetName => currentTarget != null ? currentTarget.name : "<none>";
+    /// <summary>锁定的目标本体。诊断用: 场景里可能存在同名的重复玩家物件</summary>
+    public Transform Target => currentTarget;
+    /// <summary>已出手次数。区分"根本没进攻击状态"和"出手了但没造成伤害"</summary>
+    public int AttackCount { get; private set; }
     public bool IsDead => currentState == EnemyState.Dead;
     public bool IsAlive => currentState != EnemyState.Dead;
 
@@ -207,6 +213,7 @@ public abstract class EnemyBase : MonoBehaviour, IDamageable
         if (attackTimer > 0) return;
 
         PerformAttack();
+        AttackCount++;
         attackTimer = attackCooldown;
         SetState(EnemyState.Chase);
     }
@@ -228,11 +235,18 @@ public abstract class EnemyBase : MonoBehaviour, IDamageable
 
         foreach (var hit in hits)
         {
-            float dist = Vector2.Distance(transform.position, hit.transform.position);
+            // 必须解析到玩家根物件。碰撞体可能挂在子物件上(脚底检测、受击盒等),
+            // 直接存 hit.transform 的话,PerformAttack 里
+            // currentTarget.GetComponent<PlayerHealth>() 会拿到 null ——
+            // 状态机照常 Chase/Attack,攻击却静默落空,一点血都不掉、一条报错也没有。
+            var player = hit.GetComponentInParent<PlayerController>();
+            if (player == null) continue;
+
+            float dist = Vector2.Distance(transform.position, player.transform.position);
             if (dist < nearestDist)
             {
                 nearestDist = dist;
-                nearest = hit.transform;
+                nearest = player.transform;
             }
         }
 
