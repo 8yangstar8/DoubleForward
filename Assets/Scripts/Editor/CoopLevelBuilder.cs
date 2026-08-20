@@ -245,6 +245,8 @@ public static class CoopLevelBuilder
         so.FindProperty("sensorRenderer").objectReferenceValue = weakGO.GetComponent<SpriteRenderer>();
         so.ApplyModifiedProperties();
 
+        BossArtUpgrade.Dress(boss.gameObject, 1);
+
         var shield = boss.gameObject.GetComponent<BossCoopShield>();
         if (shield == null) shield = boss.gameObject.AddComponent<BossCoopShield>();
         shield.Configure(boss, weak, 5f, BuildShieldVisual(boss.gameObject));

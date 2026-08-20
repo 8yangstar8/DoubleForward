@@ -53,6 +53,7 @@ public static class HeadlessRuntimeTest
         TestManagerPrefabs();
         TestLevelScene_1_1();
         TestPuzzlePlacement();
+        TestKeyObjectsAreVisible();
         TestCharacterAnimation();
         TestBuildSettings();
 
@@ -344,6 +345,41 @@ public static class HeadlessRuntimeTest
                 var p = plate.transform.position;
                 Assert($"{sceneName}: '{plate.name}' not stranded at world origin ({p.x:F1},{p.y:F1})",
                     new Vector2(p.x, p.y).magnitude > 1f);
+            }
+        }
+    }
+
+    /// <summary>
+    /// 关键物件必须真的画得出来。
+    ///
+    /// 第一章的最终 Boss 的 SpriteRenderer 一直是 m_Sprite: 0 —— 它有血量、
+    /// 会追击、能被打死,画面上却什么都没有,而且不报任何错。整套测试没有一条
+    /// 能发现它,因为大家查的都是"组件在不在""血量掉没掉",没人查"看不看得见"。
+    /// </summary>
+    private static void TestKeyObjectsAreVisible()
+    {
+        foreach (var entry in EditorBuildSettings.scenes)
+        {
+            if (!entry.enabled || !entry.path.Contains("/Chapter")) continue;
+            if (!File.Exists(entry.path)) continue;
+
+            EditorSceneManager.OpenScene(entry.path);
+            string sceneName = Path.GetFileNameWithoutExtension(entry.path);
+
+            foreach (var boss in Object.FindObjectsByType<BossBase>(
+                         FindObjectsInactive.Include, FindObjectsSortMode.None))
+            {
+                var sr = boss.GetComponent<SpriteRenderer>();
+                Assert($"{sceneName}: boss '{boss.name}' is actually visible (has a sprite)",
+                    sr != null && sr.sprite != null);
+            }
+
+            var goal = GameObject.Find("LevelGoal");
+            if (goal != null)
+            {
+                // 终点本体的贴图被关掉了,视觉交给场景里的终点旗
+                Assert($"{sceneName}: the goal is marked by a visible flag",
+                    GameObject.Find("GoalFlag") != null);
             }
         }
     }
