@@ -374,6 +374,22 @@ public static class HeadlessRuntimeTest
                     sr != null && sr.sprite != null);
             }
 
+            // 终点必须落在地面范围内。模板把终点放在 x=45/50/55/60,地面却一律只到
+            // x=50 —— 20关里12关的终点悬在地面外,而 LevelBootstrap 还会在地面边缘
+            // 立边界墙,玩家连走都走不过去。**四个 Boss 关全中**。
+            // 以前没人发现,是因为通关测试都把角色瞬移到终点,瞬移不会被边界墙挡住。
+            var groundObj = GameObject.Find("Ground");
+            var goalTrigger = Object.FindAnyObjectByType<LevelGoalTrigger>();
+            var groundCol = groundObj != null ? groundObj.GetComponent<Collider2D>() : null;
+            if (groundCol != null && goalTrigger != null)
+            {
+                var gb = groundCol.bounds;
+                float gx = goalTrigger.transform.position.x;
+                Assert($"{sceneName}: the goal stands on solid ground " +
+                       $"(goal x={gx:F0}, ground [{gb.min.x:F0},{gb.max.x:F0}])",
+                    gx > gb.min.x + 1f && gx < gb.max.x - 1f);
+            }
+
             var goal = GameObject.Find("LevelGoal");
             if (goal != null)
             {

@@ -78,6 +78,8 @@ public abstract class EnemyBase : MonoBehaviour, IDamageable
     public Transform Target => currentTarget;
     /// <summary>已出手次数。区分"根本没进攻击状态"和"出手了但没造成伤害"</summary>
     public int AttackCount { get; private set; }
+    /// <summary>最后一击的结果。近战有多个静默出口,不记下来就只能靠猜</summary>
+    public string LastAttackResult { get; protected set; } = "<none>";
     public bool IsDead => currentState == EnemyState.Dead;
     public bool IsAlive => currentState != EnemyState.Dead;
 

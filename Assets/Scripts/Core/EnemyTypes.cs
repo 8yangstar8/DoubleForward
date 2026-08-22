@@ -30,18 +30,30 @@ public class ShadowSlime : EnemyBase
 
     protected override void PerformAttack()
     {
-        if (currentTarget == null) return;
+        // 这一击落空时把原因记下来。近战有三个静默出口(没目标/够不着/目标身上
+        // 没有 PlayerHealth),从外面只看得到"血没掉",分不清是哪一个。
+        if (currentTarget == null) { LastAttackResult = "no target"; return; }
 
         float dist = Vector2.Distance(transform.position, currentTarget.position);
-        if (dist <= attackRange)
+        if (dist > attackRange)
         {
-            var health = currentTarget.GetComponent<PlayerHealth>();
-            if (health != null)
-            {
-                Vector2 knockback = (currentTarget.position - transform.position).normalized;
-                health.TakeDamage(damage, knockback);
-            }
+            LastAttackResult = $"out of range (dist={dist:F2} > {attackRange:F2})";
+            return;
         }
+
+        var health = currentTarget.GetComponent<PlayerHealth>();
+        if (health == null)
+        {
+            LastAttackResult = $"'{currentTarget.name}' has no PlayerHealth";
+            return;
+        }
+
+        Vector2 knockback = (currentTarget.position - transform.position).normalized;
+        int before = health.CurrentHealth;
+        health.TakeDamage(damage, knockback);
+        LastAttackResult = health.CurrentHealth < before
+            ? $"hit for {before - health.CurrentHealth}"
+            : $"absorbed (dmg={damage}, alive={health.IsAlive}, invincible={health.IsInvincible})";
     }
 }
 

@@ -76,6 +76,10 @@ public class AutoPlayTestRunner : MonoBehaviour
         }
 
         yield return RunLevel11Walkthrough();
+        // 第二章从来没被走通验证过 —— 它们全是同一套通用模板拼的
+        yield return RunWalkthrough(2, 1, maxStuck: 6, captureShots: false);
+        yield return RunWalkthrough(2, 2, maxStuck: 6, captureShots: false);
+        yield return RunWalkthrough(2, 3, maxStuck: 6, captureShots: false);
         yield return RunCoopWalkthrough();
         yield return RunCoop13Walkthrough();
     }
@@ -167,9 +171,19 @@ public class AutoPlayTestRunner : MonoBehaviour
     /// </summary>
     private IEnumerator RunLevel11Walkthrough()
     {
+        yield return RunWalkthrough(1, 1, maxStuck: 6, captureShots: true);
+    }
+
+    /// <summary>
+    /// 通用走通: 任何一关都能用同一套"按住右 + 卡住就跳"跑一遍。
+    /// 原来只写死了 1-1,于是第二章往后有没有人能走通,从来没人验证过。
+    /// </summary>
+    private IEnumerator RunWalkthrough(int chapter, int level, int maxStuck, bool captureShots)
+    {
         if (GameManager.Instance == null) yield break;
-        GameManager.Instance.LoadLevel(1, 1);
-        yield return WaitForLevelReady("Level_1_1");
+        string sceneName = $"Level_{chapter}_{level}";
+        GameManager.Instance.LoadLevel(chapter, level);
+        yield return WaitForLevelReady(sceneName);
 
         PlayerController lux = null;
         foreach (var p in Object.FindObjectsByType<PlayerController>(FindObjectsSortMode.None))
@@ -178,34 +192,60 @@ public class AutoPlayTestRunner : MonoBehaviour
         if (lux == null || goal == null) { Check("Walkthrough: level has Lux and a goal", false); yield break; }
 
         lux.SetFrozen(false);
+        // 死亡/重生会把人送回检查点,只看"走到哪"分不清是被挡住还是被打回去了
+        var luxHp = lux.GetComponent<PlayerHealth>();
+        int respawns = 0;
+        if (luxHp != null) luxHp.OnRespawned += () => respawns++;
+
         float goalX = goal.transform.position.x;
         float startX = lux.transform.position.x;
         float bestX = startX;
+        float windowStartX = startX;
         float stuckTimer = 0f;
         bool jumpedWhileStuck = false;
         int stuckEvents = 0;   // 卡住的次数 —— 通关与否说明不了手感,卡的次数才说明
         float elapsed = 0f;
         int shotIndex = 0;
         float nextShot = 0f;
+        float nextTrace = 0f;
 
-        while (elapsed < 22f && Mathf.Abs(lux.transform.position.x - goalX) > 2f)
+        // 时间预算按关卡长度算,不能写死。原来固定22秒,第一关(33格)够用,
+        // 第二章的关卡长48-58格,时间到了人还在半路上 —— 报出来像"走不通",
+        // 实际卡住次数是0,只是没走完。
+        float budget = Mathf.Clamp(Mathf.Abs(goalX - startX) / 1.2f + 8f, 20f, 55f);
+        while (elapsed < budget && Mathf.Abs(lux.transform.position.x - goalX) > 2f)
         {
             lux.SetMoveInput(Vector2.right);
 
             float x = lux.transform.position.x;
-            if (x > bestX + 0.05f) { bestX = x; stuckTimer = 0f; }
-            else stuckTimer += Time.deltaTime;
-
-            // 卡住就跳,再卡就打 —— 和真人操作一致(台阶要跳,敌人挡道要打)
-            if (stuckTimer > 0.4f)
+            // 判据是"推进够不够快",不是"动没动"。原来只要每0.4秒挪出0.05格就算没卡,
+            // 于是玩家用身体把一只敌人推着走(实测速度恒为5,实际只挪0.27格/秒)也算
+            // "一路顺畅",从头到尾不出手 —— 时间耗光还在半路,报出来却是"卡住0次"。
+            if (x > bestX + 0.05f) bestX = x;
+            stuckTimer += Time.deltaTime;
+            if (stuckTimer >= 0.6f)
             {
-                stuckEvents++;
-                if (jumpedWhileStuck) { lux.TryAttack(); jumpedWhileStuck = false; }
-                else { lux.TryJump(); jumpedWhileStuck = true; }
+                bool crawling = bestX - windowStartX < 0.5f;   // 0.6秒挪不出半格 = 被挡住了
+                windowStartX = bestX;
                 stuckTimer = 0f;
+                if (crawling)
+                {
+                    stuckEvents++;
+                    if (jumpedWhileStuck) { lux.TryAttack(); jumpedWhileStuck = false; }
+                    else { lux.TryJump(); jumpedWhileStuck = true; }
+                }
             }
 
-            if (elapsed >= nextShot)
+            // 走通失败时光看终点坐标看不出是被挡住还是走得慢,每4秒打一条轨迹
+            if (elapsed >= nextTrace)
+            {
+                var lrb = lux.GetComponent<Rigidbody2D>();
+                Debug.Log($"[WALK] {sceneName} t={elapsed:F0}s x={x:F1} " +
+                          $"v=({(lrb != null ? lrb.velocity.x : 0f):F2},{(lrb != null ? lrb.velocity.y : 0f):F2})");
+                nextTrace = elapsed + 4f;
+            }
+
+            if (captureShots && elapsed >= nextShot)
             {
                 yield return CaptureShot($"walk_{shotIndex++}");
                 nextShot = elapsed + 6f;
@@ -216,13 +256,18 @@ public class AutoPlayTestRunner : MonoBehaviour
         }
 
         float finalX = lux.transform.position.x;
-        Check($"Walkthrough: Lux walks from spawn to the goal unaided (x {startX:F1}->{finalX:F1}, goal {goalX:F1})",
+        Check($"{sceneName} walkthrough: Lux walks from spawn to the goal unaided " +
+              $"(x {startX:F1}->{finalX:F1}, goal {goalX:F1}, {elapsed:F0}s/{budget:F0}s, " +
+              $"hp={(luxHp != null ? luxHp.CurrentHealth : -1)}, respawns={respawns})",
             Mathf.Abs(finalX - goalX) <= 2f);
         // 光"能通关"不够: 有"卡住就跳"的兜底,再难走也能磨过去。卡的次数才反映手感。
         // 玩家反馈过操作手感差,实测原因是模板把平台撒在腰部高度当路障
-        Check($"Level 1-1 path is smooth, not a geometry fight (got stuck {stuckEvents} times)",
-            stuckEvents <= 2);
-        yield return CaptureShot("walk_final");
+        // 判据改成"推进过慢"之后,这个数把"停下来打挡路的敌人"也算进去了,
+        // 所以它衡量的是"要额外操作多少次才推得动",不再是纯粹的几何卡顿。
+        // 阈值随之重新标定: 修复前 Level_2_3 是 60-93 次,正常关卡是 1-3 次。
+        Check($"{sceneName} needs few jump/attack interventions ({stuckEvents})",
+            stuckEvents <= maxStuck);
+        if (captureShots) yield return CaptureShot("walk_final");
     }
 
     /// <summary>
@@ -687,7 +732,8 @@ public class AutoPlayTestRunner : MonoBehaviour
                                   $"state={enemy.State}, target={enemy.TargetName}, " +
                                   $"swingsInWindow={enemy.AttackCount - swingsBefore}, " +
                                   $"dist={finalDist:F2}, sameLux={targetIsThisLux}, " +
-                                  $"sawInvincible={sawInvincible}, enemyHp={enemy.CurrentHealth})",
+                                  $"sawInvincible={sawInvincible}, enemyHp={enemy.CurrentHealth}, " +
+                                  $"lastSwing={enemy.LastAttackResult})",
                                 dmgTaken > 0);
                             // 平衡: 单次攻击只扣1滴血,不秒杀(玩家3滴血可承受多次)
                             Check($"Enemy single hit = 1 heart (dmg={dmgTaken})", dmgTaken == 1);
