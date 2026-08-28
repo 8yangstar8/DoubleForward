@@ -6182,8 +6182,8 @@ MonoBehaviour:
   dropChance: 0.3
   scoreValue: 100
   enemyTypeName: 
-  projectilePrefab: {fileID: 0}
-  firePoint: {fileID: 0}
+  projectilePrefab: {fileID: 7469902546143885780, guid: eae7fc19ffc1f1c4991c9967280a4deb, type: 3}
+  firePoint: {fileID: 1871559731}
   projectileSpeed: 10
 --- !u!61 &972223178
 BoxCollider2D:

@@ -18,6 +18,8 @@ public class AutoPlayTestRunner : MonoBehaviour
     /// 十分钟以上,没法迭代。由 PlaythroughTest 入口置位。
     /// </summary>
     public static bool WalkthroughOnly;
+    /// <summary>按需的全量走通扫描,见 AllLevelsWalkthroughTest</summary>
+    public static bool AllLevels;
     public static readonly List<string> Results = new List<string>();
 
     /// <summary>
@@ -73,6 +75,22 @@ public class AutoPlayTestRunner : MonoBehaviour
                 GameFlowManager.Instance.CurrentState == GameFlowManager.FlowState.MainMenu) break;
             settle -= Time.unscaledDeltaTime;
             yield return null;
+        }
+
+        if (AllLevels)
+        {
+            // 全量扫描(按需入口): 每章的 1/2/3 关。x_4 是 Boss 关,通关要靠
+            // "Lux光束打弱点 + 输出"的配合流程,不是走过去就行,不适合这套走通逻辑。
+            for (int chapter = 1; chapter <= 5; chapter++)
+                for (int level = 1; level <= 3; level++)
+                {
+                    // 1-2 / 1-3 是双人配合关: Lux 单人本来就过不去(影墙只有Nox能穿、
+                    // A门要先推箱子压板),这是设计,不是缺陷。它们由
+                    // RunCoopWalkthrough / RunCoop13Walkthrough 按双人流程单独覆盖。
+                    if (chapter == 1 && (level == 2 || level == 3)) continue;
+                    yield return RunWalkthrough(chapter, level, maxStuck: 6, captureShots: false);
+                }
+            yield break;
         }
 
         yield return RunLevel11Walkthrough();
@@ -597,9 +615,13 @@ public class AutoPlayTestRunner : MonoBehaviour
                 {
                     // 挑一个左侧4格弹道通畅的敌人: 关卡里的门/平台会挡住光弹,
                     // 而这几项测试要验证的是战斗本身,不该受关卡摆放影响
+                    // 而且必须挑近战单位。这几条断言测的是"贴身的敌人能打到玩家",
+                    // 抓到 ShadowArcher 就变成"贴脸0.8格用弓箭射人",它的弹丸要从
+                    // 身侧生成再飞过来,在这个距离上本来就不该用来验证接触伤害 ——
+                    // 之前这条断言长期"五次挂一两次",根源就是每次抓到的敌人类型不固定。
                     var enemy = sceneEnemies[0];
                     foreach (var e in sceneEnemies)
-                        if (HasClearShotFrom(e.transform.position)) { enemy = e; break; }
+                        if (e is ShadowSlime && HasClearShotFrom(e.transform.position)) { enemy = e; break; }
 
                     // 战斗测试期间关掉其余敌人: 它们会游荡进弹道、或提前蹭掉玩家的血,
                     // 让后面"单次伤害=1滴"的断言时好时坏(实测同样代码 53/56 与 56/56 交替)

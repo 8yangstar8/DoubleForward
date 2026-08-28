@@ -67,20 +67,39 @@ public class ShadowArcher : EnemyBase
 
     protected override void PerformAttack()
     {
-        if (currentTarget == null || projectilePrefab == null || firePoint == null) return;
+        // 三个静默出口。实测场景里的 ShadowArcher 两个引用都是空的 ——
+        // 它进 Attack 状态、出手计数照加,却永远射不出任何东西,也不报错。
+        if (currentTarget == null) { LastAttackResult = "no target"; return; }
+        if (projectilePrefab == null) { LastAttackResult = "no projectilePrefab wired"; return; }
+        if (firePoint == null) { LastAttackResult = "no firePoint wired"; return; }
 
-        Vector2 dir = ((Vector2)currentTarget.position - (Vector2)firePoint.position).normalized;
+        // 发射点要随朝向镜像。它是个固定在 X 正方向的子物件,朝向翻转只翻 sprite,
+        // 不动子物件 —— 目标在左边时,弹丸会先从射手身后生成再倒穿过它自己,
+        // 贴脸距离下第一个物理步就可能直接越过目标。
+        Vector3 offset = firePoint.localPosition;
+        if (currentTarget.position.x < transform.position.x) offset.x = -offset.x;
+        Vector3 spawnPos = transform.position + offset;
 
-        var proj = Instantiate(projectilePrefab, firePoint.position, Quaternion.identity);
+        Vector2 dir = ((Vector2)currentTarget.position - (Vector2)spawnPos).normalized;
+
+        var proj = Instantiate(projectilePrefab, spawnPos, Quaternion.identity);
         var rb2d = proj.GetComponent<Rigidbody2D>();
         if (rb2d != null)
+        {
             rb2d.velocity = dir * projectileSpeed;
+            // 必须开连续检测。离散检测下一步走 0.2 格,而弹丸半径只有 0.2、
+            // 目标也就半格宽 —— 批处理里帧长时会直接跨过玩家,弹丸照飞、
+            // OnTriggerEnter2D 一次都不触发。玩家那边的光弹早就为同一个问题
+            // 加过扫掠检测,敌人这边一直没加。
+            rb2d.collisionDetectionMode = CollisionDetectionMode2D.Continuous;
+        }
 
         // 旋转投射物朝向
         float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
         proj.transform.rotation = Quaternion.Euler(0, 0, angle);
 
         Destroy(proj, 5f);
+        LastAttackResult = "fired";
     }
 }
 
@@ -267,21 +286,63 @@ public class EnemyProjectile : MonoBehaviour
     [SerializeField] private float damage = 15f;
     [SerializeField] private GameObject hitEffect;
 
+    private Vector2 lastPosition;
+    private bool spent;
+
+    void Awake() => lastPosition = transform.position;
+
+    /// <summary>
+    /// 沿本帧位移扫一遍。只靠 OnTriggerEnter2D 是不够的: 批处理里一帧可长达
+    /// 0.2-0.3 秒,弹丸一帧能飞两三格,而它半径只有 0.2、玩家也就半格宽 ——
+    /// 直接跨过去,弹丸照飞,触发器一次都不响。玩家那边的光弹早就为同一个问题
+    /// 加过扫掠,敌人这边一直没有,表现就是"射手开火了但永远打不中"。
+    ///
+    /// 只对身上找得到 PlayerHealth 的碰撞体结算,所以不会像当初玩家光弹那样
+    /// 被自己人或地形吃掉(那次是 RaycastAll 命中一切、绕过了层碰撞矩阵)。
+    /// </summary>
+    void Update()
+    {
+        if (spent) return;
+
+        Vector2 now = transform.position;
+        Vector2 delta = now - lastPosition;
+        float dist = delta.magnitude;
+        lastPosition = now;
+        if (dist <= 0.0001f) return;
+
+        foreach (var hit in Physics2D.RaycastAll(lastPosition - delta, delta / dist, dist))
+        {
+            if (hit.collider == null) continue;
+            var health = hit.collider.GetComponentInParent<PlayerHealth>();
+            if (health == null) continue;
+
+            ApplyHit(health, hit.point);
+            return;
+        }
+    }
+
+    private void ApplyHit(PlayerHealth health, Vector2 point)
+    {
+        if (spent) return;
+        spent = true;
+
+        Vector2 knockback = ((Vector2)health.transform.position - point).normalized;
+        health.TakeDamage(damage, knockback);
+        if (hitEffect != null) Instantiate(hitEffect, transform.position, Quaternion.identity);
+        Destroy(gameObject);
+    }
+
     void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.CompareTag("Player"))
+        // 按组件找玩家,不靠标签,也不假设碰撞体就挂在玩家根物件上。
+        // 原来是 CompareTag("Player") + other.GetComponent<PlayerHealth>():
+        // 标签没配好、或者碰撞体在子物件上(脚底检测、受击盒),都会让这一发
+        // 静默穿过去 —— 不掉血、不报错、弹丸继续飞。
+        var health = other.GetComponentInParent<PlayerHealth>();
+        if (health != null)
         {
-            var health = other.GetComponent<PlayerHealth>();
-            if (health != null)
-            {
-                Vector2 knockback = (other.transform.position - transform.position).normalized;
-                health.TakeDamage(damage, knockback);
-            }
-
-            if (hitEffect != null)
-                Instantiate(hitEffect, transform.position, Quaternion.identity);
-
-            Destroy(gameObject);
+            ApplyHit(health, transform.position);
+            return;
         }
 
         // 碰到墙壁也销毁
