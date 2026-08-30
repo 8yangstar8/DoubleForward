@@ -285,7 +285,9 @@ public static class ScriptableObjectFactory
         {
             chaptersProperty.ClearArray();
 
-            string[] worldNames = { "光影神殿", "冰火交界", "沙海迷城", "暗影深渊", "双向归一" };
+            // 与 LevelDataCatalog 保持一致 —— 之前这里、WorldThemeManager、
+            // ParticleEffectLibrary 各写了一套章节名,界面显示的和实际套用的主题对不上
+            string[] worldNames = { "光影遗迹", "冰火熔炉", "沙漠风暴", "深渊暗流", "天空之巅" };
             string[] worldThemes = { "LightShadow", "IceFire", "SandSea", "DarkAbyss", "Convergence" };
 
             for (int ch = 1; ch <= 5; ch++)

@@ -19,9 +19,15 @@ public static class BackgroundArtGenerator
     {
         if (!Directory.Exists(ArtDir)) Directory.CreateDirectory(ArtDir);
 
-        Create("BgSky", 128, 96, 8, DrawSky);
-        Create("BgHills", 192, 64, 8, DrawHills);
-        Create("BgTrees", 192, 80, 8, DrawTrees);
+        // 每章一套背景。五章共用一张图的话,冰原/沙漠/深渊头顶都还是
+        // 第一章那片阳光绿丘,章节主题在画面上完全立不住。
+        for (int ch = 1; ch <= 5; ch++)
+        {
+            palette = PaletteFor(ch);
+            Create($"BgSky_ch{ch}", 128, 96, 8, DrawSky);
+            Create($"BgHills_ch{ch}", 192, 64, 8, DrawHills);
+            Create($"BgTrees_ch{ch}", 192, 80, 8, DrawTrees);
+        }
         Create("BgCloud", 64, 24, 12, DrawCloud);
 
         ApplyToAllLevels();
@@ -37,12 +43,67 @@ public static class BackgroundArtGenerator
             if (!System.IO.File.Exists(entry.path)) continue;
 
             EditorSceneManager.OpenScene(entry.path);
-            ApplyToOpenScene();
+            ApplyToOpenScene(ChapterOf(entry.path));
             EditorSceneManager.MarkSceneDirty(EditorSceneManager.GetActiveScene());
             EditorSceneManager.SaveScene(EditorSceneManager.GetActiveScene());
             done++;
         }
         Debug.Log($"[BgArt] background layers + drifting clouds applied to {done} level scenes");
+    }
+
+    // ==================== 每章调色板 ====================
+
+    private struct Palette
+    {
+        public Color skyHorizon, skyZenith, glow;
+        public Color ridgeFar, ridgeNear;
+        public Color leaf, trunk;
+    }
+
+    private static Palette palette = PaletteFor(1);
+
+    /// <summary>章节配色。名称与 LevelDataCatalog 一致: 光影遗迹/冰火熔炉/沙漠风暴/深渊暗流/天空之巅</summary>
+    private static Palette PaletteFor(int chapter)
+    {
+        switch (chapter)
+        {
+            case 2:  // 冰火熔炉 - 冷白天光,冰脊,熔岩暖光
+                return new Palette {
+                    skyHorizon = new Color(0.88f, 0.93f, 0.98f), skyZenith = new Color(0.52f, 0.72f, 0.92f),
+                    glow = new Color(1f, 0.62f, 0.32f),
+                    ridgeFar = new Color(0.78f, 0.87f, 0.94f), ridgeNear = new Color(0.58f, 0.72f, 0.85f),
+                    leaf = new Color(0.72f, 0.84f, 0.92f), trunk = new Color(0.55f, 0.64f, 0.74f) };
+            case 3:  // 沙漠风暴 - 沙尘天光
+                return new Palette {
+                    skyHorizon = new Color(0.98f, 0.90f, 0.72f), skyZenith = new Color(0.86f, 0.68f, 0.42f),
+                    glow = new Color(1f, 0.92f, 0.68f),
+                    ridgeFar = new Color(0.90f, 0.78f, 0.58f), ridgeNear = new Color(0.76f, 0.60f, 0.40f),
+                    leaf = new Color(0.70f, 0.62f, 0.40f), trunk = new Color(0.55f, 0.46f, 0.32f) };
+            case 4:  // 深渊暗流 - 海底幽光
+                return new Palette {
+                    skyHorizon = new Color(0.16f, 0.34f, 0.46f), skyZenith = new Color(0.05f, 0.12f, 0.24f),
+                    glow = new Color(0.40f, 0.90f, 0.85f),
+                    ridgeFar = new Color(0.18f, 0.38f, 0.46f), ridgeNear = new Color(0.10f, 0.24f, 0.34f),
+                    leaf = new Color(0.16f, 0.44f, 0.46f), trunk = new Color(0.12f, 0.28f, 0.32f) };
+            case 5:  // 天空之巅 - 高空,近乎无云的清透
+                return new Palette {
+                    skyHorizon = new Color(1f, 0.97f, 0.90f), skyZenith = new Color(0.42f, 0.62f, 0.92f),
+                    glow = new Color(1f, 0.95f, 0.80f),
+                    ridgeFar = new Color(0.92f, 0.94f, 1f), ridgeNear = new Color(0.76f, 0.82f, 0.95f),
+                    leaf = new Color(0.86f, 0.90f, 0.98f), trunk = new Color(0.66f, 0.72f, 0.84f) };
+            default: // 光影遗迹 - 现有的日照绿丘
+                return new Palette {
+                    skyHorizon = new Color(0.78f, 0.90f, 0.99f), skyZenith = new Color(0.33f, 0.71f, 1.00f),
+                    glow = new Color(1f, 0.90f, 0.62f),
+                    ridgeFar = new Color(0.66f, 0.86f, 0.84f), ridgeNear = new Color(0.48f, 0.76f, 0.62f),
+                    leaf = new Color(0.31f, 0.60f, 0.40f), trunk = new Color(0.36f, 0.46f, 0.36f) };
+        }
+    }
+
+    private static int ChapterOf(string scenePath)
+    {
+        var m = System.Text.RegularExpressions.Regex.Match(scenePath, @"/Chapter(\d+)/");
+        return m.Success ? int.Parse(m.Groups[1].Value) : 1;
     }
 
     // ==================== 绘制 ====================
@@ -54,8 +115,7 @@ public static class BackgroundArtGenerator
         for (int y = 0; y < h; y++)
         {
             float v = (float)y / (h - 1);
-            var c = Color.Lerp(new Color(0.78f, 0.90f, 0.99f),   // 地平线附近
-                               new Color(0.33f, 0.71f, 1.00f), v); // 天顶(取自地形图集的天空蓝)
+            var c = Color.Lerp(palette.skyHorizon, palette.skyZenith, v);
             for (int x = 0; x < w; x++) t.SetPixel(x, y, new Color(c.r, c.g, c.b, 1f));
         }
         // 柔光(远处的光源,呼应Lux的设定)
@@ -67,7 +127,7 @@ public static class BackgroundArtGenerator
                 if (d >= 1f) continue;
                 float a = Mathf.Pow(1f - d, 2.2f) * 0.55f;
                 var cur = t.GetPixel(x, y);
-                t.SetPixel(x, y, Color.Lerp(cur, new Color(1f, 0.90f, 0.62f), a));
+                t.SetPixel(x, y, Color.Lerp(cur, palette.glow, a));
             }
         t.Apply();
     }
@@ -79,8 +139,8 @@ public static class BackgroundArtGenerator
         Clear(t);
         // 这一层会被拉到170世界单位宽,起伏频率太低的话镜头里只看得到一段直线,
         // 远山就变成一条生硬的色带。频率要按拉伸后的宽度来定。
-        DrawRidge(t, 0.62f, 0.10f, 5f, new Color(0.66f, 0.86f, 0.84f));
-        DrawRidge(t, 0.44f, 0.16f, 9f, new Color(0.48f, 0.76f, 0.62f));
+        DrawRidge(t, 0.62f, 0.10f, 5f, palette.ridgeFar);
+        DrawRidge(t, 0.44f, 0.16f, 9f, palette.ridgeNear);
         t.Apply();
     }
 
@@ -102,8 +162,8 @@ public static class BackgroundArtGenerator
     {
         int w = t.width, h = t.height;
         Clear(t);
-        var trunk = new Color(0.36f, 0.46f, 0.36f);
-        var leaf = new Color(0.31f, 0.60f, 0.40f);
+        var trunk = palette.trunk;
+        var leaf = palette.leaf;
         var rng = new System.Random(77);
 
         const int treeCount = 44;      // 拉到170单位宽后,14棵树每棵会有12单位粗
@@ -165,14 +225,14 @@ public static class BackgroundArtGenerator
 
     // ==================== 接入场景 ====================
 
-    private static void ApplyToOpenScene()
+    private static void ApplyToOpenScene(int chapter)
     {
         // 按目标世界尺寸反算缩放。场景原有的 scale=(80,15) 会把 16x12 的天空图
         // 撑成 1280x180 单位,摄像机只看到中间极小一片渐变,结果就是一片纯色
-        AssignLayer("ParallaxLayer_0", "BgSky", -30, 170f, 34f, 2f);
+        AssignLayer("ParallaxLayer_0", $"BgSky_ch{chapter}", -30, 170f, 34f, 2f);
         // 山脊只填贴图下部,所以整层要压到地平线附近,否则那片实色会把蓝天全糊掉
-        AssignLayer("ParallaxLayer_1", "BgHills", -20, 170f, 11f, 0.6f);
-        AssignLayer("ParallaxLayer_2", "BgTrees", -10, 170f, 7f, 0.2f);  // 压低,树干藏进地面
+        AssignLayer("ParallaxLayer_1", $"BgHills_ch{chapter}", -20, 170f, 11f, 0.6f);
+        AssignLayer("ParallaxLayer_2", $"BgTrees_ch{chapter}", -10, 170f, 7f, 0.2f);  // 压低,树干藏进地面
 
         // 重复运行先清掉上一次的云
         foreach (var go in Object.FindObjectsByType<GameObject>(FindObjectsSortMode.None))

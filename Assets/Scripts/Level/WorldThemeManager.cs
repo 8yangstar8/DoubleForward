@@ -4,7 +4,8 @@ using System.Collections;
 
 /// <summary>
 /// 世界主题管理器 - 管理5个世界的视觉和音频主题
-/// 光之森林、暗影洞窟、机械要塞、冰火交界、虚空深渊
+/// 章节名以 LevelDataCatalog 为准(它才是玩家在章节选择界面看到的那份):
+/// 光影遗迹、冰火熔炉、沙漠风暴、深渊暗流、天空之巅
 /// 控制调色板、后处理、BGM、环境音、粒子效果
 /// 关卡加载时自动应用对应主题
 /// </summary>
@@ -198,14 +199,20 @@ public class WorldThemeManager : MonoBehaviour
 
     // ==================== 默认主题初始化 ====================
 
-    private void InitializeDefaultThemes()
+    /// <summary>
+    /// 内置主题表。开放为 public 是为了让编辑期断言能在不进 PlayMode 的情况下
+    /// 校验章节名 —— 编辑模式下 AddComponent 不会触发 Awake,不显式调用的话
+    /// GetWorldName 只会返回 "World N" 兜底值。
+    /// (LevelDataCatalog.InitializeDefaults 也是同样的处理。)
+    /// </summary>
+    public void InitializeDefaultThemes()
     {
         worldThemes = new WorldTheme[]
         {
             // 第1章 - 光之森林
             new WorldTheme
             {
-                worldName = "光之森林",
+                worldName = "光影遗迹",
                 chapter = 1,
                 ambientLightColor = new Color(0.7f, 0.8f, 0.6f),
                 fogColor = new Color(0.6f, 0.8f, 0.5f, 0.3f),
@@ -224,32 +231,32 @@ public class WorldThemeManager : MonoBehaviour
                 uiPrimaryColor = new Color(0.3f, 0.7f, 0.4f),
                 uiSecondaryColor = new Color(0.2f, 0.5f, 0.3f)
             },
-            // 第2章 - 暗影洞窟
+            // 第2章 - 冰火熔炉(冰与火交织的矿洞)
             new WorldTheme
             {
-                worldName = "暗影洞窟",
+                worldName = "冰火熔炉",
                 chapter = 2,
-                ambientLightColor = new Color(0.2f, 0.15f, 0.3f),
-                fogColor = new Color(0.1f, 0.05f, 0.2f),
-                fogDensity = 0.04f,
-                skyColor = new Color(0.05f, 0.02f, 0.1f),
-                primaryColor = new Color(0.4f, 0.2f, 0.7f),
-                secondaryColor = new Color(0.15f, 0.1f, 0.25f),
-                accentColor = new Color(0.6f, 0.3f, 1f),
-                dangerColor = new Color(0.8f, 0f, 0.3f),
-                globalLightIntensity = 0.4f,
-                globalLightColor = new Color(0.5f, 0.4f, 0.8f),
+                ambientLightColor = new Color(0.62f, 0.72f, 0.85f),
+                fogColor = new Color(0.55f, 0.68f, 0.82f),
+                fogDensity = 0.02f,
+                skyColor = new Color(0.30f, 0.48f, 0.70f),
+                primaryColor = new Color(0.45f, 0.78f, 0.95f),      // 冰
+                secondaryColor = new Color(0.22f, 0.38f, 0.58f),
+                accentColor = new Color(1f, 0.55f, 0.15f),           // 熔岩
+                dangerColor = new Color(0.95f, 0.30f, 0.10f),
+                globalLightIntensity = 0.85f,
+                globalLightColor = new Color(0.85f, 0.90f, 1f),
                 bgmKey = "bgm_cave",
                 ambientKey = "ambient_cave",
-                particlePrimaryColor = new Color(0.5f, 0.3f, 0.8f),
-                particleSecondaryColor = new Color(0.2f, 0.1f, 0.4f),
-                uiPrimaryColor = new Color(0.5f, 0.3f, 0.8f),
-                uiSecondaryColor = new Color(0.3f, 0.1f, 0.5f)
+                particlePrimaryColor = new Color(0.60f, 0.85f, 1f),
+                particleSecondaryColor = new Color(1f, 0.50f, 0.15f),
+                uiPrimaryColor = new Color(0.55f, 0.82f, 1f),
+                uiSecondaryColor = new Color(0.95f, 0.45f, 0.15f)
             },
             // 第3章 - 机械要塞
             new WorldTheme
             {
-                worldName = "机械要塞",
+                worldName = "沙漠风暴",
                 chapter = 3,
                 ambientLightColor = new Color(0.5f, 0.5f, 0.55f),
                 fogColor = new Color(0.4f, 0.4f, 0.45f),
@@ -271,7 +278,7 @@ public class WorldThemeManager : MonoBehaviour
             // 第4章 - 冰火交界
             new WorldTheme
             {
-                worldName = "冰火交界",
+                worldName = "深渊暗流",
                 chapter = 4,
                 ambientLightColor = new Color(0.5f, 0.5f, 0.7f),
                 fogColor = new Color(0.6f, 0.5f, 0.5f),
@@ -293,7 +300,7 @@ public class WorldThemeManager : MonoBehaviour
             // 第5章 - 虚空深渊
             new WorldTheme
             {
-                worldName = "虚空深渊",
+                worldName = "天空之巅",
                 chapter = 5,
                 ambientLightColor = new Color(0.1f, 0.05f, 0.15f),
                 fogColor = new Color(0.05f, 0f, 0.1f),

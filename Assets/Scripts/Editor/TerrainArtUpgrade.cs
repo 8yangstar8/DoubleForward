@@ -36,10 +36,17 @@ public static class TerrainArtUpgrade
     [MenuItem("DoubleForward/Upgrade Terrain Art", false, 20)]
     public static void UpgradeAll()
     {
-        ImportTerrain("terrain_ground", new Vector4(32, 0, 32, 32));
-        ImportTerrain("terrain_ledge", new Vector4(32, 0, 32, 0));
-        ImportTerrain("terrain_wall", new Vector4(32, 0, 32, 0));
-        foreach (var n in PropNames) ImportProp(n);
+        // 每章一套配色。五章共用一张图的话,玩到第五章还是第一章那片金色土地,
+        // 章节主题(冰火/沙漠/深渊/天空)在画面上完全体现不出来。
+        for (int ch = 1; ch <= 5; ch++)
+        {
+            ImportTerrain(Chapterized("terrain_ground", ch), new Vector4(32, 0, 32, 32));
+            ImportTerrain(Chapterized("terrain_ledge", ch), new Vector4(32, 0, 32, 0));
+            ImportTerrain(Chapterized("terrain_wall", ch), new Vector4(32, 0, 32, 0));
+        }
+        // 植被也要分章节: 冰原上立着第一章的绿树粉蘑菇,主题立刻就破了
+        foreach (var n in PropNames)
+            for (int ch = 1; ch <= 5; ch++) ImportProp(Chapterized(n, ch));
         ImportProp("cloud");
 
         int scenes = 0, props = 0;
@@ -49,7 +56,8 @@ public static class TerrainArtUpgrade
             if (!File.Exists(entry.path)) continue;
 
             EditorSceneManager.OpenScene(entry.path);
-            props += UpgradeOpenScene(Path.GetFileNameWithoutExtension(entry.path));
+            props += UpgradeOpenScene(Path.GetFileNameWithoutExtension(entry.path),
+                                      ChapterOf(entry.path));
             EditorSceneManager.MarkSceneDirty(EditorSceneManager.GetActiveScene());
             EditorSceneManager.SaveScene(EditorSceneManager.GetActiveScene());
             scenes++;
@@ -60,11 +68,11 @@ public static class TerrainArtUpgrade
     private static readonly string[] PropNames =
         { "tree_big", "tree_small", "bush", "grass_tuft", "flower", "mushroom_small", "mushroom_big" };
 
-    private static int UpgradeOpenScene(string sceneName)
+    private static int UpgradeOpenScene(string sceneName, int chapter)
     {
-        var ground9 = Load("terrain_ground");
-        var ledge = Load("terrain_ledge");
-        var wall = Load("terrain_wall");
+        var ground9 = Load(Chapterized("terrain_ground", chapter));
+        var ledge = Load(Chapterized("terrain_ledge", chapter));
+        var wall = Load(Chapterized("terrain_wall", chapter));
         if (ground9 == null || ledge == null || wall == null)
         {
             Debug.LogError("[TerrainArt] terrain sprites missing");
@@ -100,7 +108,7 @@ public static class TerrainArtUpgrade
             if (go != null && go.name.StartsWith("Platform_")) Retile(go, ledge);
 
         ReskinClouds();
-        return PlantScenery(sceneName, groundCol.bounds);
+        return PlantScenery(sceneName, groundCol.bounds, chapter);
     }
 
     /// <summary>
@@ -202,7 +210,7 @@ public static class TerrainArtUpgrade
     /// 目标点(终点/门)让位,不用躲开沿路的宝石和敌人 —— 一开始按所有碰撞体
     /// 让位,结果 Level_1_1 满地的宝石触发器把整条地面全占了,一株都没种上。
     /// </summary>
-    private static int PlantScenery(string sceneName, Bounds ground)
+    private static int PlantScenery(string sceneName, Bounds ground, int chapter)
     {
         var old = GameObject.Find(SceneryRoot);
         if (old != null) Object.DestroyImmediate(old);
@@ -225,7 +233,7 @@ public static class TerrainArtUpgrade
         for (float x = ground.min.x + 1.5f; x < ground.max.x - 1.5f; x += 1.2f + (float)rng.NextDouble() * 1.8f)
         {
             string name = PickProp(rng);
-            var sprite = Load(name);
+            var sprite = Load(Chapterized(name, chapter));
             if (sprite == null) continue;
 
             float halfW = sprite.bounds.extents.x;
@@ -263,6 +271,16 @@ public static class TerrainArtUpgrade
 
     private static Sprite Load(string name) =>
         AssetDatabase.LoadAssetAtPath<Sprite>(ArtDir + name + ".png");
+
+    /// <summary>第1章用原始文件名,其余章节各有一套改色图</summary>
+    private static string Chapterized(string name, int chapter) =>
+        chapter <= 1 ? name : $"{name}_ch{chapter}";
+
+    private static int ChapterOf(string scenePath)
+    {
+        var m = System.Text.RegularExpressions.Regex.Match(scenePath, @"/Chapter(\d+)/");
+        return m.Success ? int.Parse(m.Groups[1].Value) : 1;
+    }
 
     private static void ImportTerrain(string name, Vector4 border)
     {

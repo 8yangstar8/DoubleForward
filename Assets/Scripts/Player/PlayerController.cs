@@ -157,17 +157,17 @@ public class PlayerController : MonoBehaviour
             if (kb.aKey.isPressed) kx = -1;
             else if (kb.dKey.isPressed) kx = 1;
 
-            if (kx != 0)
-            {
-                float ky = 0;
-                if (kb.wKey.isPressed) ky = 1;
-                else if (kb.sKey.isPressed) ky = -1;
-                SetMoveInput(new Vector2(kx, ky));
-            }
-            else if (InputManager.Instance != null)
-            {
-                SetMoveInput(InputManager.Instance.GetMoveInput(playerIndex));
-            }
+            float ky = 0;
+            if (kb.wKey.isPressed) ky = 1;
+            else if (kb.sKey.isPressed) ky = -1;
+
+            // 每帧都要写一次输入。原来只在 kx!=0 时写,松开按键后就再也不写了 ——
+            // 没有 InputManager(比如摇杆没接)时,上一次的非零输入会一直留着,
+            // 人物松手后自己一直走。
+            Vector2 move = new Vector2(kx, ky);
+            if (move == Vector2.zero && InputManager.Instance != null)
+                move = InputManager.Instance.GetMoveInput(playerIndex);   // 摇杆兜底
+            SetMoveInput(move);
 
             if (kb.spaceKey.wasPressedThisFrame) TryJump();
             if (kb.jKey.wasPressedThisFrame) TryAttack();
@@ -185,17 +185,14 @@ public class PlayerController : MonoBehaviour
             if (kb.leftArrowKey.isPressed || kb.numpad4Key.isPressed) kx = -1;
             else if (kb.rightArrowKey.isPressed || kb.numpad6Key.isPressed) kx = 1;
 
-            if (kx != 0)
-            {
-                float ky = 0;
-                if (kb.upArrowKey.isPressed || kb.numpad8Key.isPressed) ky = 1;
-                else if (kb.downArrowKey.isPressed || kb.numpad2Key.isPressed) ky = -1;
-                SetMoveInput(new Vector2(kx, ky));
-            }
-            else if (InputManager.Instance != null)
-            {
-                SetMoveInput(InputManager.Instance.GetMoveInput(playerIndex));
-            }
+            float ky = 0;
+            if (kb.upArrowKey.isPressed || kb.numpad8Key.isPressed) ky = 1;
+            else if (kb.downArrowKey.isPressed || kb.numpad2Key.isPressed) ky = -1;
+
+            Vector2 move = new Vector2(kx, ky);
+            if (move == Vector2.zero && InputManager.Instance != null)
+                move = InputManager.Instance.GetMoveInput(playerIndex);
+            SetMoveInput(move);
 
             if (kb.rightShiftKey.wasPressedThisFrame || kb.numpad0Key.wasPressedThisFrame) TryJump();
             if (kb.rightCtrlKey.wasPressedThisFrame || kb.numpad1Key.wasPressedThisFrame) TryAttack();

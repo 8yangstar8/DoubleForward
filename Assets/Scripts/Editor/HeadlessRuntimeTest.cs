@@ -54,6 +54,7 @@ public static class HeadlessRuntimeTest
         TestLevelScene_1_1();
         TestPuzzlePlacement();
         TestKeyObjectsAreVisible();
+        TestChapterNamesAgree();
         TestCharacterAnimation();
         TestBuildSettings();
 
@@ -398,6 +399,38 @@ public static class HeadlessRuntimeTest
                     GameObject.Find("GoalFlag") != null);
             }
         }
+    }
+
+    /// <summary>
+    /// 章节名必须只有一个说法。
+    ///
+    /// 之前有四套并存: LevelDataCatalog(章节选择界面显示的)、WorldThemeManager
+    /// (实际套用光照/雾效的)、ParticleEffectLibrary、ScriptableObjectFactory,
+    /// 四份互不相同。第二章尤其离谱: 界面写着"冰火熔炉",进去却套用一整套
+    /// 暗紫色洞窟的光照 —— 玩家看到的和实际渲染的是两个世界。
+    /// 以 LevelDataCatalog 为准(它最完整: 章节名+描述+四个关卡名)。
+    /// </summary>
+    private static void TestChapterNamesAgree()
+    {
+        var catalog = ScriptableObject.CreateInstance<LevelDataCatalog>();
+        catalog.InitializeDefaults();
+
+        var themeHost = new GameObject("__ThemeProbe");
+        var themes = themeHost.AddComponent<WorldThemeManager>();
+        themes.InitializeDefaultThemes();   // 编辑模式下 Awake 不会跑
+
+        for (int ch = 1; ch <= 5; ch++)
+        {
+            var info = catalog.GetChapter(ch);
+            if (info == null) continue;
+            string themeName = themes.GetWorldName(ch);
+            Assert($"Chapter {ch} has one name everywhere " +
+                   $"(catalog='{info.chapterName}', theme='{themeName}')",
+                info.chapterName == themeName);
+        }
+
+        Object.DestroyImmediate(themeHost);
+        Object.DestroyImmediate(catalog);
     }
 
     // ==================== Assert ====================

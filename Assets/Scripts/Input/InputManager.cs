@@ -59,11 +59,15 @@ public class InputManager : MonoBehaviour
             Vector2 touch = joystickP1 != null ? joystickP1.Direction : Vector2.zero;
             if (touch == Vector2.zero && kb != null)
             {
+                // 只认 WASD。方向键是 Nox(P1索引1)的移动键,这里一并映射给 P1 的话,
+                // 玩家用方向键操控 Nox 时 Lux 会跟着一起走 —— 表现就是
+                // "没操控这个角色,它自己在动"。PlayerController 里早就写明
+                // "P1 只用 WASD,方向键让给 P2",这里没同步。
                 float x = 0, y = 0;
-                if (kb.aKey.isPressed || kb.leftArrowKey.isPressed) x = -1;
-                else if (kb.dKey.isPressed || kb.rightArrowKey.isPressed) x = 1;
-                if (kb.wKey.isPressed || kb.upArrowKey.isPressed) y = 1;
-                else if (kb.sKey.isPressed || kb.downArrowKey.isPressed) y = -1;
+                if (kb.aKey.isPressed) x = -1;
+                else if (kb.dKey.isPressed) x = 1;
+                if (kb.wKey.isPressed) y = 1;
+                else if (kb.sKey.isPressed) y = -1;
                 return new Vector2(x, y);
             }
             return touch;

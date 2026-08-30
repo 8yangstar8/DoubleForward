@@ -26,7 +26,11 @@ public class CoopReviveSystem : MonoBehaviour
     [SerializeField] private Color reviveProgressColor = new Color(0.2f, 1f, 0.4f);
 
     // 状态
-    private DownedPlayerInfo[] downedPlayers = new DownedPlayerInfo[2];
+    // 必须在字段初始化时就填好,不能只在 Awake 里填: Awake 开头有一句
+    // "发现重复实例就 Destroy 并 return",走那条路时数组元素还是 null,
+    // 而该实例在被真正销毁前仍会跑 Update —— 于是 downedPlayers[i].isDowned
+    // 每帧抛一次空引用,控制台瞬间刷到 999+。
+    private DownedPlayerInfo[] downedPlayers = { new DownedPlayerInfo(), new DownedPlayerInfo() };
     private bool isReviving;
     private float reviveProgress;
     private int revivingPlayerIndex = -1;     // 正在执行复活的玩家

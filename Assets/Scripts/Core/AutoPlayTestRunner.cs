@@ -95,7 +95,7 @@ public class AutoPlayTestRunner : MonoBehaviour
 
         yield return RunLevel11Walkthrough();
         // 第二章从来没被走通验证过 —— 它们全是同一套通用模板拼的
-        yield return RunWalkthrough(2, 1, maxStuck: 6, captureShots: false);
+        yield return RunWalkthrough(2, 1, maxStuck: 6, captureShots: true);
         yield return RunWalkthrough(2, 2, maxStuck: 6, captureShots: false);
         yield return RunWalkthrough(2, 3, maxStuck: 6, captureShots: false);
         yield return RunCoopWalkthrough();
@@ -265,7 +265,7 @@ public class AutoPlayTestRunner : MonoBehaviour
 
             if (captureShots && elapsed >= nextShot)
             {
-                yield return CaptureShot($"walk_{shotIndex++}");
+                yield return CaptureShot($"{sceneName}_walk_{shotIndex++}");
                 nextShot = elapsed + 6f;
             }
 
@@ -285,7 +285,7 @@ public class AutoPlayTestRunner : MonoBehaviour
         // 阈值随之重新标定: 修复前 Level_2_3 是 60-93 次,正常关卡是 1-3 次。
         Check($"{sceneName} needs few jump/attack interventions ({stuckEvents})",
             stuckEvents <= maxStuck);
-        if (captureShots) yield return CaptureShot("walk_final");
+        if (captureShots) yield return CaptureShot($"{sceneName}_walk_final");
     }
 
     /// <summary>

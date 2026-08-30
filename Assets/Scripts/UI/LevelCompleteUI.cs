@@ -2,9 +2,48 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using System.Collections;
+using UnityEngine.SceneManagement;
 
 public class LevelCompleteUI : MonoBehaviour
 {
+    /// <summary>
+    /// 解析"当前是第几章第几关"。三个来源按可靠性排序:
+    ///   1. LevelManager 持有的 LevelData
+    ///   2. GameFlowManager 的进度(走主菜单进关卡时才有)
+    ///   3. 活动场景名 Level_章_关
+    ///
+    /// 第3条不是兜底摆设: 在编辑器里直接对某个关卡场景按 Play(开发时最常用的
+    /// 玩法)时,前两者从没被赋值过,读出来是 0 —— 面板会显示"关卡 0-0 完成",
+    /// 点"下一关"则以 levelsPerChapter[0 - 1] 直接抛 IndexOutOfRangeException。
+    /// </summary>
+    private static void ResolveCurrentLevel(out int chapter, out int level)
+    {
+        chapter = 0; level = 0;
+
+        var data = LevelManager.Instance != null ? LevelManager.Instance.CurrentLevel : null;
+        if (data != null) { chapter = data.chapter; level = data.levelIndex; }
+
+        if ((chapter <= 0 || level <= 0) && GameFlowManager.Instance != null)
+        {
+            chapter = GameFlowManager.Instance.CurrentChapter;
+            level = GameFlowManager.Instance.CurrentLevel;
+        }
+
+        if (chapter <= 0 || level <= 0)
+        {
+            var m = System.Text.RegularExpressions.Regex.Match(
+                SceneManager.GetActiveScene().name, @"Level_(\d+)_(\d+)");
+            if (m.Success)
+            {
+                chapter = int.Parse(m.Groups[1].Value);
+                level = int.Parse(m.Groups[2].Value);
+            }
+        }
+
+        if (chapter <= 0) chapter = 1;
+        if (level <= 0) level = 1;
+    }
+
     [SerializeField] private GameObject completePanel;
     [SerializeField] private TextMeshProUGUI levelNameText;
     [SerializeField] private TextMeshProUGUI timeText;
@@ -42,8 +81,11 @@ public class LevelCompleteUI : MonoBehaviour
         {
             if (lm.CurrentLevel != null)
                 levelNameText.text = lm.CurrentLevel.DisplayName;
-            else if (GameFlowManager.Instance != null)
-                levelNameText.text = $"关卡 {GameFlowManager.Instance.CurrentChapter}-{GameFlowManager.Instance.CurrentLevel} 完成！";
+            else
+            {
+                ResolveCurrentLevel(out int ch, out int lv);
+                levelNameText.text = $"关卡 {ch}-{lv} 完成！";
+            }
         }
 
         float time = lm.GetLevelTime();
@@ -118,24 +160,14 @@ public class LevelCompleteUI : MonoBehaviour
     {
         Time.timeScale = 1f;
 
-        // 优先用GameFlowManager的当前进度（LevelData SO可能未赋值）
-        int curChapter = 1, curLevel = 1;
-        if (GameFlowManager.Instance != null)
-        {
-            curChapter = GameFlowManager.Instance.CurrentChapter;
-            curLevel = GameFlowManager.Instance.CurrentLevel;
-        }
-        else if (LevelManager.Instance?.CurrentLevel != null)
-        {
-            curChapter = LevelManager.Instance.CurrentLevel.chapter;
-            curLevel = LevelManager.Instance.CurrentLevel.levelIndex;
-        }
+        ResolveCurrentLevel(out int curChapter, out int curLevel);
 
         int nextLevel = curLevel + 1;
         int nextChapter = curChapter;
 
         int[] levelsPerChapter = { 4, 4, 4, 4, 4 };
-        int maxInChapter = nextChapter <= levelsPerChapter.Length ? levelsPerChapter[nextChapter - 1] : 4;
+        // 索引必须夹住。原来只判了上界,章节号为0时就是 levelsPerChapter[-1]
+        int maxInChapter = levelsPerChapter[Mathf.Clamp(nextChapter, 1, levelsPerChapter.Length) - 1];
 
         if (nextLevel > maxInChapter)
         {
@@ -152,8 +184,7 @@ public class LevelCompleteUI : MonoBehaviour
     private void OnReplay()
     {
         Time.timeScale = 1f;
-        int ch = GameFlowManager.Instance?.CurrentChapter ?? 1;
-        int lv = GameFlowManager.Instance?.CurrentLevel ?? 1;
+        ResolveCurrentLevel(out int ch, out int lv);
         GameManager.Instance?.LoadLevel(ch, lv);
     }
 
