@@ -214,16 +214,35 @@ public static class CoopLevelBuilder
     /// 用法: -executeMethod CoopLevelBuilder.BuildLevel14
     /// </summary>
     [MenuItem("DoubleForward/Build Co-op Boss 1-4", false, 13)]
-    public static void BuildLevel14()
+    public static void BuildLevel14() => BuildBossLevel(1);
+
+    /// <summary>
+    /// 把所有章节的 Boss 战都接成双人战。
+    ///
+    /// 之前只有第一章接了 —— 二到五章的 Boss 常态无盾、没有弱点,
+    /// 一个人就能打完,整个双人设计在后四章等于不存在。
+    /// </summary>
+    [MenuItem("DoubleForward/Build All Co-op Bosses", false, 14)]
+    public static void BuildAllBossLevels()
     {
-        const string scene14 = "Assets/Scenes/Chapter1/Level_1_4.unity";
-        EditorSceneManager.OpenScene(scene14);
+        for (int ch = 1; ch <= 5; ch++) BuildBossLevel(ch);
+    }
+
+    private static void BuildBossLevel(int chapter)
+    {
+        string scenePath = $"Assets/Scenes/Chapter{chapter}/Level_{chapter}_4.unity";
+        if (!System.IO.File.Exists(scenePath))
+        {
+            Debug.LogError($"[CoopLevel] missing {scenePath}");
+            return;
+        }
+        EditorSceneManager.OpenScene(scenePath);
 
         var boss = Object.FindAnyObjectByType<BossBase>();
         var luxSpawn = GameObject.Find("LuxSpawnPoint");
         if (boss == null || luxSpawn == null)
         {
-            Debug.LogError("[CoopLevel] 1-4: Boss / LuxSpawnPoint missing");
+            Debug.LogError($"[CoopLevel] {chapter}-4: Boss / LuxSpawnPoint missing");
             return;
         }
 
@@ -245,7 +264,7 @@ public static class CoopLevelBuilder
         so.FindProperty("sensorRenderer").objectReferenceValue = weakGO.GetComponent<SpriteRenderer>();
         so.ApplyModifiedProperties();
 
-        BossArtUpgrade.Dress(boss.gameObject, 1);
+        BossArtUpgrade.Dress(boss.gameObject, chapter);
 
         var shield = boss.gameObject.GetComponent<BossCoopShield>();
         if (shield == null) shield = boss.gameObject.AddComponent<BossCoopShield>();
@@ -254,7 +273,7 @@ public static class CoopLevelBuilder
 
         EditorSceneManager.MarkSceneDirty(EditorSceneManager.GetActiveScene());
         EditorSceneManager.SaveScene(EditorSceneManager.GetActiveScene());
-        Debug.Log($"[CoopLevel] Level_1_4 boss shield wired: weakPoint at " +
+        Debug.Log($"[CoopLevel] Level_{chapter}_4 boss shield wired: weakPoint at " +
             $"x={weakGO.transform.position.x:F1} y={standY:F1}, boss={boss.name}");
     }
 

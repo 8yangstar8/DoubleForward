@@ -373,6 +373,12 @@ public static class HeadlessRuntimeTest
                 var sr = boss.GetComponent<SpriteRenderer>();
                 Assert($"{sceneName}: boss '{boss.name}' is actually visible (has a sprite)",
                     sr != null && sr.sprite != null);
+
+                // 双人机制必须每一章都接上。之前只有第一章接了,二到五章的 Boss
+                // 常态无盾、没有弱点,一个人就能打完 —— 双人设计在后四章等于不存在。
+                var shield = boss.GetComponent<BossCoopShield>();
+                Assert($"{sceneName}: boss fight needs two players (coop shield wired)",
+                    shield != null && shield.WeakPoint != null);
             }
 
             // 终点必须落在地面范围内。模板把终点放在 x=45/50/55/60,地面却一律只到
